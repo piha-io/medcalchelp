@@ -35,7 +35,6 @@ RUN adduser -S nodejs -u 1001
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.vinxi ./.vinxi
-COPY --from=builder /app/.output ./.output
 COPY --from=builder /app/prisma ./prisma
 
 # Set ownership to nodejs user
