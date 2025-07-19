@@ -1,7 +1,5 @@
 import * as React from 'react'
 import { Link, Outlet, createRootRouteWithContext } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import { Meta, Scripts } from '@tanstack/start'
 import type { QueryClient } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
 
@@ -13,35 +11,13 @@ export const Route = createRootRouteWithContext<{
 
 function RootComponent() {
   return (
-    <RootDocument>
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <main className="container mx-auto px-4 py-8">
-          <Outlet />
-        </main>
-        <Toaster position="top-right" />
-      </div>
-    </RootDocument>
-  )
-}
-
-function RootDocument({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <Meta>
-          <meta charSet="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <title>MedCalcHelp - Medical Calculation Practice for Nurses</title>
-          <meta name="description" content="Free tool for nurses to learn and practice medical calculations including dosage, IV drip rates, and unit conversions." />
-        </Meta>
-      </head>
-      <body>
-        <div id="root">{children}</div>
-        <Scripts />
-        <TanStackRouterDevtools position="bottom-right" />
-      </body>
-    </html>
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <main className="container mx-auto px-4 py-8">
+        <Outlet />
+      </main>
+      <Toaster position="top-right" />
+    </div>
   )
 }
 
