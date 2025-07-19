@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 
-export const Route = createFileRoute('/practice')({
+export const Route = createFileRoute('/_authenticated/practice')({
   component: PracticePage,
 })
 

@@ -12,7 +12,8 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
-import { Route as PracticeImport } from './routes/practice'
+import { Route as AuthenticatedImport } from './routes/_authenticated'
+import { Route as AuthenticatedPracticeImport } from './routes/_authenticated/practice'
 import { Route as LeaderboardImport } from './routes/leaderboard'
 import { Route as AuthLoginImport } from './routes/auth/login'
 import { Route as AuthRegisterImport } from './routes/auth/register'
@@ -24,9 +25,14 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const PracticeRoute = PracticeImport.update({
-  path: '/practice',
+const AuthenticatedRoute = AuthenticatedImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRoute,
+} as any)
+
+const AuthenticatedPracticeRoute = AuthenticatedPracticeImport.update({
+  path: '/practice',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 
 const LeaderboardRoute = LeaderboardImport.update({
@@ -55,12 +61,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/practice': {
-      id: '/practice'
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthenticatedImport
+      parentRoute: typeof rootRoute
+    }
+    '/_authenticated/practice': {
+      id: '/_authenticated/practice'
       path: '/practice'
       fullPath: '/practice'
-      preLoaderRoute: typeof PracticeImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthenticatedPracticeImport
+      parentRoute: typeof AuthenticatedImport
     }
     '/leaderboard': {
       id: '/leaderboard'
@@ -90,7 +103,9 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   IndexRoute,
-  PracticeRoute,
+  AuthenticatedRoute: AuthenticatedRoute.addChildren({
+    AuthenticatedPracticeRoute,
+  }),
   LeaderboardRoute,
   AuthLoginRoute,
   AuthRegisterRoute,

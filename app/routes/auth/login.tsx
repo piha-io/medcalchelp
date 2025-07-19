@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
+import { useAuth } from '../../lib/auth/AuthContext'
 
 export const Route = createFileRoute('/auth/login')({
   component: LoginPage,
@@ -9,17 +10,19 @@ function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const { login } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     
-    // TODO: Implement actual login logic
-    console.log('Login attempt:', { email, password })
-    
-    setTimeout(() => {
+    try {
+      await login(email, password)
+    } catch (error) {
+      // Error is handled by the auth context
+    } finally {
       setIsLoading(false)
-    }, 1000)
+    }
   }
 
   return (

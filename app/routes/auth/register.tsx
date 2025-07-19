@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
+import { useAuth } from '../../lib/auth/AuthContext'
 
 export const Route = createFileRoute('/auth/register')({
   component: RegisterPage,
@@ -14,6 +15,7 @@ function RegisterPage() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const { register } = useAuth()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -50,12 +52,13 @@ function RegisterPage() {
 
     setIsLoading(true)
     
-    // TODO: Implement actual registration logic
-    console.log('Registration attempt:', formData)
-    
-    setTimeout(() => {
+    try {
+      await register(formData.email, formData.username, formData.password)
+    } catch (error) {
+      // Error is handled by the auth context
+    } finally {
       setIsLoading(false)
-    }, 1000)
+    }
   }
 
   return (
