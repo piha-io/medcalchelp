@@ -1,0 +1,174 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String          @id @default(cuid())
+  email           String          @unique
+  username        String          @unique
+  passwordHash    String
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  lastActive      DateTime        @default(now())
+  
+  profile         UserProfile?
+  attempts        UserAttempt[]
+  achievements    Achievement[]
+  scores          Score?
+  
+  @@index([email])
+  @@index([username])
+}
+
+model UserProfile {
+  id              String          @id @default(cuid())
+  userId          String          @unique
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  displayName     String?
+  bio             String?
+  avatarUrl       String?
+  totalPoints     Int             @default(0)
+  currentStreak   Int             @default(0)
+  longestStreak   Int             @default(0)
+  level           Int             @default(1)
+  experience      Int             @default(0)
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model QuestionTemplate {
+  id              String          @id @default(cuid())
+  type            QuestionType
+  category        QuestionCategory
+  difficulty      Difficulty
+  title           String
+  templateText    String          // Template with placeholders like {weight}, {dose}
+  formulaTemplate String          // Formula template for generating answer
+  variables       Json            // JSON object defining variable ranges
+  units           Json            // JSON object defining units for variables
+  hints           String[]        // Array of hints
+  explanation     String          // Detailed explanation template
+  
+  attempts        UserAttempt[]
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  @@index([type, category, difficulty])
+}
+
+model UserAttempt {
+  id              String          @id @default(cuid())
+  userId          String
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId      String
+  question        QuestionTemplate @relation(fields: [questionId], references: [id])
+  
+  generatedValues Json            // The actual values used in this attempt
+  userAnswer      Float
+  correctAnswer   Float
+  isCorrect       Boolean
+  tolerance       Float           @default(0.01) // Acceptable margin of error
+  
+  timeSpent       Int             // Time in seconds
+  hintsUsed       Int             @default(0)
+  pointsEarned    Int
+  
+  attemptedAt     DateTime        @default(now())
+  
+  @@index([userId, attemptedAt])
+  @@index([questionId])
+}
+
+model Score {
+  id              String          @id @default(cuid())
+  userId          String          @unique
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  dailyScore      Int             @default(0)
+  weeklyScore     Int             @default(0)
+  monthlyScore    Int             @default(0)
+  allTimeScore    Int             @default(0)
+  
+  lastResetDaily  DateTime        @default(now())
+  lastResetWeekly DateTime        @default(now())
+  lastResetMonthly DateTime       @default(now())
+  
+  updatedAt       DateTime        @updatedAt
+  
+  @@index([dailyScore(sort: Desc)])
+  @@index([weeklyScore(sort: Desc)])
+  @@index([monthlyScore(sort: Desc)])
+  @@index([allTimeScore(sort: Desc)])
+}
+
+model Achievement {
+  id              String          @id @default(cuid())
+  userId          String
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type            AchievementType
+  unlockedAt      DateTime        @default(now())
+  
+  @@unique([userId, type])
+  @@index([userId])
+}
+
+enum QuestionType {
+  DOSAGE_CALCULATION
+  IV_DRIP_RATE
+  UNIT_CONVERSION
+  PEDIATRIC_DOSING
+  CONCENTRATION
+  DILUTION
+}
+
+enum QuestionCategory {
+  ORAL_MEDICATION
+  INJECTABLE_MEDICATION
+  IV_MEDICATION
+  WEIGHT_BASED
+  BSA_BASED
+  METRIC_CONVERSION
+  TIME_CONVERSION
+  VOLUME_CONVERSION
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum AchievementType {
+  FIRST_CORRECT
+  STREAK_3
+  STREAK_7
+  STREAK_30
+  ACCURACY_80
+  ACCURACY_90
+  ACCURACY_100
+  SPEED_DEMON
+  LEVEL_5
+  LEVEL_10
+  LEVEL_25
+  LEVEL_50
+  QUESTIONS_10
+  QUESTIONS_50
+  QUESTIONS_100
+  QUESTIONS_500
+  QUESTIONS_1000
+  CATEGORY_MASTER
+  ALL_CATEGORIES
+}
