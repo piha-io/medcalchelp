@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { useQuestionFlow } from '../lib/hooks/useQuestions'
 import { QuestionCard } from '../components/QuestionCard'
+import { DimensionalAnalysisCard } from '../components/DimensionalAnalysisCard'
 import { ResultCard } from '../components/ResultCard'
 import { StatsCard } from '../components/StatsCard'
 import { useAuth } from '../lib/auth/AuthContext'
@@ -165,13 +166,23 @@ function PracticePage() {
               )}
 
               {question && !showSolution && (
-                <QuestionCard
-                  question={question}
-                  onSubmit={submitAnswer}
-                  onUseHint={useHint}
-                  hintsUsed={hintsUsed}
-                  isSubmitting={isSubmitting}
-                />
+                question.type === 'DIMENSIONAL_ANALYSIS' ? (
+                  <DimensionalAnalysisCard
+                    question={question}
+                    onSubmit={submitAnswer}
+                    onHint={useHint}
+                    hintsUsed={hintsUsed}
+                    isSubmitting={isSubmitting}
+                  />
+                ) : (
+                  <QuestionCard
+                    question={question}
+                    onSubmit={submitAnswer}
+                    onUseHint={useHint}
+                    hintsUsed={hintsUsed}
+                    isSubmitting={isSubmitting}
+                  />
+                )
               )}
 
               {showSolution && lastResult && question && submittedAnswer !== null && (

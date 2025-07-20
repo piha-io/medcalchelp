@@ -10,6 +10,7 @@ export interface GeneratedQuestion {
   generatedValues: Record<string, number>
   units: Record<string, string>
   hints: string[]
+  conversionFactors?: any[]
 }
 
 export function generateQuestion(template: QuestionTemplate): GeneratedQuestion {
@@ -54,6 +55,7 @@ export function generateQuestion(template: QuestionTemplate): GeneratedQuestion 
     generatedValues,
     units: template.units as Record<string, string>,
     hints: template.hints,
+    conversionFactors: template.conversionFactors as any[] || undefined,
   }
 }
 
