@@ -14,7 +14,7 @@ export function generateToken(user: Pick<User, 'id' | 'email' | 'username'>): st
   const payload: JWTPayload = {
     userId: user.id,
     email: user.email,
-    username: user.username,
+    username: user.username || user.email,
   }
 
   return jwt.sign(payload, JWT_SECRET, {

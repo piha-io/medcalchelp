@@ -55,8 +55,8 @@ function HomePage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </Link>
-                <Link to="/auth/register" className="btn btn-secondary btn-lg">
-                  Create Account
+                <Link to="/auth" className="btn btn-secondary btn-lg">
+                  Sign In / Sign Up
                 </Link>
               </>
             )}

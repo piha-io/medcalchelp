@@ -90,10 +90,10 @@ function Header() {
               </>
             ) : (
               <Link
-                to="/auth/login"
+                to="/auth"
                 className="btn btn-primary btn-sm"
               >
-                Login
+                Sign In
               </Link>
             )}
           </div>
@@ -175,11 +175,11 @@ function Header() {
                 </>
               ) : (
                 <Link
-                  to="/auth/login"
+                  to="/auth"
                   className="btn btn-primary w-full"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Login
+                  Sign In
                 </Link>
               )}
             </div>

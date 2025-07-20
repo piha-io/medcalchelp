@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 interface User {
   id: string
   email: string
-  username: string
+  username: string | null
   profile?: {
     displayName?: string
     totalPoints: number
@@ -19,8 +19,7 @@ interface User {
 interface AuthContextType {
   user: User | null
   isLoading: boolean
-  login: (email: string, password: string) => Promise<void>
-  register: (email: string, username: string, password: string) => Promise<void>
+  login: (userData: User) => Promise<void>
   logout: () => Promise<void>
   refreshUser: () => Promise<void>
 }
@@ -53,52 +52,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const login = async (email: string, password: string) => {
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email, password }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Login failed')
-      }
-
-      setUser(data.user)
-      toast.success('Welcome back!')
-      navigate({ to: '/practice' })
-    } catch (error: any) {
-      toast.error(error.message || 'Login failed')
-      throw error
-    }
-  }
-
-  const register = async (email: string, username: string, password: string) => {
-    try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email, username, password }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Registration failed')
-      }
-
-      setUser(data.user)
-      toast.success('Account created successfully!')
-      navigate({ to: '/practice' })
-    } catch (error: any) {
-      toast.error(error.message || 'Registration failed')
-      throw error
-    }
+  const login = async (userData: User) => {
+    // Set user data after successful verification
+    setUser(userData)
   }
 
   const logout = async () => {
@@ -121,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, isLoading, login, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )

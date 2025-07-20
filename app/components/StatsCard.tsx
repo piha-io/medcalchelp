@@ -128,16 +128,10 @@ export function StatsCard() {
           </p>
           <div className="flex gap-3">
             <Link 
-              to="/auth/login" 
-              className="btn btn-primary btn-sm flex-1 text-center"
+              to="/auth" 
+              className="btn btn-primary btn-sm w-full text-center"
             >
-              Login
-            </Link>
-            <Link 
-              to="/auth/register" 
-              className="btn btn-secondary btn-sm flex-1 text-center"
-            >
-              Sign Up
+              Sign In / Sign Up
             </Link>
           </div>
         </div>

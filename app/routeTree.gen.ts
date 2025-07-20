@@ -12,12 +12,11 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
+import { Route as AuthImport } from './routes/auth'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as AuthenticatedProfileImport } from './routes/_authenticated/profile'
 import { Route as PracticeImport } from './routes/practice'
 import { Route as LeaderboardImport } from './routes/leaderboard'
-import { Route as AuthLoginImport } from './routes/auth/login'
-import { Route as AuthRegisterImport } from './routes/auth/register'
 
 // Create/Update Routes
 
@@ -26,11 +25,15 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AuthRoute = AuthImport.update({
+  path: '/auth',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AuthenticatedRoute = AuthenticatedImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRoute,
 } as any)
-
 
 const AuthenticatedProfileRoute = AuthenticatedProfileImport.update({
   path: '/profile',
@@ -47,16 +50,6 @@ const LeaderboardRoute = LeaderboardImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthLoginRoute = AuthLoginImport.update({
-  path: '/auth/login',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const AuthRegisterRoute = AuthRegisterImport.update({
-  path: '/auth/register',
-  getParentRoute: () => rootRoute,
-} as any)
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -66,6 +59,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
     '/_authenticated': {
@@ -96,20 +96,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LeaderboardImport
       parentRoute: typeof rootRoute
     }
-    '/auth/login': {
-      id: '/auth/login'
-      path: '/auth/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth/register': {
-      id: '/auth/register'
-      path: '/auth/register'
-      fullPath: '/auth/register'
-      preLoaderRoute: typeof AuthRegisterImport
-      parentRoute: typeof rootRoute
-    }
   }
 }
 
@@ -117,13 +103,12 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   IndexRoute,
+  AuthRoute,
   AuthenticatedRoute: AuthenticatedRoute.addChildren({
     AuthenticatedProfileRoute,
   }),
   PracticeRoute,
   LeaderboardRoute,
-  AuthLoginRoute,
-  AuthRegisterRoute,
 })
 
 /* prettier-ignore-end */

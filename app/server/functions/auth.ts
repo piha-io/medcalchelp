@@ -1,89 +1,86 @@
 import { prisma } from '../../lib/db/prisma'
-import bcrypt from 'bcryptjs'
 import { generateToken } from '../../lib/auth/jwt'
+import { createVerificationCode, verifyCode } from '../../lib/auth/verification'
+import { sendVerificationCode } from '../../lib/email/email.service'
 
-export async function registerUser(data: {
-  username: string
-  email: string
-  password: string
-}) {
-  // Check if user already exists
-  const existingUser = await prisma.user.findFirst({
-    where: {
-      OR: [
-        { email: data.email },
-        { username: data.username }
-      ]
-    }
-  })
+export async function requestVerificationCode(email: string) {
+  // Normalize email
+  email = email.toLowerCase().trim()
 
-  if (existingUser) {
-    throw new Error('User already exists with this email or username')
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email)) {
+    throw new Error('Invalid email address')
   }
 
-  // Hash password
-  const hashedPassword = await bcrypt.hash(data.password, 10)
+  try {
+    // Generate verification code
+    const code = await createVerificationCode(email)
 
-  // Create user with profile
-  const user = await prisma.user.create({
-    data: {
-      username: data.username,
-      email: data.email,
-      passwordHash: hashedPassword,
-      profile: {
-        create: {
-          totalPoints: 0,
-          experience: 0,
-          level: 1,
-          currentStreak: 0,
-          longestStreak: 0,
-        }
-      }
-    },
-    include: {
-      profile: true
+    // Send email
+    await sendVerificationCode({ email, code })
+
+    return {
+      success: true,
+      message: 'Verification code sent to your email'
     }
-  })
-
-  // Generate token
-  const token = generateToken(user)
-
-  return {
-    token,
-    user: {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      profile: user.profile
+  } catch (error: any) {
+    if (error.message.includes('Too many verification attempts')) {
+      throw error
     }
+    throw new Error('Failed to send verification code. Please try again.')
   }
 }
 
-export async function loginUser(data: {
-  username: string
-  password: string
-}) {
-  // Find user
-  const user = await prisma.user.findUnique({
-    where: { username: data.username },
+export async function verifyCodeAndLogin(email: string, code: string) {
+  // Normalize email
+  email = email.toLowerCase().trim()
+
+  // Verify the code
+  const isValid = await verifyCode(email, code)
+  
+  if (!isValid) {
+    throw new Error('Invalid or expired verification code')
+  }
+
+  // Find or create user
+  let user = await prisma.user.findUnique({
+    where: { email },
     include: { profile: true }
   })
 
   if (!user) {
-    throw new Error('Invalid credentials')
+    // Create new user
+    user = await prisma.user.create({
+      data: {
+        email,
+        emailVerified: true,
+        emailVerifiedAt: new Date(),
+        profile: {
+          create: {
+            totalPoints: 0,
+            experience: 0,
+            level: 1,
+            currentStreak: 0,
+            longestStreak: 0,
+          }
+        }
+      },
+      include: {
+        profile: true
+      }
+    })
+  } else {
+    // Update existing user
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        emailVerified: true,
+        emailVerifiedAt: user.emailVerifiedAt || new Date(),
+        lastActive: new Date()
+      }
+    })
   }
-
-  // Check password
-  const isValidPassword = await bcrypt.compare(data.password, user.passwordHash)
-  if (!isValidPassword) {
-    throw new Error('Invalid credentials')
-  }
-
-  // Update last login
-  await prisma.user.update({
-    where: { id: user.id },
-    data: { lastActive: new Date() }
-  })
 
   // Generate token
   const token = generateToken(user)
@@ -121,4 +118,20 @@ export async function getCurrentUser(userId: string) {
     profile: user.profile,
     achievements: user.achievements
   }
+}
+
+// Legacy functions - will be removed
+export async function registerUser(data: {
+  username: string
+  email: string
+  password: string
+}) {
+  throw new Error('Password-based registration is no longer supported. Please use email verification.')
+}
+
+export async function loginUser(data: {
+  username: string
+  password: string
+}) {
+  throw new Error('Password-based login is no longer supported. Please use email verification.')
 }
