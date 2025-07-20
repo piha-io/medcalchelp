@@ -153,7 +153,7 @@ export function useUserAttempts(limit: number = 10) {
 }
 
 // Fetch user stats
-export function useUserStats() {
+export function useUserStats(enabled: boolean = true) {
   return useQuery({
     queryKey: ['user', 'stats'],
     queryFn: async () => {
@@ -162,12 +162,20 @@ export function useUserStats() {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to fetch stats')
+        // Return default stats for non-authenticated users
+        return {
+          totalAttempts: 0,
+          correctAttempts: 0,
+          accuracy: 0,
+          averageTime: 0,
+          achievementCount: 0
+        }
       }
 
       const data = await response.json()
       return data.stats
     },
+    enabled, // Only run query if enabled
   })
 }
 

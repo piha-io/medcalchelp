@@ -89,9 +89,6 @@ export async function handleApiRequest(req: IncomingMessage, res: ServerResponse
 
     // GET /api/questions/random
     if (pathname === '/api/questions/random' && req.method === 'GET') {
-      const user = await requireAuth(req, res)
-      if (!user) return
-
       const query = Object.fromEntries(url.searchParams)
       const question = await getRandomQuestion({
         type: query.type as any,
@@ -161,14 +158,47 @@ export async function handleApiRequest(req: IncomingMessage, res: ServerResponse
 
     // GET /api/questions/stats
     if (pathname === '/api/questions/stats' && req.method === 'GET') {
-      const user = await requireAuth(req, res)
-      if (!user) return
+      // Check if user is authenticated
+      const cookies = parseCookies(req.headers.cookie || '')
+      const token = cookies.token
+      
+      if (!token) {
+        // Return empty stats for guest users
+        res.statusCode = 200
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify({ 
+          stats: {
+            totalAttempts: 0,
+            correctAttempts: 0,
+            accuracy: 0,
+            averageTime: 0,
+            achievementCount: 0
+          }
+        }))
+        return
+      }
 
-      const stats = await getUserStats(user.id)
+      try {
+        const payload = verifyToken(token)
+        const stats = await getUserStats(payload.userId)
 
-      res.statusCode = 200
-      res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify({ stats }))
+        res.statusCode = 200
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify({ stats }))
+      } catch (error) {
+        // Invalid token, return empty stats
+        res.statusCode = 200
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify({ 
+          stats: {
+            totalAttempts: 0,
+            correctAttempts: 0,
+            accuracy: 0,
+            averageTime: 0,
+            achievementCount: 0
+          }
+        }))
+      }
       return
     }
 

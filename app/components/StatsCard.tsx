@@ -12,7 +12,8 @@ interface SessionStats {
 
 export function StatsCard() {
   const { user } = useAuth()
-  const { data: stats, isLoading } = useUserStats()
+  // Only fetch stats if user is authenticated
+  const { data: stats, isLoading } = useUserStats(!!user)
   const [sessionStats, setSessionStats] = useState<SessionStats>({
     totalQuestions: 0,
     correctAnswers: 0,
