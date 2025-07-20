@@ -1,12 +1,119 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { Link } from '@tanstack/react-router'
 import { useUserStats } from '../lib/hooks/useQuestions'
 import { useAuth } from '../lib/auth/AuthContext'
+
+interface SessionStats {
+  totalQuestions: number
+  correctAnswers: number
+  currentStreak: number
+  totalPoints: number
+}
 
 export function StatsCard() {
   const { user } = useAuth()
   const { data: stats, isLoading } = useUserStats()
+  const [sessionStats, setSessionStats] = useState<SessionStats>({
+    totalQuestions: 0,
+    correctAnswers: 0,
+    currentStreak: 0,
+    totalPoints: 0,
+  })
 
-  if (isLoading || !stats || !user) {
+  // Load session stats from localStorage for guests
+  useEffect(() => {
+    if (!user) {
+      const stored = localStorage.getItem('guestSessionStats')
+      if (stored) {
+        setSessionStats(JSON.parse(stored))
+      }
+    }
+  }, [user])
+
+  // Listen for session stat updates
+  useEffect(() => {
+    if (!user) {
+      const handleStorageChange = () => {
+        const stored = localStorage.getItem('guestSessionStats')
+        if (stored) {
+          setSessionStats(JSON.parse(stored))
+        }
+      }
+
+      window.addEventListener('storage', handleStorageChange)
+      return () => window.removeEventListener('storage', handleStorageChange)
+    }
+  }, [user])
+
+  // Show guest stats card
+  if (!user) {
+    const accuracy = sessionStats.totalQuestions > 0 
+      ? Math.round((sessionStats.correctAnswers / sessionStats.totalQuestions) * 100)
+      : 0
+
+    return (
+      <div className="card p-6">
+        <h3 className="text-lg font-semibold mb-4">Session Stats</h3>
+        
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">📝</span>
+              <span className="text-sm text-gray-600">Questions</span>
+            </div>
+            <p className="text-2xl font-bold text-blue-600">
+              {sessionStats.totalQuestions}
+            </p>
+          </div>
+          
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">✅</span>
+              <span className="text-sm text-gray-600">Correct</span>
+            </div>
+            <p className="text-2xl font-bold text-green-600">
+              {sessionStats.correctAnswers}
+            </p>
+          </div>
+          
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🎯</span>
+              <span className="text-sm text-gray-600">Accuracy</span>
+            </div>
+            <p className="text-2xl font-bold text-purple-600">
+              {accuracy}%
+            </p>
+          </div>
+          
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🏆</span>
+              <span className="text-sm text-gray-600">Points</span>
+            </div>
+            <p className="text-2xl font-bold text-yellow-600">
+              {sessionStats.totalPoints}
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+          <p className="text-sm text-primary-800 mb-3">
+            Create an account to save your progress!
+          </p>
+          <Link 
+            to="/auth/register" 
+            className="btn btn-primary btn-sm w-full text-center"
+          >
+            Sign Up Free
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  // Show loading state for authenticated users
+  if (isLoading || !stats) {
     return (
       <div className="card p-6">
         <div className="animate-pulse space-y-3">

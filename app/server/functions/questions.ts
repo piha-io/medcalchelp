@@ -49,7 +49,7 @@ const submitAnswerSchema = z.object({
 })
 
 // Submit answer and calculate results
-export async function submitAnswer(userId: string, data: unknown) {
+export async function submitAnswer(userId: string | null, data: unknown) {
   const validatedData = submitAnswerSchema.parse(data)
 
   // Get question template
@@ -74,7 +74,22 @@ export async function submitAnswer(userId: string, data: unknown) {
   // Reduce points for hints used (5 points per hint, minimum 5 points)
   const pointsEarned = isCorrect ? Math.max(basePoints - (validatedData.hintsUsed * 5), 5) : 0
 
-  // Create attempt record
+  // For guest users, just return the result without saving
+  if (!userId) {
+    return {
+      attempt: {
+        id: 'guest-attempt',
+        isCorrect,
+        correctAnswer,
+        pointsEarned,
+      },
+      explanation: template.explanation
+        .replace(/{(\w+)}/g, (match, key) => validatedData.generatedValues[key] || match)
+        .replace('{answer}', correctAnswer.toFixed(2)),
+    }
+  }
+
+  // Create attempt record for authenticated users
   const attempt = await prisma.userAttempt.create({
     data: {
       userId,

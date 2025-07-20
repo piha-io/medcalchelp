@@ -71,13 +71,38 @@ export function useSubmitAnswer() {
         throw new Error(error.error || 'Failed to submit answer')
       }
 
-      return response.json() as Promise<AnswerResult>
+      const result = await response.json()
+      return result as AnswerResult & { isGuest?: boolean }
     },
     onSuccess: (data) => {
-      // Invalidate stats and attempts queries
-      queryClient.invalidateQueries({ queryKey: ['user', 'stats'] })
-      queryClient.invalidateQueries({ queryKey: ['user', 'attempts'] })
-      queryClient.invalidateQueries({ queryKey: ['auth', 'me'] })
+      // Update guest session stats if user is not authenticated
+      if (data.isGuest) {
+        const stored = localStorage.getItem('guestSessionStats')
+        const stats = stored ? JSON.parse(stored) : {
+          totalQuestions: 0,
+          correctAnswers: 0,
+          currentStreak: 0,
+          totalPoints: 0,
+        }
+        
+        stats.totalQuestions += 1
+        if (data.attempt.isCorrect) {
+          stats.correctAnswers += 1
+          stats.currentStreak += 1
+          stats.totalPoints += data.attempt.pointsEarned
+        } else {
+          stats.currentStreak = 0
+        }
+        
+        localStorage.setItem('guestSessionStats', JSON.stringify(stats))
+        // Trigger storage event for StatsCard
+        window.dispatchEvent(new Event('storage'))
+      } else {
+        // Invalidate stats and attempts queries for authenticated users
+        queryClient.invalidateQueries({ queryKey: ['user', 'stats'] })
+        queryClient.invalidateQueries({ queryKey: ['user', 'attempts'] })
+        queryClient.invalidateQueries({ queryKey: ['auth', 'me'] })
+      }
 
       if (data.attempt.isCorrect) {
         toast.success(`Correct! +${data.attempt.pointsEarned} points`)

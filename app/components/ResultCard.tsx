@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from '@tanstack/react-router'
 import { cn } from '../lib/utils/cn'
 import { generateStepByStepSolution } from '../lib/questions/generator'
 import type { QuestionTemplate } from '@prisma/client'
@@ -16,6 +17,7 @@ interface ResultCardProps {
     units: Record<string, string>
   }
   onNextQuestion: () => void
+  isGuest?: boolean
 }
 
 export function ResultCard({
@@ -26,6 +28,7 @@ export function ResultCard({
   explanation,
   question,
   onNextQuestion,
+  isGuest = false,
 }: ResultCardProps) {
   const formatAnswer = (value: number) => {
     // Format to remove trailing zeros
@@ -113,6 +116,29 @@ export function ResultCard({
           </div>
         </div>
       </div>
+
+      {/* Guest Login Prompt */}
+      {isGuest && isCorrect && (
+        <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+          <p className="text-sm text-primary-800 mb-3">
+            🎉 Great job! Want to save your score and track your progress?
+          </p>
+          <div className="flex gap-3">
+            <Link 
+              to="/auth/login" 
+              className="btn btn-primary btn-sm flex-1 text-center"
+            >
+              Login
+            </Link>
+            <Link 
+              to="/auth/register" 
+              className="btn btn-secondary btn-sm flex-1 text-center"
+            >
+              Sign Up
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Next Question Button */}
       <button

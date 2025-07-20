@@ -314,6 +314,176 @@ async function main() {
         'BSA × dose per m² = total daily dose'
       ],
       explanation: 'Daily dose: {bsa} m² × {dosePerBSA} mg/m² = total daily dose. Each dose: total ÷ {doses} = {answer} mg'
+    },
+
+    // Dimensional Analysis Questions
+    {
+      type: 'DIMENSIONAL_ANALYSIS',
+      category: 'DIMENSIONAL_ANALYSIS',
+      difficulty: 'BEGINNER',
+      title: 'Basic Unit Conversion with Dimensional Analysis',
+      templateText: 'Convert {value} mg to g using dimensional analysis. Show your work using the railroad track method.',
+      formulaTemplate: '{value} / 1000',
+      variables: {
+        value: { min: 100, max: 5000, step: 100 }
+      },
+      units: {
+        value: 'mg',
+        answer: 'g'
+      },
+      conversionFactors: [
+        { from: 'mg', to: 'g', factor: 0.001, display: '1 g = 1000 mg' }
+      ],
+      hints: [
+        'Set up: mg × (1 g / 1000 mg)',
+        'The mg units cancel out',
+        'Multiply the numbers on top, divide by numbers on bottom'
+      ],
+      explanation: 'Using dimensional analysis: {value} mg × (1 g / 1000 mg) = {value} ÷ 1000 = {answer} g'
+    },
+
+    {
+      type: 'DIMENSIONAL_ANALYSIS',
+      category: 'DIMENSIONAL_ANALYSIS',
+      difficulty: 'BEGINNER',
+      title: 'Volume Conversion with Dimensional Analysis',
+      templateText: 'Convert {value} oz to mL using dimensional analysis. Use the conversion: 1 oz = 30 mL.',
+      formulaTemplate: '{value} * 30',
+      variables: {
+        value: { min: 2, max: 16, step: 2 }
+      },
+      units: {
+        value: 'oz',
+        answer: 'mL'
+      },
+      conversionFactors: [
+        { from: 'oz', to: 'mL', factor: 30, display: '1 oz = 30 mL' }
+      ],
+      hints: [
+        'Set up: oz × (30 mL / 1 oz)',
+        'The oz units cancel out',
+        'Multiply: {value} × 30'
+      ],
+      explanation: 'Using dimensional analysis: {value} oz × (30 mL / 1 oz) = {value} × 30 = {answer} mL'
+    },
+
+    {
+      type: 'DIMENSIONAL_ANALYSIS',
+      category: 'DIMENSIONAL_ANALYSIS',
+      difficulty: 'INTERMEDIATE',
+      title: 'Dosage Calculation with Dimensional Analysis',
+      templateText: 'Order: {dose} mg. Available: {concentration} mg per {volume} mL. How many mL needed? Use dimensional analysis.',
+      formulaTemplate: '{dose} / {concentration} * {volume}',
+      variables: {
+        dose: { min: 25, max: 200, step: 25 },
+        concentration: { min: 50, max: 250, step: 50 },
+        volume: { min: 1, max: 5, step: 1 }
+      },
+      units: {
+        dose: 'mg',
+        concentration: 'mg',
+        volume: 'mL',
+        answer: 'mL'
+      },
+      conversionFactors: [],
+      hints: [
+        'Set up: {dose} mg × ({volume} mL / {concentration} mg)',
+        'The mg units cancel out',
+        'Calculate: ({dose} × {volume}) ÷ {concentration}'
+      ],
+      explanation: 'Dimensional analysis: {dose} mg × ({volume} mL / {concentration} mg) = ({dose} × {volume}) ÷ {concentration} = {answer} mL'
+    },
+
+    {
+      type: 'DIMENSIONAL_ANALYSIS',
+      category: 'DIMENSIONAL_ANALYSIS',
+      difficulty: 'INTERMEDIATE',
+      title: 'Weight-Based Dosing with Unit Conversion',
+      templateText: 'Order: {dosePerKg} mg/kg. Patient weighs {weight} lbs. How many mg per dose? Use dimensional analysis with 1 kg = 2.2 lbs.',
+      formulaTemplate: '{weight} / 2.2 * {dosePerKg}',
+      variables: {
+        dosePerKg: { min: 5, max: 25, step: 5 },
+        weight: { min: 100, max: 220, step: 20 }
+      },
+      units: {
+        dosePerKg: 'mg/kg',
+        weight: 'lbs',
+        answer: 'mg'
+      },
+      conversionFactors: [
+        { from: 'lbs', to: 'kg', factor: 0.4545, display: '1 kg = 2.2 lbs' }
+      ],
+      hints: [
+        'Convert lbs to kg: {weight} lbs × (1 kg / 2.2 lbs)',
+        'Then multiply by dose: result × {dosePerKg} mg/kg',
+        'Set up the full equation with all units'
+      ],
+      explanation: 'Step 1: {weight} lbs × (1 kg / 2.2 lbs) = {weight}/2.2 kg\nStep 2: ({weight}/2.2 kg) × {dosePerKg} mg/kg = {answer} mg'
+    },
+
+    {
+      type: 'DIMENSIONAL_ANALYSIS',
+      category: 'DIMENSIONAL_ANALYSIS',
+      difficulty: 'ADVANCED',
+      title: 'IV Rate Calculation with Multiple Conversions',
+      templateText: 'Order: {dose} mcg/min. Available: {concentration} mg in {volume} mL. Calculate mL/hr using dimensional analysis.',
+      formulaTemplate: '({dose} * 60) / ({concentration} * 1000 / {volume})',
+      variables: {
+        dose: { min: 50, max: 400, step: 50 },
+        concentration: { min: 100, max: 500, step: 100 },
+        volume: { min: 50, max: 250, step: 50 }
+      },
+      units: {
+        dose: 'mcg/min',
+        concentration: 'mg',
+        volume: 'mL',
+        answer: 'mL/hr'
+      },
+      conversionFactors: [
+        { from: 'mcg', to: 'mg', factor: 0.001, display: '1 mg = 1000 mcg' },
+        { from: 'min', to: 'hr', factor: 60, display: '1 hr = 60 min' }
+      ],
+      hints: [
+        'Convert mcg/min to mg/hr: × 60 ÷ 1000',
+        'Find concentration in mg/mL: {concentration} mg ÷ {volume} mL',
+        'Divide dose rate by concentration'
+      ],
+      explanation: 'Step 1: {dose} mcg/min × (1 mg/1000 mcg) × (60 min/1 hr) = {dose}×60÷1000 mg/hr\nStep 2: Concentration = {concentration} mg ÷ {volume} mL\nStep 3: Rate = dose ÷ concentration = {answer} mL/hr'
+    },
+
+    {
+      type: 'DIMENSIONAL_ANALYSIS',
+      category: 'DIMENSIONAL_ANALYSIS',
+      difficulty: 'EXPERT',
+      title: 'Complex Multi-Step Dimensional Analysis',
+      templateText: 'Patient needs {dose} mg/kg/day divided q{hours}h. Patient weighs {weight} lbs. Available: {strength} mg/{tabletVolume} tablets. How many tablets per dose?',
+      formulaTemplate: '(({weight} / 2.2 * {dose}) / (24 / {hours})) / {strength} * {tabletVolume}',
+      variables: {
+        dose: { min: 10, max: 50, step: 10 },
+        weight: { min: 110, max: 198, step: 22 },
+        hours: { min: 6, max: 12, step: 6 },
+        strength: { min: 100, max: 500, step: 100 },
+        tabletVolume: { min: 1, max: 2, step: 1 }
+      },
+      units: {
+        dose: 'mg/kg/day',
+        weight: 'lbs',
+        hours: 'hours',
+        strength: 'mg',
+        tabletVolume: 'tablets',
+        answer: 'tablets'
+      },
+      conversionFactors: [
+        { from: 'lbs', to: 'kg', factor: 0.4545, display: '1 kg = 2.2 lbs' },
+        { from: 'day', to: 'doses', factor: null, display: 'doses per day = 24 ÷ hours between doses' }
+      ],
+      hints: [
+        'Step 1: Convert weight to kg',
+        'Step 2: Calculate total daily dose',
+        'Step 3: Divide by number of doses per day',
+        'Step 4: Convert mg to tablets'
+      ],
+      explanation: 'Full dimensional analysis:\n1. Weight: {weight} lbs × (1 kg/2.2 lbs) = kg\n2. Daily dose: kg × {dose} mg/kg/day = mg/day\n3. Per dose: mg/day ÷ (24/{hours}) doses = mg/dose\n4. Tablets: mg/dose × ({tabletVolume} tablets/{strength} mg) = {answer} tablets'
     }
   ]
 
@@ -329,7 +499,8 @@ async function main() {
         variables: question.variables,
         units: question.units,
         hints: question.hints,
-        explanation: question.explanation
+        explanation: question.explanation,
+        conversionFactors: question.conversionFactors || null
       }
     })
   }

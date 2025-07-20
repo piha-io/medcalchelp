@@ -107,15 +107,31 @@ export async function handleApiRequest(req: IncomingMessage, res: ServerResponse
 
     // POST /api/questions/submit
     if (pathname === '/api/questions/submit' && req.method === 'POST') {
-      const user = await requireAuth(req, res)
-      if (!user) return
-
       const body = await getRequestBody(req)
-      const result = await submitAnswer(user.id, body)
+      
+      // Check if user is authenticated
+      const cookies = parseCookies(req.headers.cookie || '')
+      const token = cookies.token
+      let userId: string | null = null
+      
+      if (token) {
+        try {
+          const payload = verifyToken(token)
+          userId = payload.userId
+        } catch (error) {
+          // Token invalid, treat as guest
+        }
+      }
+
+      // Submit answer (will save to DB if authenticated, otherwise just validate)
+      const result = await submitAnswer(userId, body)
 
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify(result))
+      res.end(JSON.stringify({ 
+        ...result,
+        isGuest: !userId 
+      }))
       return
     }
 

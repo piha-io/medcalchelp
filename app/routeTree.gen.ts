@@ -13,8 +13,8 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
-import { Route as AuthenticatedPracticeImport } from './routes/_authenticated/practice'
 import { Route as AuthenticatedProfileImport } from './routes/_authenticated/profile'
+import { Route as PracticeImport } from './routes/practice'
 import { Route as LeaderboardImport } from './routes/leaderboard'
 import { Route as AuthLoginImport } from './routes/auth/login'
 import { Route as AuthRegisterImport } from './routes/auth/register'
@@ -31,14 +31,15 @@ const AuthenticatedRoute = AuthenticatedImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthenticatedPracticeRoute = AuthenticatedPracticeImport.update({
-  path: '/practice',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 
 const AuthenticatedProfileRoute = AuthenticatedProfileImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRoute,
+} as any)
+
+const PracticeRoute = PracticeImport.update({
+  path: '/practice',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const LeaderboardRoute = LeaderboardImport.update({
@@ -74,19 +75,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedImport
       parentRoute: typeof rootRoute
     }
-    '/_authenticated/practice': {
-      id: '/_authenticated/practice'
-      path: '/practice'
-      fullPath: '/practice'
-      preLoaderRoute: typeof AuthenticatedPracticeImport
-      parentRoute: typeof AuthenticatedImport
-    }
     '/_authenticated/profile': {
       id: '/_authenticated/profile'
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof AuthenticatedProfileImport
       parentRoute: typeof AuthenticatedImport
+    }
+    '/practice': {
+      id: '/practice'
+      path: '/practice'
+      fullPath: '/practice'
+      preLoaderRoute: typeof PracticeImport
+      parentRoute: typeof rootRoute
     }
     '/leaderboard': {
       id: '/leaderboard'
@@ -117,9 +118,9 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexRoute,
   AuthenticatedRoute: AuthenticatedRoute.addChildren({
-    AuthenticatedPracticeRoute,
     AuthenticatedProfileRoute,
   }),
+  PracticeRoute,
   LeaderboardRoute,
   AuthLoginRoute,
   AuthRegisterRoute,

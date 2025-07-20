@@ -1,15 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
-import { useQuestionFlow } from '../../lib/hooks/useQuestions'
-import { QuestionCard } from '../../components/QuestionCard'
-import { ResultCard } from '../../components/ResultCard'
-import { StatsCard } from '../../components/StatsCard'
+import { useQuestionFlow } from '../lib/hooks/useQuestions'
+import { QuestionCard } from '../components/QuestionCard'
+import { ResultCard } from '../components/ResultCard'
+import { StatsCard } from '../components/StatsCard'
+import { useAuth } from '../lib/auth/AuthContext'
 
-export const Route = createFileRoute('/_authenticated/practice')({
+export const Route = createFileRoute('/practice')({
   component: PracticePage,
 })
 
 function PracticePage() {
+  const { user } = useAuth()
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [difficulty, setDifficulty] = useState<'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT'>('BEGINNER')
   
@@ -118,6 +120,12 @@ function PracticePage() {
                     onClick={() => setSelectedCategory('CONCENTRATION')}
                   />
                   <CategoryButton
+                    title="Dimensional Analysis"
+                    description="Master the railroad track method for complex calculations"
+                    icon="🚂"
+                    onClick={() => setSelectedCategory('DIMENSIONAL_ANALYSIS')}
+                  />
+                  <CategoryButton
                     title="All Categories"
                     description="Practice with random questions from all categories"
                     icon="🎲"
@@ -175,6 +183,7 @@ function PracticePage() {
                   explanation={lastResult.explanation}
                   question={question}
                   onNextQuestion={handleNextQuestion}
+                  isGuest={!user}
                 />
               )}
             </div>

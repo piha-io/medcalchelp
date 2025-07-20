@@ -58,6 +58,7 @@ model QuestionTemplate {
   units           Json            // JSON object defining units for variables
   hints           String[]        // Array of hints
   explanation     String          // Detailed explanation template
+  conversionFactors Json?         // For dimensional analysis: array of conversion factors
   
   attempts        UserAttempt[]
   
@@ -131,6 +132,7 @@ enum QuestionType {
   PEDIATRIC_DOSING
   CONCENTRATION
   DILUTION
+  DIMENSIONAL_ANALYSIS
 }
 
 enum QuestionCategory {
@@ -142,6 +144,7 @@ enum QuestionCategory {
   METRIC_CONVERSION
   TIME_CONVERSION
   VOLUME_CONVERSION
+  DIMENSIONAL_ANALYSIS
 }
 
 enum Difficulty {
