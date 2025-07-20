@@ -152,6 +152,7 @@ export function useQuestionFlow() {
   const [hintsUsed, setHintsUsed] = useState(0)
   const [startTime, setStartTime] = useState<number | null>(null)
   const [showSolution, setShowSolution] = useState(false)
+  const [submittedAnswer, setSubmittedAnswer] = useState<number | null>(null)
 
   const questionQuery = useRandomQuestion(filters)
   const submitMutation = useSubmitAnswer()
@@ -160,6 +161,7 @@ export function useQuestionFlow() {
     setStartTime(Date.now())
     setHintsUsed(0)
     setShowSolution(false)
+    setSubmittedAnswer(null)
   }, [])
 
   const useHint = useCallback(() => {
@@ -170,6 +172,7 @@ export function useQuestionFlow() {
     if (!questionQuery.data || !startTime) return
 
     const timeSpent = Math.floor((Date.now() - startTime) / 1000)
+    setSubmittedAnswer(userAnswer)
 
     const result = await submitMutation.mutateAsync({
       questionId: questionQuery.data.id,
@@ -194,6 +197,7 @@ export function useQuestionFlow() {
     error: questionQuery.error,
     hintsUsed,
     showSolution,
+    submittedAnswer,
     filters,
     setFilters,
     startQuestion,

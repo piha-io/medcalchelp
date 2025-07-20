@@ -78,6 +78,36 @@ docker-compose up -d
 
 The application will be available at http://localhost:3000
 
+### Coolify Deployment
+
+1. **Prerequisites**
+   - Coolify instance set up
+   - PostgreSQL database (can be deployed on Coolify)
+
+2. **Environment Variables**
+   Set these in Coolify's environment variables:
+   ```
+   DATABASE_URL=postgresql://user:password@host:port/database
+   JWT_SECRET=your-secure-secret-key
+   NODE_ENV=production
+   PORT=3000
+   ```
+
+3. **Deployment Steps**
+   - Create a new resource in Coolify
+   - Choose "Docker Compose" deployment
+   - Point to your repository
+   - Coolify will automatically detect the docker-compose.yml
+   - Configure the domain and SSL
+   - Deploy!
+
+4. **Database Setup**
+   After first deployment, run these commands in Coolify's terminal:
+   ```bash
+   npm run db:push
+   npm run db:seed
+   ```
+
 ### Database Management
 
 - `npm run db:generate` - Generate Prisma client
