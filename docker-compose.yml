@@ -1,39 +1,43 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:16-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: medcalc
-      POSTGRES_PASSWORD: medcalc_password
-      POSTGRES_DB: medcalchelp
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U medcalc"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    restart: unless-stopped
+      args:
+        - NODE_ENV=production
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: "postgresql://medcalc:medcalc_password@postgres:5432/medcalchelp?schema=public"
-      JWT_SECRET: "your-super-secret-jwt-key-change-in-production"
-      NODE_ENV: production
-    depends_on:
-      postgres:
-        condition: service_healthy
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - PORT=3000
     volumes:
-      - ./prisma:/app/prisma:ro
+      # Mount logs directory for debugging
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1); })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
-volumes:
-  postgres_data:
+  # Optional: PostgreSQL database for local development
+  # Uncomment if you want to run a local database
+  # db:
+  #   image: postgres:16-alpine
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     - POSTGRES_USER=medcalc
+  #     - POSTGRES_PASSWORD=your_secure_password
+  #     - POSTGRES_DB=medcalchelp
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+
+# volumes:
+#   postgres_data:

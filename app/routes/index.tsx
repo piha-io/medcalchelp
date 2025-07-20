@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useAuth } from '../lib/auth/AuthContext'
+import { CategoryCard } from '../components/CategoryCard'
+import { categories } from '../lib/categories'
 
 export const Route = createFileRoute('/')({
   component: HomePage,
@@ -9,7 +11,7 @@ function HomePage() {
   const { user } = useAuth()
   
   return (
-    <div className="space-y-16 sm:space-y-20 overflow-hidden">
+    <div className="space-y-12 sm:space-y-16 lg:space-y-20 overflow-hidden">
       {/* Background decoration */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
@@ -18,7 +20,7 @@ function HomePage() {
       </div>
 
       {/* Hero Section */}
-      <section className="text-center py-8 sm:py-12 lg:py-16 animate-fade-in relative">
+      <section className="text-center py-6 sm:py-10 lg:py-16 animate-fade-in relative">
         <div className="max-w-4xl mx-auto px-4">
           <div className="inline-flex items-center justify-center p-1 px-4 bg-gradient-to-r from-primary-100 to-secondary-100 rounded-full mb-6 animate-bounce-in">
             <span className="text-primary-700 text-sm font-medium flex items-center gap-2">
@@ -26,15 +28,15 @@ function HomePage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
               </span>
-              Trusted by 10,000+ nursing professionals
+              Perfect for students and nurses preparing for exams
             </span>
           </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-gray-900 mb-6 text-balance">
+          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-display font-bold text-gray-900 mb-4 sm:mb-6 text-balance">
             Master Medical Math with{' '}
             <span className="gradient-text-vibrant">Confidence</span>
           </h1>
-          <p className="text-lg sm:text-xl text-gray-600 mb-10 max-w-2xl mx-auto text-balance">
-            Built by nurses, for nurses. Practice dosage calculations, IV drip rates, 
+          <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-10 max-w-2xl mx-auto text-balance">
+            Built for students and nurses to stay sharp. Practice dosage calculations, IV drip rates, 
             and unit conversions with real-world scenarios and instant feedback.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -60,8 +62,8 @@ function HomePage() {
             )}
           </div>
           
-          {/* Animated medical icons */}
-          <div className="mt-12 flex justify-center gap-8 opacity-30">
+          {/* Animated medical icons - hidden on mobile */}
+          <div className="hidden sm:flex mt-8 sm:mt-12 justify-center gap-8 opacity-30">
             <div className="animate-float" style={{ animationDelay: '0s' }}>
               <HeartPulseIcon />
             </div>
@@ -78,28 +80,16 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Trust Indicators */}
-      <section className="relative -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-50 via-white to-secondary-50"></div>
-        <div className="relative max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            <TrustMetric value="10,000+" label="Active Nurses" icon={<UsersIcon />} delay="0s" />
-            <TrustMetric value="500,000+" label="Problems Solved" icon={<CheckCircleIcon />} delay="0.1s" />
-            <TrustMetric value="98%" label="Pass Rate Improvement" icon={<TrendingUpIcon />} delay="0.2s" />
-            <TrustMetric value="4.9/5" label="User Rating" icon={<StarIcon />} delay="0.3s" />
-          </div>
-        </div>
-      </section>
 
-      {/* Features Section */}
+      {/* Features Section - Condensed for mobile */}
       <section className="max-w-6xl mx-auto px-4" aria-labelledby="features-heading">
-        <h2 id="features-heading" className="text-3xl sm:text-4xl font-display font-bold text-center mb-4 text-gray-900">
+        <h2 id="features-heading" className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-center mb-3 sm:mb-4 text-gray-900">
           Everything You Need to <span className="gradient-text-warm">Excel</span>
         </h2>
-        <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-          Our comprehensive platform is designed to help you master medical calculations with confidence and ease.
+        <p className="text-sm sm:text-base text-center text-gray-600 mb-8 sm:mb-12 max-w-2xl mx-auto">
+          Master medical calculations with confidence and ease.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           <FeatureCard
             icon={<CalculatorIcon />}
             title="Real-World Scenarios"
@@ -137,8 +127,8 @@ function HomePage() {
           />
           <FeatureCard
             icon={<HeartIcon />}
-            title="Built by Nurses"
-            description="Created by experienced RNs who understand the challenges of medication math"
+            title="Stay Test-Ready"
+            description="Keep your skills sharp for exams, clinical rotations, and professional practice"
             color="accent"
             delay="0.5s"
           />
@@ -146,93 +136,36 @@ function HomePage() {
       </section>
 
       {/* Categories Section with gradient background */}
-      <section className="relative -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16 sm:py-20" aria-labelledby="categories-heading">
+      <section className="relative -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20" aria-labelledby="categories-heading">
         <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-purple-50 to-secondary-50"></div>
         <div className="relative max-w-6xl mx-auto">
-          <h2 id="categories-heading" className="text-3xl sm:text-4xl font-display font-bold text-center mb-4 text-gray-900">
-            Comprehensive Practice Categories
+          <h2 id="categories-heading" className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-center mb-3 sm:mb-4 text-gray-900">
+            Practice Categories
           </h2>
-          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-            Master every type of medical calculation with our extensive question library.
+          <p className="text-sm sm:text-base text-center text-gray-600 mb-8 sm:mb-12 max-w-2xl mx-auto">
+            Higher difficulty levels earn more points per question!
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <CategoryCard 
-              title="Dosage Calculations" 
-              description="Oral, IM, SubQ medications"
-              questionCount={50}
-              difficulty="Beginner to Advanced"
-              gradient="from-primary-500 to-primary-600"
-              delay="0s"
-            />
-            <CategoryCard 
-              title="IV Drip Rates" 
-              description="mL/hr, gtt/min, pump settings"
-              questionCount={40}
-              difficulty="Intermediate"
-              gradient="from-secondary-500 to-secondary-600"
-              delay="0.1s"
-            />
-            <CategoryCard 
-              title="Unit Conversions" 
-              description="Metric, household, apothecary"
-              questionCount={30}
-              difficulty="Beginner"
-              gradient="from-purple-500 to-purple-600"
-              delay="0.2s"
-            />
-            <CategoryCard 
-              title="Pediatric Dosing" 
-              description="Weight-based calculations"
-              questionCount={25}
-              difficulty="Advanced"
-              gradient="from-accent-500 to-accent-600"
-              delay="0.3s"
-            />
-            <CategoryCard 
-              title="Critical Care" 
-              description="Vasoactive drips, titrations"
-              questionCount={35}
-              difficulty="Advanced"
-              gradient="from-amber-500 to-amber-600"
-              delay="0.4s"
-            />
-            <CategoryCard 
-              title="Insulin Dosing" 
-              description="Sliding scale, corrections"
-              questionCount={20}
-              difficulty="Intermediate"
-              gradient="from-primary-500 to-secondary-500"
-              delay="0.5s"
-            />
-            <CategoryCard 
-              title="Heparin Protocol" 
-              description="Bolus and infusion rates"
-              questionCount={15}
-              difficulty="Advanced"
-              gradient="from-secondary-500 to-purple-500"
-              delay="0.6s"
-            />
-            <CategoryCard 
-              title="Reconstitution" 
-              description="Powder to liquid calculations"
-              questionCount={20}
-              difficulty="Intermediate"
-              gradient="from-purple-500 to-accent-500"
-              delay="0.7s"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
+            {categories.map((category, index) => (
+              <CategoryCard 
+                key={category.id}
+                category={category}
+                delay={`${index * 0.1}s`}
+              />
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="text-center py-16 sm:py-20 relative">
+      {/* CTA Section - Optimized for mobile */}
+      <section className="text-center py-12 sm:py-16 lg:py-20 relative">
         <div className="max-w-3xl mx-auto px-4">
-          <div className="glass rounded-3xl p-12 animate-scale-in">
-            <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4 text-gray-900">
+          <div className="glass rounded-2xl sm:rounded-3xl p-8 sm:p-10 lg:p-12 animate-scale-in">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold mb-3 sm:mb-4 text-gray-900">
               Ready to Build Your <span className="gradient-text">Confidence?</span>
             </h2>
-            <p className="text-lg text-gray-600 mb-8">
-              Join thousands of nurses who have mastered medical math with our proven practice system.
+            <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8">
+              Join thousands who have mastered medical math.
             </p>
             <Link to="/practice" className="btn btn-primary btn-lg animate-pulse-glow">
               Start Practicing Now
@@ -247,17 +180,6 @@ function HomePage() {
   )
 }
 
-function TrustMetric({ value, label, icon, delay }: { value: string; label: string; icon: React.ReactNode; delay: string }) {
-  return (
-    <div className="animate-bounce-in" style={{ animationDelay: delay }}>
-      <div className="text-5xl font-bold gradient-text mb-2">{value}</div>
-      <div className="flex items-center justify-center gap-2 text-gray-600">
-        <div className="w-5 h-5 text-primary-500">{icon}</div>
-        <span className="text-sm sm:text-base">{label}</span>
-      </div>
-    </div>
-  )
-}
 
 function FeatureCard({ 
   icon, 
@@ -282,58 +204,22 @@ function FeatureCard({
 
   return (
     <div 
-      className="card-3d p-6 group animate-slide-up" 
+      className="card-3d p-4 sm:p-6 group animate-slide-up" 
       style={{ animationDelay: delay }}
     >
-      <div className={`w-14 h-14 bg-gradient-to-br ${colorClasses} bg-opacity-10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-        <div className="w-8 h-8 text-white">
+      <div className={`w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br ${colorClasses} bg-opacity-10 rounded-xl flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform`}>
+        <div className="w-7 h-7 sm:w-8 sm:h-8 text-white">
           <div className={`w-full h-full bg-gradient-to-br ${colorClasses} rounded-lg p-1.5`}>
             {icon}
           </div>
         </div>
       </div>
-      <h3 className="text-lg font-semibold mb-2 text-gray-900">{title}</h3>
-      <p className="text-gray-600 text-sm">{description}</p>
+      <h3 className="text-base sm:text-lg font-semibold mb-2 text-gray-900">{title}</h3>
+      <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{description}</p>
     </div>
   )
 }
 
-function CategoryCard({ 
-  title, 
-  description, 
-  questionCount, 
-  difficulty,
-  gradient,
-  delay
-}: { 
-  title: string; 
-  description: string; 
-  questionCount: number;
-  difficulty: string;
-  gradient: string;
-  delay: string;
-}) {
-  return (
-    <Link 
-      to="/practice" 
-      className="block group animate-scale-in"
-      style={{ animationDelay: delay }}
-      aria-label={`Practice ${title} - ${questionCount} questions, ${difficulty} level`}
-    >
-      <div className="relative overflow-hidden rounded-2xl bg-white p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
-        <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${gradient} opacity-10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500`}></div>
-        <h3 className="font-semibold text-lg mb-1 text-gray-900 relative z-10">{title}</h3>
-        <p className="text-sm text-gray-600 mb-4 relative z-10">{description}</p>
-        <div className="flex items-center justify-between text-xs relative z-10">
-          <span className={`font-medium bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>
-            {questionCount}+ questions
-          </span>
-          <span className="badge badge-primary">{difficulty}</span>
-        </div>
-      </div>
-    </Link>
-  )
-}
 
 // Icon Components
 function CalculatorIcon() {
@@ -386,37 +272,6 @@ function HeartIcon() {
   )
 }
 
-function UsersIcon() {
-  return (
-    <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-    </svg>
-  )
-}
-
-function CheckCircleIcon() {
-  return (
-    <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-  )
-}
-
-function TrendingUpIcon() {
-  return (
-    <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-    </svg>
-  )
-}
-
-function StarIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-    </svg>
-  )
-}
 
 function HeartPulseIcon() {
   return (

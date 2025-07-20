@@ -44,28 +44,9 @@ function Header() {
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center space-x-3 focus-ring rounded-md px-2 -mx-2"
+            className="flex items-center focus-ring rounded-md px-2 -mx-2"
             aria-label="Learn Med Math - Home"
           >
-            <svg 
-              className="w-8 h-8 text-primary-600" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path 
-                d="M12 4.5C11.7 4.5 11.5 4.7 11.5 5V11.5H5C4.7 11.5 4.5 11.7 4.5 12C4.5 12.3 4.7 12.5 5 12.5H11.5V19C11.5 19.3 11.7 19.5 12 19.5C12.3 19.5 12.5 19.3 12.5 19V12.5H19C19.3 12.5 19.5 12.3 19.5 12C19.5 11.7 19.3 11.5 19 11.5H12.5V5C12.5 4.7 12.3 4.5 12 4.5Z" 
-                fill="currentColor"
-              />
-              <circle 
-                cx="12" 
-                cy="12" 
-                r="9" 
-                stroke="currentColor" 
-                strokeWidth="2"
-              />
-            </svg>
             <span className="text-xl font-display font-semibold text-gray-900">
               Learn Med Math
             </span>
