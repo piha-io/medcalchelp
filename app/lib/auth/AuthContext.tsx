@@ -10,7 +10,9 @@ interface User {
     displayName?: string
     totalPoints: number
     currentStreak: number
+    longestStreak: number
     level: number
+    experience: number
   }
 }
 

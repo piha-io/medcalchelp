@@ -72,12 +72,13 @@ function LoginPage() {
               <span className="ml-2 text-sm text-gray-600">Remember me</span>
             </label>
             
-            <Link
-              to="/auth/forgot-password"
+            <a
+              href="#"
+              onClick={(e) => { e.preventDefault(); alert('Password reset feature coming soon!'); }}
               className="text-sm text-primary-600 hover:text-primary-700"
             >
               Forgot password?
-            </Link>
+            </a>
           </div>
 
           <button

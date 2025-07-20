@@ -29,7 +29,7 @@ export async function registerUser(data: {
     data: {
       username: data.username,
       email: data.email,
-      password: hashedPassword,
+      passwordHash: hashedPassword,
       profile: {
         create: {
           totalPoints: 0,
@@ -74,7 +74,7 @@ export async function loginUser(data: {
   }
 
   // Check password
-  const isValidPassword = await bcrypt.compare(data.password, user.password)
+  const isValidPassword = await bcrypt.compare(data.password, user.passwordHash)
   if (!isValidPassword) {
     throw new Error('Invalid credentials')
   }
@@ -82,7 +82,7 @@ export async function loginUser(data: {
   // Update last login
   await prisma.user.update({
     where: { id: user.id },
-    data: { lastLogin: new Date() }
+    data: { lastActive: new Date() }
   })
 
   // Generate token

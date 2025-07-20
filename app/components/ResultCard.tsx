@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { cn } from '../lib/utils/cn'
 import { generateStepByStepSolution } from '../lib/questions/generator'
 import type { QuestionTemplate } from '@prisma/client'
+import { Celebration } from './Celebration'
 
 interface ResultCardProps {
   isCorrect: boolean
@@ -30,6 +31,14 @@ export function ResultCard({
   onNextQuestion,
   isGuest = false,
 }: ResultCardProps) {
+  const [showCelebration, setShowCelebration] = useState(false)
+  
+  useEffect(() => {
+    if (isCorrect) {
+      setShowCelebration(true)
+    }
+  }, [isCorrect])
+
   const formatAnswer = (value: number) => {
     // Format to remove trailing zeros
     return parseFloat(value.toFixed(4)).toString()
@@ -48,6 +57,12 @@ export function ResultCard({
   )
 
   return (
+    <>
+      <Celebration 
+        show={showCelebration} 
+        points={pointsEarned}
+        onComplete={() => setShowCelebration(false)}
+      />
     <div className={cn(
       'card p-6 space-y-6',
       isCorrect ? 'border-success-500 bg-success-50' : 'border-error-500 bg-error-50'
@@ -148,5 +163,6 @@ export function ResultCard({
         Next Question
       </button>
     </div>
+    </>
   )
 }

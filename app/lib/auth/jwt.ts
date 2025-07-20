@@ -19,7 +19,7 @@ export function generateToken(user: Pick<User, 'id' | 'email' | 'username'>): st
 
   return jwt.sign(payload, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN,
-  })
+  } as jwt.SignOptions)
 }
 
 export function verifyToken(token: string): JWTPayload {

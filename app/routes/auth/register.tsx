@@ -156,13 +156,13 @@ function RegisterPage() {
             />
             <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
               I agree to the{' '}
-              <Link to="/terms" className="text-primary-600 hover:text-primary-700">
+              <a href="#" onClick={(e) => { e.preventDefault(); alert('Terms of Service coming soon!'); }} className="text-primary-600 hover:text-primary-700">
                 Terms of Service
-              </Link>{' '}
+              </a>{' '}
               and{' '}
-              <Link to="/privacy" className="text-primary-600 hover:text-primary-700">
+              <a href="#" onClick={(e) => { e.preventDefault(); alert('Privacy Policy coming soon!'); }} className="text-primary-600 hover:text-primary-700">
                 Privacy Policy
-              </Link>
+              </a>
             </label>
           </div>
 

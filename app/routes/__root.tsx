@@ -14,11 +14,20 @@ function RootComponent() {
   return (
     <AuthProvider>
       <div className="min-h-screen bg-gray-50">
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         <Header />
-        <main className="container mx-auto px-4 py-8">
+        <main id="main-content" className="container-app py-4 sm:py-6 lg:py-8">
           <Outlet />
         </main>
-        <Toaster position="top-right" />
+        <Toaster 
+          position="top-right" 
+          toastOptions={{
+            className: 'font-medium',
+            duration: 4000,
+          }}
+        />
       </div>
     </AuthProvider>
   )
@@ -26,24 +35,53 @@ function RootComponent() {
 
 function Header() {
   const { user, logout } = useAuth()
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   
   return (
-    <header className="bg-white shadow-sm border-b">
-      <nav className="container mx-auto px-4">
+    <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+      <nav className="container-app" aria-label="Main navigation">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-primary-600">MedCalcHelp</span>
+          {/* Logo */}
+          <Link 
+            to="/" 
+            className="flex items-center space-x-3 focus-ring rounded-md px-2 -mx-2"
+            aria-label="Learn Med Math - Home"
+          >
+            <svg 
+              className="w-8 h-8 text-primary-600" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path 
+                d="M12 4.5C11.7 4.5 11.5 4.7 11.5 5V11.5H5C4.7 11.5 4.5 11.7 4.5 12C4.5 12.3 4.7 12.5 5 12.5H11.5V19C11.5 19.3 11.7 19.5 12 19.5C12.3 19.5 12.5 19.3 12.5 19V12.5H19C19.3 12.5 19.5 12.3 19.5 12C19.5 11.7 19.3 11.5 19 11.5H12.5V5C12.5 4.7 12.3 4.5 12 4.5Z" 
+                fill="currentColor"
+              />
+              <circle 
+                cx="12" 
+                cy="12" 
+                r="9" 
+                stroke="currentColor" 
+                strokeWidth="2"
+              />
+            </svg>
+            <span className="text-xl font-display font-semibold text-gray-900">
+              Learn Med Math
+            </span>
           </Link>
-          <div className="flex items-center space-x-4">
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-6">
             <Link
               to="/practice"
-              className="text-gray-600 hover:text-primary-600 font-medium transition-colors"
+              className="text-gray-600 hover:text-primary-600 font-medium transition-colors focus-ring rounded-md px-2 -mx-2"
             >
               Practice
             </Link>
             <Link
               to="/leaderboard"
-              className="text-gray-600 hover:text-primary-600 font-medium transition-colors"
+              className="text-gray-600 hover:text-primary-600 font-medium transition-colors focus-ring rounded-md px-2 -mx-2"
             >
               Leaderboard
             </Link>
@@ -51,7 +89,8 @@ function Header() {
               <>
                 <Link
                   to="/profile"
-                  className="flex items-center space-x-2 text-sm hover:text-primary-600 transition-colors"
+                  className="flex items-center space-x-2 text-sm hover:text-primary-600 transition-colors focus-ring rounded-md px-2 -mx-2"
+                  aria-label={`Profile - ${user.username} - ${user.profile?.totalPoints || 0} points`}
                 >
                   <span className="text-gray-600">
                     {user.username}
@@ -63,6 +102,7 @@ function Header() {
                 <button
                   onClick={logout}
                   className="btn btn-secondary btn-sm"
+                  aria-label="Logout"
                 >
                   Logout
                 </button>
@@ -76,7 +116,94 @@ function Header() {
               </Link>
             )}
           </div>
+
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 focus-ring"
+            aria-expanded={mobileMenuOpen}
+            aria-label="Toggle navigation menu"
+          >
+            <svg 
+              className="w-6 h-6" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              {mobileMenuOpen ? (
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M6 18L18 6M6 6l12 12" 
+                />
+              ) : (
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M4 6h16M4 12h16M4 18h16" 
+                />
+              )}
+            </svg>
+          </button>
         </div>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <div className="md:hidden py-4 border-t animate-slide-in">
+            <div className="flex flex-col space-y-3">
+              <Link
+                to="/practice"
+                className="text-gray-600 hover:text-primary-600 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 focus-ring"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Practice
+              </Link>
+              <Link
+                to="/leaderboard"
+                className="text-gray-600 hover:text-primary-600 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 focus-ring"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Leaderboard
+              </Link>
+              {user ? (
+                <>
+                  <Link
+                    to="/profile"
+                    className="flex items-center justify-between px-4 py-2 rounded-lg hover:bg-gray-50 focus-ring"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span className="text-gray-600">
+                      {user.username}
+                    </span>
+                    <span className="text-primary-600 font-medium">
+                      {user.profile?.totalPoints || 0} pts
+                    </span>
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout()
+                      setMobileMenuOpen(false)
+                    }}
+                    className="btn btn-secondary w-full"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/auth/login"
+                  className="btn btn-primary w-full"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Login
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
       </nav>
     </header>
   )
