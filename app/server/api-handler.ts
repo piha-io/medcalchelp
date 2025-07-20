@@ -1,13 +1,13 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import { registerUser, loginUser, getCurrentUser } from '../server/functions/auth'
+import { registerUser, loginUser, getCurrentUser } from './functions/auth'
 import { 
   getRandomQuestion, 
   submitAnswer, 
   getQuestionCategories,
   getUserAttempts,
   getUserStats 
-} from '../server/functions/questions'
-import { getLeaderboard, getUserRank } from '../server/functions/scores'
+} from './functions/questions'
+import { getLeaderboard, getUserRank } from './functions/scores'
 import { verifyToken } from '../lib/auth/jwt'
 
 export async function handleApiRequest(req: IncomingMessage, res: ServerResponse) {
@@ -180,6 +180,19 @@ export async function handleApiRequest(req: IncomingMessage, res: ServerResponse
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')
       res.end(JSON.stringify(rank))
+      return
+    }
+
+    // GET /api/user/achievements
+    if (pathname === '/api/user/achievements' && req.method === 'GET') {
+      const user = await requireAuth(req, res)
+      if (!user) return
+
+      const currentUser = await getCurrentUser(user.id)
+      
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ achievements: currentUser.achievements }))
       return
     }
 

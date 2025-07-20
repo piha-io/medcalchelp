@@ -49,14 +49,17 @@ function Header() {
             </Link>
             {user ? (
               <>
-                <div className="flex items-center space-x-2 text-sm">
+                <Link
+                  to="/profile"
+                  className="flex items-center space-x-2 text-sm hover:text-primary-600 transition-colors"
+                >
                   <span className="text-gray-600">
                     {user.username}
                   </span>
                   <span className="text-primary-600 font-medium">
                     {user.profile?.totalPoints || 0} pts
                   </span>
-                </div>
+                </Link>
                 <button
                   onClick={logout}
                   className="btn btn-secondary btn-sm"
