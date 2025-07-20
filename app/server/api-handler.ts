@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import { registerUser, loginUser, getCurrentUser } from './functions/auth'
+import { requestVerificationCode, verifyCodeAndLogin, getCurrentUser } from './functions/auth'
 import { 
   getRandomQuestion, 
   submitAnswer, 
@@ -27,22 +27,21 @@ export async function handleApiRequest(req: IncomingMessage, res: ServerResponse
   }
 
   try {
-    // POST /api/auth/register
-    if (pathname === '/api/auth/register' && req.method === 'POST') {
+    // POST /api/auth/request-code
+    if (pathname === '/api/auth/request-code' && req.method === 'POST') {
       const body = await getRequestBody(req)
-      const result = await registerUser(body)
+      const result = await requestVerificationCode(body.email)
       
-      res.setHeader('Set-Cookie', `token=${result.token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}`)
-      res.statusCode = 201
+      res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')
       res.end(JSON.stringify(result))
       return
     }
 
-    // POST /api/auth/login
-    if (pathname === '/api/auth/login' && req.method === 'POST') {
+    // POST /api/auth/verify-code
+    if (pathname === '/api/auth/verify-code' && req.method === 'POST') {
       const body = await getRequestBody(req)
-      const result = await loginUser(body)
+      const result = await verifyCodeAndLogin(body.email, body.code)
       
       res.setHeader('Set-Cookie', `token=${result.token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}`)
       res.statusCode = 200
