@@ -54,7 +54,11 @@ docker-compose up -d postgres
 npm run db:push
 
 # Seed the database with question templates
-npm run db:seed
+# Use the expanded seed for all categories and difficulty levels
+npm run db:seed:expanded
+
+# Or use the basic seed for minimal data
+# npm run db:seed
 ```
 
 5. Start the development server
@@ -105,7 +109,8 @@ The application will be available at http://localhost:3000
    After first deployment, run these commands in Coolify's terminal:
    ```bash
    npm run db:push
-   npm run db:seed
+   # Use the expanded seed for full question coverage
+   npm run db:seed:expanded
    ```
 
 ### Database Management
@@ -114,7 +119,8 @@ The application will be available at http://localhost:3000
 - `npm run db:migrate` - Run migrations
 - `npm run db:push` - Push schema changes
 - `npm run db:studio` - Open Prisma Studio GUI
-- `npm run db:seed` - Seed the database
+- `npm run db:seed` - Seed the database with basic data
+- `npm run db:seed:expanded` - Seed the database with all categories and difficulty levels
 
 ## Project Structure
 
@@ -138,10 +144,33 @@ medcalchelp/
 
 ## Question Categories
 
-- **Dosage Calculations** - Basic medication dosing
-- **IV Drip Rates** - Infusion rate calculations
-- **Unit Conversions** - Metric/imperial conversions
-- **Pediatric Dosing** - Weight-based calculations
+The expanded seed includes comprehensive coverage across all difficulty levels (Beginner, Intermediate, Expert):
+
+- **Dosage Calculations** 
+  - Oral medications (tablets, liquids)
+  - Injectable medications (IM, SubQ)
+  
+- **IV Drip Rates**
+  - Basic drip rate calculations
+  - Micro-drip calculations
+  - Time-based infusion problems
+  
+- **Unit Conversions**
+  - Metric conversions (mg ↔ g ↔ kg)
+  - Volume conversions (mL ↔ L)
+  - Time conversions (minutes ↔ hours)
+  
+- **Pediatric Dosing**
+  - Weight-based calculations (mg/kg)
+  - BSA-based calculations
+  
+- **Concentration & Dilution**
+  - Solution concentration calculations
+  - Dilution ratio problems
+  
+- **Dimensional Analysis**
+  - Multi-step conversions
+  - Complex unit calculations
 
 ## Contributing
 
