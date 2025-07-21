@@ -12,7 +12,8 @@
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
-    "db:seed:expanded": "tsx prisma/seed-expanded.ts"
+    "db:seed:expanded": "tsx prisma/seed-expanded.ts",
+    "db:seed:complete": "tsx prisma/seed-complete.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

@@ -54,11 +54,12 @@ docker-compose up -d postgres
 npm run db:push
 
 # Seed the database with question templates
-# Use the expanded seed for all categories and difficulty levels
-npm run db:seed:expanded
+# IMPORTANT: Use the complete seed for ALL categories including critical care topics
+npm run db:seed:complete
 
-# Or use the basic seed for minimal data
-# npm run db:seed
+# Alternative seeds (not recommended for production):
+# npm run db:seed:expanded  # Missing critical care categories
+# npm run db:seed          # Basic seed with minimal data
 ```
 
 5. Start the development server
@@ -109,8 +110,8 @@ The application will be available at http://localhost:3000
    After first deployment, run these commands in Coolify's terminal:
    ```bash
    npm run db:push
-   # Use the expanded seed for full question coverage
-   npm run db:seed:expanded
+   # CRITICAL: Use complete seed to ensure all healthcare categories work
+   npm run db:seed:complete
    ```
 
 ### Database Management
@@ -119,8 +120,9 @@ The application will be available at http://localhost:3000
 - `npm run db:migrate` - Run migrations
 - `npm run db:push` - Push schema changes
 - `npm run db:studio` - Open Prisma Studio GUI
-- `npm run db:seed` - Seed the database with basic data
-- `npm run db:seed:expanded` - Seed the database with all categories and difficulty levels
+- `npm run db:seed` - Basic seed (minimal data)
+- `npm run db:seed:expanded` - Expanded seed (missing critical care categories)
+- `npm run db:seed:complete` - **RECOMMENDED**: Complete seed with ALL healthcare categories
 
 ## Project Structure
 
@@ -144,33 +146,23 @@ medcalchelp/
 
 ## Question Categories
 
-The expanded seed includes comprehensive coverage across all difficulty levels (Beginner, Intermediate, Expert):
+⚠️ **IMPORTANT**: Only the `db:seed:complete` script includes ALL categories. The complete seed provides comprehensive coverage across all difficulty levels (Beginner, Intermediate, Expert):
 
-- **Dosage Calculations** 
-  - Oral medications (tablets, liquids)
-  - Injectable medications (IM, SubQ)
-  
-- **IV Drip Rates**
-  - Basic drip rate calculations
-  - Micro-drip calculations
-  - Time-based infusion problems
-  
-- **Unit Conversions**
-  - Metric conversions (mg ↔ g ↔ kg)
-  - Volume conversions (mL ↔ L)
-  - Time conversions (minutes ↔ hours)
-  
-- **Pediatric Dosing**
-  - Weight-based calculations (mg/kg)
-  - BSA-based calculations
-  
-- **Concentration & Dilution**
-  - Solution concentration calculations
-  - Dilution ratio problems
-  
-- **Dimensional Analysis**
-  - Multi-step conversions
-  - Complex unit calculations
+### Core Calculation Categories
+- **Dosage Calculations** - Oral medications (tablets, liquids), Injectable medications (IM, SubQ)
+- **IV Drip Rates** - Basic drip rates, Micro-drip calculations, Time-based infusions
+- **Unit Conversions** - Metric (mg ↔ g ↔ kg), Volume (mL ↔ L), Time conversions
+- **Pediatric Dosing** - Weight-based (mg/kg), BSA-based calculations
+
+### Critical Care Categories (⚠️ Only in complete seed)
+- **Insulin Dosing** - Sliding scale calculations, Correction factors, Carb coverage
+- **Heparin Protocol** - Weight-based boluses, Infusion rates, aPTT-based adjustments
+- **Critical Care** - Vasopressor calculations, Dopamine dosing, Titration protocols
+- **Reconstitution** - Powder reconstitution, Multi-step dilutions, Complex preparations
+
+### Additional Categories
+- **Concentration & Dilution** - Solution concentrations, Dilution ratios
+- **Dimensional Analysis** - Multi-step conversions, Complex unit calculations
 
 ## Contributing
 
