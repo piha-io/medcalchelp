@@ -12,7 +12,7 @@ if (typeof window !== 'undefined' && import.meta.env.VITE_POSTHOG_KEY) {
     persistence: 'localStorage+cookie',
     autocapture: {
       dom_event_allowlist: ['click', 'submit'], // Only capture clicks and form submissions
-      element_allowlist: ['button', 'input[type="submit"]', 'a'], // Only capture specific elements
+      element_allowlist: ['button', 'input', 'a'], // Only capture specific elements
     },
     session_recording: {
       maskAllInputs: false,

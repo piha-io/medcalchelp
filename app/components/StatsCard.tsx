@@ -201,7 +201,7 @@ export function StatsCard() {
             value={user.profile?.currentStreak || 0}
             color="amber"
             large
-            highlight={user.profile?.currentStreak >= 3}
+            highlight={(user.profile?.currentStreak || 0) >= 3}
           />
         </div>
 

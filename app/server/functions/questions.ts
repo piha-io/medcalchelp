@@ -183,7 +183,7 @@ export async function submitAnswer(userId: string | null, data: unknown) {
 // Get question categories with counts
 export async function getQuestionCategories() {
   const categories = await prisma.questionTemplate.groupBy({
-    by: ['type', 'category', 'difficulty'],
+    by: ['type', 'category'],
     _count: {
       id: true,
     },

@@ -106,7 +106,7 @@ export function CategoryCard({
         onClick={onClick}
         className="block w-full text-left group animate-scale-in focus-ring rounded-2xl"
         style={{ animationDelay: delay }}
-        aria-label={`Practice ${category.title} - ${category.questionCount} questions, ${category.difficulty} level${category.pointsMultiplier && category.pointsMultiplier > 1 ? `, ${category.pointsMultiplier}x points` : ''}`}
+        aria-label={`Practice ${category.title} - ${category.questionCount} questions${category.pointsMultiplier && category.pointsMultiplier > 1 ? `, ${category.pointsMultiplier}x points` : ''}`}
       >
         {content}
       </button>
@@ -118,7 +118,7 @@ export function CategoryCard({
       to="/practice" 
       className="block group animate-scale-in focus-ring rounded-2xl"
       style={{ animationDelay: delay }}
-      aria-label={`Practice ${category.title} - ${category.questionCount} questions, ${category.difficulty} level${category.pointsMultiplier && category.pointsMultiplier > 1 ? `, ${category.pointsMultiplier}x points` : ''}`}
+      aria-label={`Practice ${category.title} - ${category.questionCount} questions${category.pointsMultiplier && category.pointsMultiplier > 1 ? `, ${category.pointsMultiplier}x points` : ''}`}
     >
       {content}
     </Link>

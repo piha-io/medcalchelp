@@ -1,8 +1,7 @@
 import { json } from '@tanstack/start'
 import { createAPIFileRoute } from '@tanstack/start/api'
 import { updateUserProfile } from '../../../server/functions/auth'
-import { verifyToken } from '../../../server/functions/auth-utils'
-import { handleError } from '../../../server/error-handler'
+import { verifyToken } from '../../../lib/auth/jwt'
 import { z } from 'zod'
 
 const updateProfileSchema = z.object({
@@ -40,8 +39,13 @@ export const Route = createAPIFileRoute('/api/profile/update')({
         success: true,
         user: updatedUser
       })
-    } catch (error) {
-      return handleError(error)
+    } catch (error: any) {
+      console.error('Profile update error:', error)
+      return json({ 
+        error: error.message || 'Failed to update profile' 
+      }, { 
+        status: error.status || 500 
+      })
     }
   }
 })
