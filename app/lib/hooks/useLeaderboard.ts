@@ -5,6 +5,7 @@ export type TimeFrame = 'daily' | 'weekly' | 'monthly' | 'all-time'
 interface LeaderboardEntry {
   rank: number
   username: string
+  displayName?: string
   score: number
   level: number
   streak: number

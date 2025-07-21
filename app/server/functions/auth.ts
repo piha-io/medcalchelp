@@ -50,10 +50,23 @@ export async function verifyCodeAndLogin(email: string, code: string) {
   })
 
   if (!user) {
+    // Generate username from email
+    const emailPrefix = email.split('@')[0]
+    let baseUsername = emailPrefix.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase()
+    let username = baseUsername
+    let counter = 1
+    
+    // Check for uniqueness and append number if needed
+    while (await prisma.user.findUnique({ where: { username } })) {
+      username = `${baseUsername}_${counter}`
+      counter++
+    }
+    
     // Create new user
     user = await prisma.user.create({
       data: {
         email,
+        username,
         emailVerified: true,
         emailVerifiedAt: new Date(),
         profile: {
@@ -117,6 +130,74 @@ export async function getCurrentUser(userId: string) {
     email: user.email,
     profile: user.profile,
     achievements: user.achievements
+  }
+}
+
+export async function updateUserProfile(userId: string, data: {
+  displayName?: string
+  username?: string
+}) {
+  // Validate displayName
+  if (data.displayName !== undefined) {
+    const trimmedDisplayName = data.displayName.trim()
+    if (trimmedDisplayName.length < 2 || trimmedDisplayName.length > 30) {
+      throw new Error('Display name must be between 2 and 30 characters')
+    }
+    data.displayName = trimmedDisplayName
+  }
+
+  // Validate username if provided
+  if (data.username !== undefined) {
+    const trimmedUsername = data.username.trim().toLowerCase()
+    
+    // Username validation
+    if (!/^[a-zA-Z0-9_]+$/.test(trimmedUsername)) {
+      throw new Error('Username can only contain letters, numbers, and underscores')
+    }
+    
+    if (trimmedUsername.length < 3 || trimmedUsername.length > 20) {
+      throw new Error('Username must be between 3 and 20 characters')
+    }
+    
+    // Check if username is already taken by another user
+    const existingUser = await prisma.user.findUnique({
+      where: { username: trimmedUsername }
+    })
+    
+    if (existingUser && existingUser.id !== userId) {
+      throw new Error('Username is already taken')
+    }
+    
+    data.username = trimmedUsername
+  }
+
+  // Update user and profile
+  const updateData: any = {}
+  if (data.username !== undefined) {
+    updateData.username = data.username
+  }
+  
+  if (data.displayName !== undefined) {
+    updateData.profile = {
+      update: {
+        displayName: data.displayName
+      }
+    }
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: updateData,
+    include: {
+      profile: true
+    }
+  })
+
+  return {
+    id: updatedUser.id,
+    username: updatedUser.username,
+    email: updatedUser.email,
+    profile: updatedUser.profile
   }
 }
 

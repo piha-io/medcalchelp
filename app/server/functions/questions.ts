@@ -1,19 +1,46 @@
 import { z } from 'zod'
 import { prisma } from '../../lib/prisma'
 import { generateQuestion, calculateAnswer, checkAnswer } from '../../lib/questions/generator'
-import type { QuestionType, QuestionCategory, Difficulty } from '@prisma/client'
+import type { QuestionType, QuestionCategory } from '@prisma/client'
+
+// Get base points for a question type based on complexity
+function getBasePointsForQuestionType(type: QuestionType): number {
+  // Basic level - 15 points
+  if (type === 'UNIT_CONVERSION' || type === 'DOSAGE_CALCULATION') {
+    return 15
+  }
+  
+  // Intermediate level - 20 points
+  if (type === 'CONCENTRATION' || type === 'IV_DRIP_RATE' || type === 'DILUTION') {
+    return 20
+  }
+  
+  // Advanced level - 30 points
+  if (type === 'PEDIATRIC_DOSING' || type === 'DIMENSIONAL_ANALYSIS' || type === 'RECONSTITUTION') {
+    return 30
+  }
+  
+  // Expert level - 40 points
+  if (type === 'INSULIN_DOSING' || type === 'HEPARIN_PROTOCOL' || type === 'CRITICAL_CARE') {
+    return 40
+  }
+  
+  // Default fallback
+  return 20
+}
 
 // Get random question based on filters
 export async function getRandomQuestion(filters: {
-  type?: QuestionType
+  type?: QuestionType | 'ALL'
   category?: QuestionCategory
-  difficulty?: Difficulty
 }) {
   // Build where clause
   const where: any = {}
-  if (filters.type) where.type = filters.type
+  // Handle 'ALL' category - don't filter by type
+  if (filters.type && filters.type !== 'ALL') {
+    where.type = filters.type
+  }
   if (filters.category) where.category = filters.category
-  if (filters.difficulty) where.difficulty = filters.difficulty
 
   // Get random question template
   const count = await prisma.questionTemplate.count({ where })
@@ -35,8 +62,12 @@ export async function getRandomQuestion(filters: {
 
   // Generate question with random values
   const question = generateQuestion(template)
-
-  return question
+  
+  // Add base points to the question
+  return {
+    ...question,
+    basePoints: getBasePointsForQuestionType(template.type)
+  }
 }
 
 // Submit answer schema
@@ -65,11 +96,8 @@ export async function submitAnswer(userId: string | null, data: unknown) {
   const correctAnswer = calculateAnswer(template, validatedData.generatedValues)
   const isCorrect = checkAnswer(validatedData.userAnswer, correctAnswer, 0.01)
 
-  // Calculate points based on difficulty and hints
-  let basePoints = 10
-  if (template.difficulty === 'INTERMEDIATE') basePoints = 20
-  if (template.difficulty === 'ADVANCED') basePoints = 30
-  if (template.difficulty === 'EXPERT') basePoints = 50
+  // Calculate points based on question type complexity
+  const basePoints = getBasePointsForQuestionType(template.type)
 
   // Reduce points for hints used (5 points per hint, minimum 5 points)
   const pointsEarned = isCorrect ? Math.max(basePoints - (validatedData.hintsUsed * 5), 5) : 0
@@ -107,14 +135,21 @@ export async function submitAnswer(userId: string | null, data: unknown) {
   // Update user scores and stats if correct
   if (isCorrect) {
     await prisma.$transaction([
-      // Update scores
-      prisma.score.update({
+      // Update or create scores
+      prisma.score.upsert({
         where: { userId },
-        data: {
+        update: {
           dailyScore: { increment: pointsEarned },
           weeklyScore: { increment: pointsEarned },
           monthlyScore: { increment: pointsEarned },
           allTimeScore: { increment: pointsEarned },
+        },
+        create: {
+          userId,
+          dailyScore: pointsEarned,
+          weeklyScore: pointsEarned,
+          monthlyScore: pointsEarned,
+          allTimeScore: pointsEarned,
         },
       }),
       // Update profile
@@ -178,7 +213,6 @@ export async function getUserAttempts(userId: string, limit: number = 10) {
         select: {
           type: true,
           category: true,
-          difficulty: true,
           title: true,
         },
       },
@@ -224,6 +258,22 @@ export async function getUserStats(userId: string) {
     where: { userId },
   })
 
+  // Get today's attempts
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const tomorrow = new Date(today)
+  tomorrow.setDate(tomorrow.getDate() + 1)
+
+  const todayAttempts = await prisma.userAttempt.count({
+    where: {
+      userId,
+      attemptedAt: {
+        gte: today,
+        lt: tomorrow,
+      },
+    },
+  })
+
   return {
     totalAttempts: stats._count.id,
     totalPoints: stats._sum.pointsEarned || 0,
@@ -232,6 +282,7 @@ export async function getUserStats(userId: string) {
     accuracy: Math.round(accuracy * 10) / 10,
     correctAttempts,
     achievementCount,
+    todayAttempts,
   }
 }
 

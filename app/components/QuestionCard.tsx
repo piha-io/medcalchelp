@@ -123,7 +123,7 @@ export function QuestionCard({
               </div>
             </div>
             
-            {/* Timer with animated background */}
+            {/* Timer and Points Display */}
             <div className="flex items-center gap-3">
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-lg opacity-20 animate-pulse"></div>
@@ -134,6 +134,21 @@ export function QuestionCard({
                   </div>
                 </div>
               </div>
+              
+              {/* Potential Points Display */}
+              {question.basePoints && (
+                <div className="relative">
+                  <div className={`absolute inset-0 bg-gradient-to-r ${colors.gradient} rounded-lg opacity-20`}></div>
+                  <div className="relative bg-white rounded-lg px-3 py-2 shadow-sm border border-gray-200">
+                    <div className="flex items-center gap-2 text-sm">
+                      <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>
+                      <span className="font-semibold text-gray-700">{question.basePoints} pts</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           
@@ -203,9 +218,9 @@ export function QuestionCard({
               disabled={isSubmitting}
               autoFocus
             />
-            {question.units && Object.keys(question.units).length > 0 && (
+            {question.units && question.units.answer && (
               <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">
-                {Object.values(question.units)[0]}
+                {question.units.answer}
               </div>
             )}
           </div>

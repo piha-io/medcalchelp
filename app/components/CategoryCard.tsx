@@ -5,7 +5,6 @@ export interface CategoryInfo {
   title: string
   description: string
   questionCount: number
-  difficulty: 'Beginner' | 'Intermediate' | 'Advanced'
   gradient: string
   bgGradient: string
   iconBg: string
@@ -72,21 +71,6 @@ export function CategoryCard({
             <span className={`font-medium bg-gradient-to-r ${category.gradient} bg-clip-text text-transparent`}>
               {category.questionCount}+ questions
             </span>
-            <div className="flex items-center gap-2">
-              <span className={`
-                inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
-                ${category.difficulty === 'Beginner' && 'bg-green-100 text-green-700'}
-                ${category.difficulty === 'Intermediate' && 'bg-amber-100 text-amber-700'}
-                ${category.difficulty === 'Advanced' && 'bg-red-100 text-red-700'}
-              `}>
-                {category.difficulty}
-              </span>
-              {category.pointsMultiplier && category.pointsMultiplier > 1 && (
-                <span className="text-primary-600 font-medium">
-                  {category.pointsMultiplier}x pts
-                </span>
-              )}
-            </div>
           </div>
         </div>
         
@@ -202,6 +186,30 @@ export function ReconstitutionIcon() {
   return (
     <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
       <path d="M7 2v5l-1.5 1.5L9 12v10h6V12l3.5-3.5L17 7V2H7zm2 2h6v2.17l1.5 1.5L14 10.17V20h-4v-9.83L7.5 7.67 9 6.17V4z"/>
+    </svg>
+  )
+}
+
+export function DimensionalAnalysisIcon() {
+  return (
+    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M3 17h18v2H3v-2zm0-7h18v2H3v-2zm0-7h18v2H3V3zm0 3.5h6v1H3v-1zm12 0h6v1h-6v-1zm-6 7h6v1H9v-1zm-6 0h3v1H3v-1zm15 0h3v1h-3v-1z"/>
+    </svg>
+  )
+}
+
+export function ConcentrationIcon() {
+  return (
+    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M7 2v2h1v14a4 4 0 0 0 8 0V4h1V2H7zm4 2h2v3h-2V4zm0 5h2v3h-2V9zm0 5h2v2a2 2 0 0 1-4 0v-2h2z"/>
+    </svg>
+  )
+}
+
+export function DilutionIcon() {
+  return (
+    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 2l-5.5 14.5c-.37.93-.03 2 .91 2.35L11 21l3.59-2.15c.94-.35 1.28-1.42.91-2.35L12 2zm0 3.84L14.91 14H9.09L12 5.84zM12 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
     </svg>
   )
 }

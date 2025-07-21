@@ -12,28 +12,18 @@ function HomePage() {
   
   return (
     <div className="space-y-12 sm:space-y-16 lg:space-y-20 overflow-hidden">
-      {/* Background decoration */}
-      <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-accent-200 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-float" style={{ animationDelay: '4s' }}></div>
-      </div>
 
       {/* Hero Section */}
-      <section className="text-center py-6 sm:py-10 lg:py-16 animate-fade-in relative">
+      <section className="text-center py-6 sm:py-10 lg:py-16 relative">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="inline-flex items-center justify-center p-1 px-4 bg-gradient-to-r from-primary-100 to-secondary-100 rounded-full mb-6 animate-bounce-in">
-            <span className="text-primary-700 text-sm font-medium flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
-              </span>
+          <div className="inline-flex items-center justify-center p-1 px-4 bg-primary-100 rounded-full mb-6">
+            <span className="text-primary-700 text-sm font-medium">
               Perfect for students and nurses preparing for exams
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-6xl font-display font-bold text-gray-900 mb-4 sm:mb-6 text-balance">
             Master Medical Math with{' '}
-            <span className="gradient-text-vibrant">Confidence</span>
+            <span className="text-primary-600">Confidence</span>
           </h1>
           <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-10 max-w-2xl mx-auto text-balance">
             Built for students and nurses to stay sharp. Practice dosage calculations, IV drip rates, 
@@ -62,21 +52,6 @@ function HomePage() {
             )}
           </div>
           
-          {/* Animated medical icons - hidden on mobile */}
-          <div className="hidden sm:flex mt-8 sm:mt-12 justify-center gap-8 opacity-30">
-            <div className="animate-float" style={{ animationDelay: '0s' }}>
-              <HeartPulseIcon />
-            </div>
-            <div className="animate-float" style={{ animationDelay: '1s' }}>
-              <StethoscopeIcon />
-            </div>
-            <div className="animate-float" style={{ animationDelay: '2s' }}>
-              <PillIcon />
-            </div>
-            <div className="animate-float" style={{ animationDelay: '3s' }}>
-              <SyringeIcon />
-            </div>
-          </div>
         </div>
       </section>
 
@@ -84,7 +59,7 @@ function HomePage() {
       {/* Features Section - Condensed for mobile */}
       <section className="max-w-6xl mx-auto px-4" aria-labelledby="features-heading">
         <h2 id="features-heading" className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-center mb-3 sm:mb-4 text-gray-900">
-          Everything You Need to <span className="gradient-text-warm">Excel</span>
+          Everything You Need to <span className="text-primary-600">Excel</span>
         </h2>
         <p className="text-sm sm:text-base text-center text-gray-600 mb-8 sm:mb-12 max-w-2xl mx-auto">
           Master medical calculations with confidence and ease.
@@ -203,11 +178,8 @@ function FeatureCard({
   }[color] || 'from-gray-500 to-gray-600 text-gray-600'
 
   return (
-    <div 
-      className="card-3d p-4 sm:p-6 group animate-slide-up" 
-      style={{ animationDelay: delay }}
-    >
-      <div className={`w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br ${colorClasses} bg-opacity-10 rounded-xl flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform`}>
+    <div className="card p-4 sm:p-6 group hover:shadow-lg transition-shadow">
+      <div className={`w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br ${colorClasses} bg-opacity-10 rounded-xl flex items-center justify-center mb-3 sm:mb-4`}>
         <div className="w-7 h-7 sm:w-8 sm:h-8 text-white">
           <div className={`w-full h-full bg-gradient-to-br ${colorClasses} rounded-lg p-1.5`}>
             {icon}

@@ -80,7 +80,7 @@ export function LeaderboardTable({ timeFrame }: LeaderboardTableProps) {
                         'font-medium',
                         isCurrentUser && 'text-primary-700'
                       )}>
-                        {entry.username}
+                        {entry.displayName || entry.username || 'Anonymous'}
                       </span>
                       {isCurrentUser && (
                         <span className="text-xs bg-primary-600 text-white px-2 py-0.5 rounded-full">

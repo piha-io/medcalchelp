@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 
 interface User {
@@ -22,39 +23,37 @@ interface AuthContextType {
   login: (userData: User) => Promise<void>
   logout: () => Promise<void>
   refreshUser: () => Promise<void>
+  updateUser: (userData: User) => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    checkAuth()
-  }, [])
-
-  const checkAuth = async () => {
-    try {
+  // Use React Query to fetch and cache user data
+  const { data: user, isLoading, refetch } = useQuery({
+    queryKey: ['auth', 'me'],
+    queryFn: async () => {
       const response = await fetch('/api/auth/me', {
         credentials: 'include',
       })
 
-      if (response.ok) {
-        const data = await response.json()
-        setUser(data.user)
+      if (!response.ok) {
+        return null
       }
-    } catch (error) {
-      console.error('Auth check failed:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+
+      const data = await response.json()
+      return data.user as User
+    },
+    retry: false,
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+  })
 
   const login = async (userData: User) => {
-    // Set user data after successful verification
-    setUser(userData)
+    // Update the query cache with the new user data
+    queryClient.setQueryData(['auth', 'me'], userData)
   }
 
   const logout = async () => {
@@ -64,7 +63,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         credentials: 'include',
       })
 
-      setUser(null)
+      // Clear the query cache
+      queryClient.setQueryData(['auth', 'me'], null)
+      queryClient.removeQueries({ queryKey: ['auth', 'me'] })
       toast.success('Logged out successfully')
       navigate({ to: '/' })
     } catch (error) {
@@ -73,11 +74,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const refreshUser = async () => {
-    await checkAuth()
+    await refetch()
+  }
+
+  const updateUser = (userData: User) => {
+    // Update the query cache with the new user data
+    queryClient.setQueryData(['auth', 'me'], userData)
   }
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user: user || null, isLoading, login, logout, refreshUser, updateUser }}>
       {children}
     </AuthContext.Provider>
   )

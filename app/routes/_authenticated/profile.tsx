@@ -3,15 +3,22 @@ import { useAuth } from '../../lib/auth/AuthContext'
 import { useUserStats, useUserAttempts } from '../../lib/hooks/useQuestions'
 import { AchievementsGrid } from '../../components/AchievementsGrid'
 import { cn } from '../../lib/utils/cn'
+import { useState } from 'react'
+import { z } from 'zod'
 
 export const Route = createFileRoute('/_authenticated/profile')({
   component: ProfilePage,
 })
 
 function ProfilePage() {
-  const { user } = useAuth()
+  const { user, updateUser } = useAuth()
   const { data: stats } = useUserStats()
   const { data: attempts } = useUserAttempts(5)
+  const [isEditing, setIsEditing] = useState(false)
+  const [displayName, setDisplayName] = useState('')
+  const [username, setUsername] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
+  const [error, setError] = useState('')
 
   if (!user) {
     return <div>Loading...</div>
@@ -21,14 +28,138 @@ function ProfilePage() {
   const currentLevel = user.profile?.level || 1
   const nextLevel = currentLevel + 1
 
+  const handleSave = async () => {
+    setError('')
+    setIsSaving(true)
+    
+    try {
+      const updates: any = {}
+      
+      // Only include fields that have changed
+      if (displayName && displayName !== user.profile?.displayName) {
+        updates.displayName = displayName
+      }
+      
+      if (username && username !== user.username) {
+        updates.username = username
+      }
+      
+      if (Object.keys(updates).length === 0) {
+        setIsEditing(false)
+        return
+      }
+      
+      const response = await fetch('/api/profile/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      })
+      
+      const data = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update profile')
+      }
+      
+      // Update local user state
+      updateUser(data.user)
+      setIsEditing(false)
+    } catch (err: any) {
+      setError(err.message || 'Failed to update profile')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+  
+  const handleCancel = () => {
+    setIsEditing(false)
+    setDisplayName('')
+    setUsername('')
+    setError('')
+  }
+
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Profile Header */}
       <div className="card p-8">
         <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">{user.username}</h1>
-            <p className="text-gray-600">{user.email}</p>
+          <div className="flex-1">
+            {isEditing ? (
+              <div className="space-y-4 max-w-md">
+                <div>
+                  <label htmlFor="displayName" className="block text-sm font-medium text-gray-700 mb-1">
+                    Display Name
+                  </label>
+                  <input
+                    id="displayName"
+                    type="text"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    placeholder={user.profile?.displayName || 'Enter display name'}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">This name will be shown on the leaderboard</p>
+                </div>
+                <div>
+                  <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+                    Username
+                  </label>
+                  <input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder={user.username || 'Enter username'}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Letters, numbers, and underscores only</p>
+                </div>
+                {error && (
+                  <p className="text-sm text-red-600">{error}</p>
+                )}
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50"
+                  >
+                    {isSaving ? 'Saving...' : 'Save Changes'}
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    disabled={isSaving}
+                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <h1 className="text-3xl font-bold">
+                    {user.profile?.displayName || user.username || 'Anonymous'}
+                  </h1>
+                  <button
+                    onClick={() => {
+                      setIsEditing(true)
+                      setDisplayName(user.profile?.displayName || '')
+                      setUsername(user.username || '')
+                      setError('')
+                    }}
+                    className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                  >
+                    Edit Profile
+                  </button>
+                </div>
+                {user.profile?.displayName && user.username && (
+                  <p className="text-gray-600 text-sm">@{user.username}</p>
+                )}
+                <p className="text-gray-600">{user.email}</p>
+              </div>
+            )}
             
             <div className="flex items-center gap-6 mt-4">
               <div>
@@ -117,7 +248,7 @@ function ProfilePage() {
                   <div>
                     <p className="font-medium">{attempt.question.title}</p>
                     <p className="text-sm text-gray-600">
-                      {attempt.question.type.replace(/_/g, ' ')} • {attempt.question.difficulty}
+                      {attempt.question.type.replace(/_/g, ' ')}
                     </p>
                   </div>
                 </div>

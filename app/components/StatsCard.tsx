@@ -49,7 +49,7 @@ export function StatsCard() {
 
   // Animate points counter
   useEffect(() => {
-    const targetPoints = user ? (stats?.profile?.totalPoints || 0) : sessionStats.totalPoints
+    const targetPoints = user ? (user.profile?.totalPoints || 0) : sessionStats.totalPoints
     const duration = 1000 // 1 second
     const steps = 30
     const increment = (targetPoints - animatedPoints) / steps
@@ -66,7 +66,7 @@ export function StatsCard() {
     }, duration / steps)
 
     return () => clearInterval(timer)
-  }, [user ? stats?.profile?.totalPoints : sessionStats.totalPoints])
+  }, [user?.profile?.totalPoints, sessionStats.totalPoints])
 
   // Show guest stats card
   if (!user) {
@@ -155,15 +155,13 @@ export function StatsCard() {
   }
 
   // Get current level progress
-  const currentXP = stats.profile?.experience || 0
-  const level = stats.profile?.level || 1
+  const currentXP = user.profile?.experience || 0
+  const level = user.profile?.level || 1
   const nextLevelXP = level * 1000 // Each level requires level * 1000 XP
   const levelProgress = (currentXP % 1000) / 10 // Progress to next level as percentage
 
-  const achievementCount = stats.achievements?.length || 0
-  const todayQuestions = stats.attemptStats?.find((s: any) => 
-    new Date(s.date).toDateString() === new Date().toDateString()
-  )?.totalQuestions || 0
+  const achievementCount = stats.achievementCount || 0
+  const todayQuestions = stats.todayAttempts || 0
 
   return (
     <div className="space-y-6">
@@ -200,10 +198,10 @@ export function StatsCard() {
           <StatItem
             icon={<FireIcon />}
             label="Day Streak"
-            value={stats.profile?.currentStreak || 0}
+            value={user.profile?.currentStreak || 0}
             color="amber"
             large
-            highlight={stats.profile?.currentStreak >= 3}
+            highlight={user.profile?.currentStreak >= 3}
           />
         </div>
 
@@ -214,7 +212,7 @@ export function StatsCard() {
           </div>
           
           <div className="text-center p-3 bg-gradient-to-br from-secondary-50 to-secondary-100 rounded-lg">
-            <div className="text-2xl font-bold gradient-text">{stats.totalQuestions || 0}</div>
+            <div className="text-2xl font-bold gradient-text">{stats.totalAttempts || 0}</div>
             <div className="text-xs text-gray-600">All Time</div>
           </div>
           
@@ -234,19 +232,24 @@ export function StatsCard() {
           <span className="text-sm text-primary-600">{achievementCount} earned</span>
         </div>
         <div className="flex gap-2 flex-wrap">
-          {stats.achievements?.slice(0, 3).map((achievement: any) => (
-            <div
-              key={achievement.id}
-              className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white text-xl animate-float"
-              title={achievement.achievementTemplate.name}
-            >
-              🏆
-            </div>
-          ))}
-          {achievementCount > 3 && (
-            <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 text-sm">
-              +{achievementCount - 3}
-            </div>
+          {achievementCount > 0 ? (
+            <>
+              {[...Array(Math.min(3, achievementCount))].map((_, i) => (
+                <div
+                  key={i}
+                  className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white text-xl animate-float"
+                >
+                  🏆
+                </div>
+              ))}
+              {achievementCount > 3 && (
+                <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 text-sm">
+                  +{achievementCount - 3}
+                </div>
+              )}
+            </>
+          ) : (
+            <p className="text-sm text-gray-500">Complete challenges to earn achievements!</p>
           )}
         </div>
       </div>

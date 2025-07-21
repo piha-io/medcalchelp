@@ -6,7 +6,6 @@ import toast from 'react-hot-toast'
 interface QuestionFilters {
   type?: string
   category?: string
-  difficulty?: string
 }
 
 interface SubmitAnswerData {
@@ -35,7 +34,6 @@ export function useRandomQuestion(filters: QuestionFilters) {
       const params = new URLSearchParams()
       if (filters.type) params.append('type', filters.type)
       if (filters.category) params.append('category', filters.category)
-      if (filters.difficulty) params.append('difficulty', filters.difficulty)
 
       const response = await fetch(`/api/questions/random?${params}`, {
         credentials: 'include',

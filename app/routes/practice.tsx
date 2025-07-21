@@ -16,7 +16,6 @@ export const Route = createFileRoute('/practice')({
 function PracticePage() {
   const { user } = useAuth()
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [difficulty, setDifficulty] = useState<'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT'>('BEGINNER')
   const [showStats, setShowStats] = useState(false)
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null)
   
@@ -37,15 +36,14 @@ function PracticePage() {
     lastResult,
   } = useQuestionFlow()
 
-  // Update filters when category or difficulty changes
+  // Update filters when category changes
   useEffect(() => {
     if (selectedCategory) {
       setFilters({
         type: selectedCategory,
-        difficulty,
       })
     }
-  }, [selectedCategory, difficulty, setFilters])
+  }, [selectedCategory, setFilters])
 
   // Start question timer when question loads
   useEffect(() => {
@@ -80,23 +78,9 @@ function PracticePage() {
     }
   ]
 
-  const difficultyLevels = [
-    { id: 'BEGINNER', label: 'Beginner', color: 'from-green-400 to-green-600', icon: '🌱' },
-    { id: 'INTERMEDIATE', label: 'Intermediate', color: 'from-blue-400 to-blue-600', icon: '🌿' },
-    { id: 'ADVANCED', label: 'Advanced', color: 'from-purple-400 to-purple-600', icon: '🌳' },
-    { id: 'EXPERT', label: 'Expert', color: 'from-red-400 to-red-600', icon: '🔥' }
-  ]
 
   return (
     <div className="space-y-6">
-      {/* Background decoration for category selection */}
-      {!selectedCategory && (
-        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-primary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
-          <div className="absolute bottom-20 right-10 w-72 h-72 bg-secondary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-accent-200 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-float" style={{ animationDelay: '4s' }}></div>
-        </div>
-      )}
 
       {/* Mobile Stats Toggle - Compact */}
       <div className="lg:hidden">
@@ -143,47 +127,7 @@ function PracticePage() {
           
           {!selectedCategory ? (
             <div className="space-y-8">
-              {/* Difficulty Selector with points info */}
-              <div className="space-y-3 sm:space-y-4">
-                <div>
-                  <label className="text-base sm:text-lg font-semibold text-gray-900 flex items-center gap-2" id="difficulty-label">
-                    <span className="w-3 h-3 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-full animate-pulse"></span>
-                    Select Your Skill Level
-                  </label>
-                  <p className="text-xs sm:text-sm text-gray-600 mt-1">Higher skill levels earn more points per question!</p>
-                </div>
-                <div 
-                  className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3"
-                  role="radiogroup"
-                  aria-labelledby="difficulty-label"
-                >
-                  {difficultyLevels.map((level) => (
-                    <button
-                      key={level.id}
-                      onClick={() => setDifficulty(level.id as any)}
-                      className={`relative py-3 px-3 sm:py-4 sm:px-4 rounded-xl border-2 transition-all font-medium transform hover:scale-105 ${
-                        difficulty === level.id
-                          ? 'border-transparent shadow-lg'
-                          : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-md'
-                      }`}
-                      role="radio"
-                      aria-checked={difficulty === level.id}
-                    >
-                      {difficulty === level.id && (
-                        <div className={`absolute inset-0 bg-gradient-to-br ${level.color} rounded-xl opacity-90`}></div>
-                      )}
-                      <div className="relative z-10 flex flex-col items-center gap-1">
-                        <span className="text-xl sm:text-2xl">{level.icon}</span>
-                        <span className={`text-sm sm:text-base ${difficulty === level.id ? 'text-white font-semibold' : 'text-gray-700'}`}>
-                          {level.label}
-                        </span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Category Selection with vibrant cards */}
+              {/* Category Selection */}
               <div>
                 <h2 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-gray-900 flex items-center gap-2">
                   <span className="w-3 h-3 bg-gradient-to-r from-purple-400 to-accent-400 rounded-full animate-pulse"></span>

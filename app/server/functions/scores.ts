@@ -28,6 +28,7 @@ export async function getLeaderboard(timeFrame: 'daily' | 'weekly' | 'monthly' |
             select: {
               level: true,
               currentStreak: true,
+              displayName: true,
             },
           },
         },
@@ -38,6 +39,7 @@ export async function getLeaderboard(timeFrame: 'daily' | 'weekly' | 'monthly' |
   const leaderboard = scores.map((score, index) => ({
     rank: index + 1,
     username: score.user.username,
+    displayName: score.user.profile?.displayName,
     score: score[`${timeFrame === 'all-time' ? 'allTime' : timeFrame}Score`] as number,
     level: score.user.profile?.level || 1,
     streak: score.user.profile?.currentStreak || 0,
