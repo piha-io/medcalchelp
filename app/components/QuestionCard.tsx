@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import type { GeneratedQuestion } from '../lib/questions/generator'
 import { cn } from '../lib/utils/cn'
+import { useAnalytics } from '../lib/analytics/PostHogProvider'
 
 interface QuestionCardProps {
   question: GeneratedQuestion
@@ -20,6 +21,7 @@ export function QuestionCard({
   const [userAnswer, setUserAnswer] = useState('')
   const [showHint, setShowHint] = useState(false)
   const [timeElapsed, setTimeElapsed] = useState(0)
+  const { captureEvent } = useAnalytics()
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -43,6 +45,14 @@ export function QuestionCard({
   const handleUseHint = () => {
     onUseHint()
     setShowHint(true)
+    
+    // Track hint usage
+    captureEvent('hint_used', {
+      questionId: question.id,
+      questionType: question.type,
+      hintNumber: hintsUsed + 1,
+      totalHints: question.hints.length,
+    })
   }
 
   const formatTime = (seconds: number) => {

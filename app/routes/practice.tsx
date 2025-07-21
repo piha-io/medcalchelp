@@ -8,6 +8,7 @@ import { StatsCard } from '../components/StatsCard'
 import { CategoryCard } from '../components/CategoryCard'
 import { categories } from '../lib/categories'
 import { useAuth } from '../lib/auth/AuthContext'
+import { useAnalytics } from '../lib/analytics/PostHogProvider'
 
 export const Route = createFileRoute('/practice')({
   component: PracticePage,
@@ -15,6 +16,7 @@ export const Route = createFileRoute('/practice')({
 
 function PracticePage() {
   const { user } = useAuth()
+  const { captureEvent } = useAnalytics()
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [showStats, setShowStats] = useState(false)
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null)
@@ -138,7 +140,14 @@ function PracticePage() {
                     <CategoryCard
                       key={category.id}
                       category={category}
-                      onClick={() => setSelectedCategory(category.id)}
+                      onClick={() => {
+                        setSelectedCategory(category.id)
+                        captureEvent('category_selected', {
+                          categoryId: category.id,
+                          categoryTitle: category.title,
+                          questionCount: category.questionCount,
+                        })
+                      }}
                       selected={selectedCategory === category.id}
                       delay={`${index * 0.1}s`}
                       compact={true}

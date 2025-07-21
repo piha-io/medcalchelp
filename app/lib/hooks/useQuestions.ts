@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { GeneratedQuestion } from '../questions/generator'
 import toast from 'react-hot-toast'
+import { useAnalytics } from '../analytics/PostHogProvider'
 
 interface QuestionFilters {
   type?: string
@@ -54,6 +55,7 @@ export function useRandomQuestion(filters: QuestionFilters) {
 // Submit answer mutation
 export function useSubmitAnswer() {
   const queryClient = useQueryClient()
+  const { captureEvent } = useAnalytics()
 
   return useMutation({
     mutationFn: async (data: SubmitAnswerData) => {
@@ -70,9 +72,21 @@ export function useSubmitAnswer() {
       }
 
       const result = await response.json()
-      return result as AnswerResult & { isGuest?: boolean }
+      return { ...result, submissionData: data } as AnswerResult & { isGuest?: boolean; submissionData: SubmitAnswerData }
     },
     onSuccess: (data) => {
+      // Track question submission event
+      captureEvent('question_submitted', {
+        questionId: data.submissionData.questionId,
+        isCorrect: data.attempt.isCorrect,
+        pointsEarned: data.attempt.pointsEarned,
+        timeSpent: data.submissionData.timeSpent,
+        hintsUsed: data.submissionData.hintsUsed,
+        userAnswer: data.submissionData.userAnswer,
+        correctAnswer: data.attempt.correctAnswer,
+        isGuest: data.isGuest || false,
+      })
+
       // Update guest session stats if user is not authenticated
       if (data.isGuest) {
         const stored = localStorage.getItem('guestSessionStats')
