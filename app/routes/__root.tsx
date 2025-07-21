@@ -3,6 +3,7 @@ import { Link, Outlet, createRootRouteWithContext } from '@tanstack/react-router
 import type { QueryClient } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from '../lib/auth/AuthContext'
+import { PostHogRouteTracker } from '../lib/analytics/PostHogProvider'
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
@@ -13,6 +14,7 @@ export const Route = createRootRouteWithContext<{
 function RootComponent() {
   return (
     <AuthProvider>
+      <PostHogRouteTracker />
       <div className="min-h-screen bg-gray-50">
         <a href="#main-content" className="skip-link">
           Skip to main content

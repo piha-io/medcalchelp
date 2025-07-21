@@ -1,28 +1,36 @@
 import React, { useEffect } from 'react'
 import posthog from 'posthog-js'
 import { PostHogProvider as PHProvider } from 'posthog-js/react'
-import { useLocation } from '@tanstack/react-router'
 
-// Initialize PostHog
-if (typeof window !== 'undefined' && import.meta.env.VITE_POSTHOG_KEY) {
-  posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
-    api_host: import.meta.env.VITE_POSTHOG_HOST || 'https://app.posthog.com',
-    capture_pageview: false, // We'll manually track page views with TanStack Router
-    capture_pageleave: true,
-    persistence: 'localStorage+cookie',
-    autocapture: {
-      dom_event_allowlist: ['click', 'submit'], // Only capture clicks and form submissions
-      element_allowlist: ['button', 'input', 'a'], // Only capture specific elements
-    },
-    session_recording: {
-      maskAllInputs: false,
-      maskInputOptions: {
-        password: true,
-        email: true,
+// Initialize PostHog only in browser environment
+let posthogInitialized = false
+
+if (typeof window !== 'undefined' && import.meta.env.VITE_POSTHOG_KEY && !posthogInitialized) {
+  try {
+    posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
+      api_host: import.meta.env.VITE_POSTHOG_HOST || 'https://app.posthog.com',
+      capture_pageview: false, // We'll manually track page views with TanStack Router
+      capture_pageleave: true,
+      persistence: 'localStorage+cookie',
+      autocapture: {
+        dom_event_allowlist: ['click', 'submit'], // Only capture clicks and form submissions
+        element_allowlist: ['button', 'input', 'a'], // Only capture specific elements
       },
-      maskTextSelector: '[data-sensitive]', // Add data-sensitive attribute to mask specific text
-    },
-  })
+      session_recording: {
+        maskAllInputs: false,
+        maskInputOptions: {
+          password: true,
+          email: true,
+        },
+        maskTextSelector: '[data-sensitive]', // Add data-sensitive attribute to mask specific text
+      },
+      loaded: (ph) => {
+        posthogInitialized = true
+      }
+    })
+  } catch (error) {
+    console.error('Failed to initialize PostHog:', error)
+  }
 }
 
 interface PostHogProviderProps {
@@ -30,24 +38,51 @@ interface PostHogProviderProps {
 }
 
 export function PostHogProvider({ children }: PostHogProviderProps) {
-  const location = useLocation()
-
-  // Track page views when route changes
-  useEffect(() => {
-    if (typeof window !== 'undefined' && import.meta.env.VITE_POSTHOG_KEY) {
-      posthog.capture('$pageview', {
-        $current_url: window.location.href,
-        $pathname: location.pathname,
-      })
-    }
-  }, [location.pathname])
-
   // If PostHog is not initialized, just render children
   if (!import.meta.env.VITE_POSTHOG_KEY) {
     return <>{children}</>
   }
 
   return <PHProvider client={posthog}>{children}</PHProvider>
+}
+
+// Separate component for route tracking that must be used inside RouterProvider
+export function PostHogRouteTracker() {
+  useEffect(() => {
+    // Track initial page view
+    if (typeof window !== 'undefined' && import.meta.env.VITE_POSTHOG_KEY) {
+      posthog.capture('$pageview', {
+        $current_url: window.location.href,
+        $pathname: window.location.pathname,
+      })
+    }
+
+    // Listen to route changes using browser history
+    const handleRouteChange = () => {
+      if (typeof window !== 'undefined' && import.meta.env.VITE_POSTHOG_KEY) {
+        posthog.capture('$pageview', {
+          $current_url: window.location.href,
+          $pathname: window.location.pathname,
+        })
+      }
+    }
+
+    window.addEventListener('popstate', handleRouteChange)
+    
+    // Also track when history.pushState is called
+    const originalPushState = window.history.pushState
+    window.history.pushState = function(...args) {
+      originalPushState.apply(window.history, args)
+      handleRouteChange()
+    }
+
+    return () => {
+      window.removeEventListener('popstate', handleRouteChange)
+      window.history.pushState = originalPushState
+    }
+  }, [])
+
+  return null
 }
 
 // Export posthog instance for direct usage
