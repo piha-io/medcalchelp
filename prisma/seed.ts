@@ -474,7 +474,6 @@ async function main() {
       data: {
         type: question.type as any,
         category: question.category as any,
-        difficulty: question.difficulty as any,
         title: question.title,
         templateText: question.templateText,
         formulaTemplate: question.formulaTemplate,

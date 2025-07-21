@@ -22,7 +22,6 @@ async function main() {
     {
       type: 'DOSAGE_CALCULATION',
       category: 'ORAL_MEDICATION',
-      difficulty: 'BEGINNER',
       title: 'Basic Tablet Dosage',
       templateText: 'A patient needs {dose}mg of medication. Available tablets are {strength}mg each. How many tablets should be given?',
       formulaTemplate: '{dose} / {strength}',
@@ -44,7 +43,6 @@ async function main() {
     {
       type: 'DOSAGE_CALCULATION',
       category: 'ORAL_MEDICATION',
-      difficulty: 'BEGINNER',
       title: 'Liquid Medication Volume',
       templateText: 'A patient needs {dose}mg of liquid medication. The medication comes as {concentration}mg/{volume}mL. How many mL should be given?',
       formulaTemplate: '{dose} / {concentration} * {volume}',
@@ -70,7 +68,6 @@ async function main() {
     {
       type: 'DOSAGE_CALCULATION',
       category: 'INJECTABLE_MEDICATION',
-      difficulty: 'INTERMEDIATE',
       title: 'Injectable Medication',
       templateText: 'A patient needs {dose}mg of medication IM. The vial contains {concentration}mg/{volume}mL. How many mL should you draw up?',
       formulaTemplate: '{dose} / {concentration} * {volume}',
@@ -94,7 +91,6 @@ async function main() {
     {
       type: 'DOSAGE_CALCULATION',
       category: 'ORAL_MEDICATION',
-      difficulty: 'INTERMEDIATE',
       title: 'Suspension Reconstitution',
       templateText: 'After reconstitution, an antibiotic suspension contains {concentration}mg/{volume}mL. The prescribed dose is {dose}mg every {hours} hours. How many mL per dose?',
       formulaTemplate: '{dose} / {concentration} * {volume}',
@@ -122,7 +118,6 @@ async function main() {
     {
       type: 'DOSAGE_CALCULATION',
       category: 'INJECTABLE_MEDICATION',
-      difficulty: 'ADVANCED',
       title: 'Multi-vial Preparation',
       templateText: 'Prepare {totalDose}mg using vials containing {vialStrength}mg each. After reconstitution with {reconVolume}mL per vial, concentration is {vialStrength}mg/{reconVolume}mL. Total volume to draw?',
       formulaTemplate: '{totalDose} / {vialStrength} * {reconVolume}',
@@ -148,7 +143,6 @@ async function main() {
     {
       type: 'DOSAGE_CALCULATION',
       category: 'ORAL_MEDICATION',
-      difficulty: 'EXPERT',
       title: 'Complex Oral Dosing Schedule',
       templateText: 'A patient needs {totalDaily}mg daily, divided into doses every {interval} hours. Available: {strength}mg tablets. How many tablets per dose? (Round to nearest 0.5)',
       formulaTemplate: '({totalDaily} / (24 / {interval})) / {strength}',
@@ -176,7 +170,6 @@ async function main() {
     {
       type: 'IV_DRIP_RATE',
       category: 'IV_MEDICATION',
-      difficulty: 'BEGINNER',
       title: 'Basic IV Drip Rate',
       templateText: 'Infuse {volume}mL of IV fluid over {hours} hours. Calculate the flow rate in mL/hr.',
       formulaTemplate: '{volume} / {hours}',
@@ -200,7 +193,6 @@ async function main() {
     {
       type: 'IV_DRIP_RATE',
       category: 'IV_MEDICATION',
-      difficulty: 'INTERMEDIATE',
       title: 'IV Drip Rate with Drop Factor',
       templateText: 'Infuse {volume}mL over {hours} hours. The drop factor is {dropFactor} drops/mL. Calculate the drip rate in drops per minute.',
       formulaTemplate: '({volume} * {dropFactor}) / ({hours} * 60)',
@@ -226,7 +218,6 @@ async function main() {
     {
       type: 'IV_DRIP_RATE',
       category: 'IV_MEDICATION',
-      difficulty: 'ADVANCED',
       title: 'Medication Infusion Rate',
       templateText: 'Start a dopamine infusion at {dose} mcg/kg/min for a patient weighing {weight} kg. The concentration is {concentration} mg in {volume} mL. Calculate the infusion rate in mL/hr.',
       formulaTemplate: '({dose} * {weight} * 60) / ({concentration} * 1000 / {volume})',
@@ -255,7 +246,6 @@ async function main() {
     {
       type: 'IV_DRIP_RATE',
       category: 'IV_MEDICATION',
-      difficulty: 'EXPERT',
       title: 'Complex Titrated Infusion',
       templateText: 'Nitroglycerin infusion: Start at {startDose} mcg/min, titrate by {titration} mcg/min q{interval}min. Max: {maxDose} mcg/min. Concentration: {concentration} mg in {volume} mL. What is the maximum infusion rate in mL/hr?',
       formulaTemplate: '({maxDose} * 60) / ({concentration} * 1000 / {volume})',
@@ -289,7 +279,6 @@ async function main() {
     {
       type: 'UNIT_CONVERSION',
       category: 'METRIC_CONVERSION',
-      difficulty: 'BEGINNER',
       title: 'Basic Weight Conversion',
       templateText: 'Convert {value} kg to pounds (lbs). Use 1 kg = 2.2 lbs.',
       formulaTemplate: '{value} * 2.2',
@@ -309,7 +298,6 @@ async function main() {
     {
       type: 'UNIT_CONVERSION',
       category: 'VOLUME_CONVERSION',
-      difficulty: 'BEGINNER',
       title: 'Volume Conversion',
       templateText: 'Convert {value} L to mL.',
       formulaTemplate: '{value} * 1000',
@@ -329,7 +317,6 @@ async function main() {
     {
       type: 'UNIT_CONVERSION',
       category: 'TIME_CONVERSION',
-      difficulty: 'BEGINNER',
       title: 'Time Conversion',
       templateText: 'Convert {value} hours to minutes.',
       formulaTemplate: '{value} * 60',
@@ -351,7 +338,6 @@ async function main() {
     {
       type: 'UNIT_CONVERSION',
       category: 'METRIC_CONVERSION',
-      difficulty: 'INTERMEDIATE',
       title: 'Temperature Conversion',
       templateText: 'Convert {value}°F to Celsius. Use the formula: C = (F - 32) × 5/9',
       formulaTemplate: '({value} - 32) * 5 / 9',
@@ -371,7 +357,6 @@ async function main() {
     {
       type: 'UNIT_CONVERSION',
       category: 'VOLUME_CONVERSION',
-      difficulty: 'INTERMEDIATE',
       title: 'Complex Volume Conversion',
       templateText: 'Convert {value} fluid ounces to milliliters. Use 1 fl oz = 29.5735 mL (round to nearest mL).',
       formulaTemplate: '{value} * 29.5735',
@@ -393,7 +378,6 @@ async function main() {
     {
       type: 'UNIT_CONVERSION',
       category: 'METRIC_CONVERSION',
-      difficulty: 'ADVANCED',
       title: 'Multi-step Weight Conversion',
       templateText: 'A patient weighs {pounds} lbs and {ounces} oz. Convert the total weight to kilograms. (1 lb = 16 oz, 1 kg = 2.2 lbs)',
       formulaTemplate: '({pounds} + {ounces} / 16) / 2.2',
@@ -418,7 +402,6 @@ async function main() {
     {
       type: 'UNIT_CONVERSION',
       category: 'METRIC_CONVERSION',
-      difficulty: 'EXPERT',
       title: 'BSA Calculation',
       templateText: 'Calculate BSA using Mosteller formula: BSA (m²) = √[(height × weight)/3600]. Height: {height} cm, Weight: {weight} kg.',
       formulaTemplate: 'Math.sqrt(({height} * {weight}) / 3600)',
@@ -444,7 +427,6 @@ async function main() {
     {
       type: 'PEDIATRIC_DOSING',
       category: 'WEIGHT_BASED',
-      difficulty: 'BEGINNER',
       title: 'Simple Pediatric Dosing',
       templateText: 'A child weighs {weight} kg. The prescribed dose is {dosePerKg} mg/kg. What is the total dose?',
       formulaTemplate: '{weight} * {dosePerKg}',
@@ -468,7 +450,6 @@ async function main() {
     {
       type: 'PEDIATRIC_DOSING',
       category: 'WEIGHT_BASED',
-      difficulty: 'INTERMEDIATE',
       title: 'Divided Pediatric Doses',
       templateText: 'A child weighs {weight} kg. The prescribed dose is {dosePerKg} mg/kg/day divided into {doses} doses. What is the dose per administration?',
       formulaTemplate: '({weight} * {dosePerKg}) / {doses}',
@@ -494,7 +475,6 @@ async function main() {
     {
       type: 'PEDIATRIC_DOSING',
       category: 'BSA_BASED',
-      difficulty: 'ADVANCED',
       title: 'BSA-Based Pediatric Dosing',
       templateText: 'A child has a BSA of {bsa} m². The recommended dose is {dosePerBSA} mg/m². What is the total dose?',
       formulaTemplate: '{bsa} * {dosePerBSA}',
@@ -518,7 +498,6 @@ async function main() {
     {
       type: 'PEDIATRIC_DOSING',
       category: 'BSA_BASED',
-      difficulty: 'EXPERT',
       title: 'Complex BSA Dosing',
       templateText: 'A child has a BSA of {bsa} m². The recommended dose is {dosePerBSA} mg/m²/day divided into {doses} doses. What is each dose?',
       formulaTemplate: '({bsa} * {dosePerBSA}) / {doses}',
@@ -545,7 +524,6 @@ async function main() {
     {
       type: 'CONCENTRATION',
       category: 'IV_MEDICATION',
-      difficulty: 'BEGINNER',
       title: 'Basic Concentration Calculation',
       templateText: 'You have {amount}mg of medication in {volume}mL of solution. What is the concentration in mg/mL?',
       formulaTemplate: '{amount} / {volume}',
@@ -569,7 +547,6 @@ async function main() {
     {
       type: 'CONCENTRATION',
       category: 'IV_MEDICATION',
-      difficulty: 'INTERMEDIATE',
       title: 'Solution Concentration',
       templateText: 'You have {volume1}mL of a {percent1}% solution. How many mL of sterile water should you add to make it a {percent2}% solution?',
       formulaTemplate: '({volume1} * {percent1} / {percent2}) - {volume1}',
@@ -595,7 +572,6 @@ async function main() {
     {
       type: 'CONCENTRATION',
       category: 'IV_MEDICATION',
-      difficulty: 'ADVANCED',
       title: 'Concentration After Dilution',
       templateText: 'You have {volume1}mL of {conc1}mg/mL solution. You add {volume2}mL of diluent. What is the new concentration in mg/mL?',
       formulaTemplate: '({volume1} * {conc1}) / ({volume1} + {volume2})',
@@ -622,7 +598,6 @@ async function main() {
     {
       type: 'CONCENTRATION',
       category: 'IV_MEDICATION',
-      difficulty: 'EXPERT',
       title: 'Complex Admixture Calculation',
       templateText: 'Mix {volume1}mL of {conc1}% solution with {volume2}mL of {conc2}% solution. What is the final concentration percentage?',
       formulaTemplate: '(({volume1} * {conc1}) + ({volume2} * {conc2})) / ({volume1} + {volume2})',
@@ -652,7 +627,6 @@ async function main() {
     {
       type: 'DILUTION',
       category: 'IV_MEDICATION',
-      difficulty: 'BEGINNER',
       title: 'Basic Dilution',
       templateText: 'Dilute {volume}mL of medication with {diluent}mL of normal saline. What is the total volume?',
       formulaTemplate: '{volume} + {diluent}',
@@ -676,7 +650,6 @@ async function main() {
     {
       type: 'DILUTION',
       category: 'IV_MEDICATION',
-      difficulty: 'INTERMEDIATE',
       title: 'Dilution Ratio',
       templateText: 'Prepare a 1:{ratio} dilution using {volume}mL of concentrate. How much diluent is needed?',
       formulaTemplate: '{volume} * ({ratio} - 1)',
@@ -700,7 +673,6 @@ async function main() {
     {
       type: 'DILUTION',
       category: 'IV_MEDICATION',
-      difficulty: 'ADVANCED',
       title: 'Stock Solution Dilution',
       templateText: 'You need to prepare {dose}mg of medication in {finalVolume}mL. The stock concentration is {stockConc}mg/mL. How many mL of the stock solution do you need?',
       formulaTemplate: '{dose} / {stockConc}',
@@ -726,7 +698,6 @@ async function main() {
     {
       type: 'DILUTION',
       category: 'IV_MEDICATION',
-      difficulty: 'EXPERT',
       title: 'Serial Dilution',
       templateText: 'Prepare a 1:{finalRatio} dilution from a {stockConc}mg/mL stock solution using serial 1:{stepRatio} dilutions. How many dilution steps are needed?',
       formulaTemplate: 'Math.log({finalRatio}) / Math.log({stepRatio})',
@@ -753,7 +724,6 @@ async function main() {
     {
       type: 'DIMENSIONAL_ANALYSIS',
       category: 'DIMENSIONAL_ANALYSIS',
-      difficulty: 'BEGINNER',
       title: 'Basic Unit Conversion with Dimensional Analysis',
       templateText: 'Convert {value} mg to g using dimensional analysis. Show your work using the railroad track method.',
       formulaTemplate: '{value} / 1000',
@@ -777,7 +747,6 @@ async function main() {
     {
       type: 'DIMENSIONAL_ANALYSIS',
       category: 'DIMENSIONAL_ANALYSIS',
-      difficulty: 'BEGINNER',
       title: 'Volume Conversion with Dimensional Analysis',
       templateText: 'Convert {value} oz to mL using dimensional analysis. Use the conversion: 1 oz = 30 mL.',
       formulaTemplate: '{value} * 30',
@@ -801,7 +770,6 @@ async function main() {
     {
       type: 'DIMENSIONAL_ANALYSIS',
       category: 'DIMENSIONAL_ANALYSIS',
-      difficulty: 'INTERMEDIATE',
       title: 'Dosage Calculation with Dimensional Analysis',
       templateText: 'Order: {dose} mg. Available: {concentration} mg per {volume} mL. How many mL needed? Use dimensional analysis.',
       formulaTemplate: '{dose} / {concentration} * {volume}',
@@ -827,7 +795,6 @@ async function main() {
     {
       type: 'DIMENSIONAL_ANALYSIS',
       category: 'DIMENSIONAL_ANALYSIS',
-      difficulty: 'INTERMEDIATE',
       title: 'Weight-Based Dosing with Unit Conversion',
       templateText: 'Order: {dosePerKg} mg/kg. Patient weighs {weight} lbs. How many mg per dose? Use dimensional analysis with 1 kg = 2.2 lbs.',
       formulaTemplate: '{weight} / 2.2 * {dosePerKg}',
@@ -853,7 +820,6 @@ async function main() {
     {
       type: 'DIMENSIONAL_ANALYSIS',
       category: 'DIMENSIONAL_ANALYSIS',
-      difficulty: 'ADVANCED',
       title: 'IV Rate Calculation with Multiple Conversions',
       templateText: 'Order: {dose} mcg/min. Available: {concentration} mg in {volume} mL. Calculate mL/hr using dimensional analysis.',
       formulaTemplate: '({dose} * 60) / ({concentration} * 1000 / {volume})',
@@ -882,7 +848,6 @@ async function main() {
     {
       type: 'DIMENSIONAL_ANALYSIS',
       category: 'DIMENSIONAL_ANALYSIS',
-      difficulty: 'EXPERT',
       title: 'Complex Multi-Step Dimensional Analysis',
       templateText: 'Patient needs {dose} mg/kg/day divided q{hours}h. Patient weighs {weight} lbs. Available: {strength} mg/{tabletVolume} tablets. How many tablets per dose?',
       formulaTemplate: '(({weight} / 2.2 * {dose}) / (24 / {hours})) / {strength} * {tabletVolume}',
