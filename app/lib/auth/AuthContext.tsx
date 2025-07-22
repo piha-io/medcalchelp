@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
-import { useAnalytics } from '../analytics/PostHogProvider'
+import { useAnalytics } from '../analytics/analytics'
 
 interface User {
   id: string
@@ -32,7 +32,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const { identifyUser, resetUser, captureEvent } = useAnalytics()
+  const { identify, reset, track } = useAnalytics()
 
   // Use React Query to fetch and cache user data
   const { data: user, isLoading, refetch } = useQuery({
@@ -53,29 +53,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
   })
 
-  // Identify user in PostHog when user data changes
+  // Identify user in analytics when user data changes
   useEffect(() => {
     if (user) {
-      identifyUser(user.id, {
+      identify(user.id, {
         email: user.email,
         username: user.username,
         displayName: user.profile?.displayName,
         totalPoints: user.profile?.totalPoints,
         level: user.profile?.level,
+        currentStreak: user.profile?.currentStreak,
+        longestStreak: user.profile?.longestStreak,
+        experience: user.profile?.experience,
       })
     } else {
-      resetUser()
+      reset()
     }
-  }, [user, identifyUser, resetUser])
+  }, [user, identify, reset])
 
   const login = async (userData: User) => {
     // Update the query cache with the new user data
     queryClient.setQueryData(['auth', 'me'], userData)
     
-    // Track login event
-    captureEvent('user_logged_in', {
+    // Track login event with enhanced data
+    track('LOGIN', {
       method: 'email',
-      userId: userData.id,
+      user_id: userData.id,
+      user_level: userData.profile?.level,
+      user_points: userData.profile?.totalPoints,
     })
   }
 
@@ -88,8 +93,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Track logout event before clearing user
       if (user) {
-        captureEvent('user_logged_out', {
-          userId: user.id,
+        track('logout', {
+          user_id: user.id,
+          session_duration: Date.now() - (window.sessionStart || Date.now()),
+          user_level: user.profile?.level,
+          user_points: user.profile?.totalPoints,
         })
       }
 

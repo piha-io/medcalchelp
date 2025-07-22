@@ -4,6 +4,8 @@ import type { QueryClient } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from '../lib/auth/AuthContext'
 import { PostHogRouteTracker } from '../lib/analytics/PostHogProvider'
+import { GA4Tracker } from '../lib/analytics/GA4Tracker'
+import { GA4Debugger } from '../lib/analytics/GA4Debugger'
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
@@ -15,6 +17,7 @@ function RootComponent() {
   return (
     <AuthProvider>
       <PostHogRouteTracker />
+      <GA4Tracker />
       <div className="min-h-screen bg-gray-50">
         <a href="#main-content" className="skip-link">
           Skip to main content
@@ -30,6 +33,7 @@ function RootComponent() {
             duration: 4000,
           }}
         />
+        <GA4Debugger />
       </div>
     </AuthProvider>
   )

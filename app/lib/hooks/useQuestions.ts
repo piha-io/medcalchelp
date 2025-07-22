@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { GeneratedQuestion } from '../questions/generator'
 import toast from 'react-hot-toast'
-import { useAnalytics } from '../analytics/PostHogProvider'
+import { useAnalytics } from '../analytics/analytics'
 
 interface QuestionFilters {
   type?: string
@@ -55,7 +55,7 @@ export function useRandomQuestion(filters: QuestionFilters) {
 // Submit answer mutation
 export function useSubmitAnswer() {
   const queryClient = useQueryClient()
-  const { captureEvent } = useAnalytics()
+  const { trackQuestionSubmit } = useAnalytics()
 
   return useMutation({
     mutationFn: async (data: SubmitAnswerData) => {
@@ -75,16 +75,16 @@ export function useSubmitAnswer() {
       return { ...result, submissionData: data } as AnswerResult & { isGuest?: boolean; submissionData: SubmitAnswerData }
     },
     onSuccess: (data) => {
-      // Track question submission event
-      captureEvent('question_submitted', {
-        questionId: data.submissionData.questionId,
-        isCorrect: data.attempt.isCorrect,
-        pointsEarned: data.attempt.pointsEarned,
-        timeSpent: data.submissionData.timeSpent,
-        hintsUsed: data.submissionData.hintsUsed,
-        userAnswer: data.submissionData.userAnswer,
-        correctAnswer: data.attempt.correctAnswer,
-        isGuest: data.isGuest || false,
+      // Track question submission with enhanced analytics
+      trackQuestionSubmit({
+        question_id: data.submissionData.questionId,
+        is_correct: data.attempt.isCorrect,
+        points_earned: data.attempt.pointsEarned,
+        time_to_answer: data.submissionData.timeSpent * 1000, // Convert to milliseconds
+        hints_used: data.submissionData.hintsUsed,
+        answer_given: data.submissionData.userAnswer,
+        correct_answer: data.attempt.correctAnswer,
+        user_type: data.isGuest ? 'guest' : 'authenticated',
       })
 
       // Update guest session stats if user is not authenticated

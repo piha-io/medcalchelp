@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import type { GeneratedQuestion } from '../lib/questions/generator'
 import { cn } from '../lib/utils/cn'
-import { useAnalytics } from '../lib/analytics/PostHogProvider'
+import { useAnalytics } from '../lib/analytics/analytics'
 
 interface QuestionCardProps {
   question: GeneratedQuestion
@@ -21,15 +21,22 @@ export function QuestionCard({
   const [userAnswer, setUserAnswer] = useState('')
   const [showHint, setShowHint] = useState(false)
   const [timeElapsed, setTimeElapsed] = useState(0)
-  const { captureEvent } = useAnalytics()
+  const { trackHintUsed, trackQuestionView } = useAnalytics()
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeElapsed(prev => prev + 1)
     }, 1000)
 
+    // Track question view when component mounts
+    trackQuestionView({
+      question_id: question.id,
+      question_type: question.type,
+      category: question.category,
+    })
+
     return () => clearInterval(timer)
-  }, [question.id])
+  }, [question.id, trackQuestionView])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -46,12 +53,14 @@ export function QuestionCard({
     onUseHint()
     setShowHint(true)
     
-    // Track hint usage
-    captureEvent('hint_used', {
-      questionId: question.id,
-      questionType: question.type,
-      hintNumber: hintsUsed + 1,
-      totalHints: question.hints.length,
+    // Track hint usage with enhanced data
+    trackHintUsed({
+      question_id: question.id,
+      question_type: question.type,
+      category: question.category,
+      hints_used: hintsUsed + 1,
+      total_hints_available: question.hints.length,
+      time_to_hint: timeElapsed,
     })
   }
 
