@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import type { GeneratedQuestion } from '../lib/questions/generator'
 import { cn } from '../lib/utils/cn'
 import { useAnalytics } from '../lib/analytics/analytics'
+import { useInputTracking } from '../lib/analytics/useClickTracking'
 
 interface QuestionCardProps {
   question: GeneratedQuestion
@@ -21,7 +22,11 @@ export function QuestionCard({
   const [userAnswer, setUserAnswer] = useState('')
   const [showHint, setShowHint] = useState(false)
   const [timeElapsed, setTimeElapsed] = useState(0)
-  const { trackHintUsed, trackQuestionView } = useAnalytics()
+  const { trackHintUsed, trackQuestionView, track } = useAnalytics()
+  const inputRef = useRef<HTMLInputElement>(null)
+  
+  // Track input interactions
+  useInputTracking(inputRef, `answer_input_${question.category}`)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -46,12 +51,27 @@ export function QuestionCard({
       return
     }
 
+    // Track submit button click
+    track('button_click', {
+      button_name: 'submit_answer',
+      button_location: 'question_card',
+      time_to_submit: timeElapsed,
+      answer_length: userAnswer.length,
+    })
+
     await onSubmit(answer)
   }
 
   const handleUseHint = () => {
     onUseHint()
     setShowHint(true)
+    
+    // Track hint button click
+    track('button_click', {
+      button_name: 'use_hint',
+      button_location: 'question_card',
+      hints_remaining: question.hints.length - hintsUsed - 1,
+    })
     
     // Track hint usage with enhanced data
     trackHintUsed({
@@ -227,6 +247,7 @@ export function QuestionCard({
           <div className="relative group">
             <div className={`absolute inset-0 bg-gradient-to-r ${colors.gradient} rounded-lg opacity-0 group-focus-within:opacity-10 transition-opacity`}></div>
             <input
+              ref={inputRef}
               id="answer"
               type="number"
               step="any"

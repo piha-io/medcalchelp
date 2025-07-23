@@ -17,7 +17,7 @@ export const Route = createFileRoute('/practice')({
 
 function PracticePage() {
   const { user } = useAuth()
-  const { trackCategorySelected } = useAnalytics()
+  const { trackCategorySelected, track } = useAnalytics()
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [showStats, setShowStats] = useState(false)
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null)
@@ -96,7 +96,15 @@ function PracticePage() {
       {/* Mobile Stats Toggle - Compact */}
       <div className="lg:hidden">
         <button
-          onClick={() => setShowStats(!showStats)}
+          onClick={() => {
+            track('button_click', {
+              button_name: 'mobile_stats_toggle',
+              button_location: 'practice_page',
+              action: showStats ? 'hide' : 'show',
+              user_points: user?.profile?.totalPoints || 0,
+            })
+            setShowStats(!showStats)
+          }}
           className="w-full flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border border-gray-200"
           aria-expanded={showStats}
           aria-controls="mobile-stats"

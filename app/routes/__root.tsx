@@ -6,6 +6,8 @@ import { AuthProvider, useAuth } from '../lib/auth/AuthContext'
 import { PostHogRouteTracker } from '../lib/analytics/PostHogProvider'
 import { GA4Tracker } from '../lib/analytics/GA4Tracker'
 import { GA4Debugger } from '../lib/analytics/GA4Debugger'
+import { useNavigationTracking } from '../lib/analytics/useClickTracking'
+import { useAnalytics } from '../lib/analytics/analytics'
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
@@ -14,6 +16,9 @@ export const Route = createRootRouteWithContext<{
 })
 
 function RootComponent() {
+  // Track all navigation link clicks
+  useNavigationTracking()
+  
   return (
     <AuthProvider>
       <PostHogRouteTracker />
@@ -42,6 +47,7 @@ function RootComponent() {
 function Header() {
   const { user, logout } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
+  const { track } = useAnalytics()
   
   return (
     <header className="bg-white shadow-sm border-b sticky top-0 z-50">
@@ -87,7 +93,14 @@ function Header() {
                   </span>
                 </Link>
                 <button
-                  onClick={logout}
+                  onClick={() => {
+                    track('button_click', {
+                      button_name: 'logout',
+                      button_location: 'header',
+                      user_points: user.profile?.totalPoints || 0,
+                    })
+                    logout()
+                  }}
                   className="btn btn-secondary btn-sm"
                   aria-label="Logout"
                 >
@@ -106,7 +119,14 @@ function Header() {
 
           {/* Mobile menu button */}
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={() => {
+              track('button_click', {
+                button_name: 'mobile_menu_toggle',
+                button_location: 'header',
+                action: mobileMenuOpen ? 'close' : 'open',
+              })
+              setMobileMenuOpen(!mobileMenuOpen)
+            }}
             className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 focus-ring"
             aria-expanded={mobileMenuOpen}
             aria-label="Toggle navigation menu"
