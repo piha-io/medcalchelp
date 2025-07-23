@@ -8,6 +8,14 @@ import {
   getUserStats 
 } from './functions/questions'
 import { getLeaderboard, getUserRank } from './functions/scores'
+import { 
+  getBlogPosts, 
+  getBlogPostBySlug, 
+  getBlogCategories, 
+  getBlogTags,
+  getRecentPosts,
+  getPopularPosts
+} from './functions/blog'
 import { verifyToken } from '../lib/auth/jwt'
 
 export async function handleApiRequest(req: IncomingMessage, res: ServerResponse) {
@@ -239,6 +247,85 @@ export async function handleApiRequest(req: IncomingMessage, res: ServerResponse
       res.end(JSON.stringify({ achievements: currentUser.achievements }))
       return
     }
+
+    // Blog API Routes
+    // GET /api/blog/posts
+    if (pathname === '/api/blog/posts' && req.method === 'GET') {
+      const query = Object.fromEntries(url.searchParams)
+      const result = await getBlogPosts({
+        page: query.page ? parseInt(query.page) : undefined,
+        limit: query.limit ? parseInt(query.limit) : undefined,
+        category: query.category,
+        tag: query.tag,
+        search: query.search,
+      })
+
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify(result))
+      return
+    }
+
+    // GET /api/blog/posts/:slug
+    const blogPostMatch = pathname.match(/^\/api\/blog\/posts\/([^\/]+)$/)
+    if (blogPostMatch && req.method === 'GET') {
+      const slug = blogPostMatch[1]
+      const result = await getBlogPostBySlug(slug)
+      
+      if (!result) {
+        res.statusCode = 404
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify({ error: 'Post not found' }))
+        return
+      }
+
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify(result))
+      return
+    }
+
+    // GET /api/blog/categories
+    if (pathname === '/api/blog/categories' && req.method === 'GET') {
+      const categories = await getBlogCategories()
+      
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ categories }))
+      return
+    }
+
+    // GET /api/blog/tags
+    if (pathname === '/api/blog/tags' && req.method === 'GET') {
+      const tags = await getBlogTags()
+      
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ tags }))
+      return
+    }
+
+    // GET /api/blog/recent
+    if (pathname === '/api/blog/recent' && req.method === 'GET') {
+      const posts = await getRecentPosts()
+      
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ posts }))
+      return
+    }
+
+    // GET /api/blog/popular
+    if (pathname === '/api/blog/popular' && req.method === 'GET') {
+      const posts = await getPopularPosts()
+      
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ posts }))
+      return
+    }
+
+
 
     // 404 for unknown routes
     res.statusCode = 404

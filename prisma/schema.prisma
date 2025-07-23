@@ -189,3 +189,69 @@ enum AchievementType {
   CATEGORY_MASTER
   ALL_CATEGORIES
 }
+
+// Blog Models
+model BlogPost {
+  id              String          @id @default(cuid())
+  slug            String          @unique
+  title           String
+  excerpt         String          @db.Text
+  content         String          @db.Text
+  featuredImage   String?
+  
+  
+  categoryId      String
+  category        BlogCategory    @relation(fields: [categoryId], references: [id])
+  
+  tags            BlogTag[]
+  
+  publishedAt     DateTime?
+  isDraft         Boolean         @default(true)
+  viewCount       Int             @default(0)
+  readingTime     Int             // in minutes
+  
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String[]
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  @@index([slug])
+  @@index([publishedAt])
+  @@index([categoryId])
+  @@index([isDraft, publishedAt])
+}
+
+model BlogCategory {
+  id              String          @id @default(cuid())
+  name            String          @unique
+  slug            String          @unique
+  description     String?
+  
+  posts           BlogPost[]
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  @@index([slug])
+}
+
+model BlogTag {
+  id              String          @id @default(cuid())
+  name            String          @unique
+  slug            String          @unique
+  
+  posts           BlogPost[]
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  @@index([slug])
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
