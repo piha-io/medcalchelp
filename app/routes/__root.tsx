@@ -62,12 +62,12 @@ function Header() {
             >
               Practice
             </Link>
-            {/* <Link
+            <Link
               to="/guides"
               className="text-gray-600 hover:text-primary-600 font-medium transition-colors focus-ring rounded-md px-2 -mx-2"
             >
               Guides
-            </Link> */}
+            </Link>
             <Link
               to="/leaderboard"
               className="text-gray-600 hover:text-primary-600 font-medium transition-colors focus-ring rounded-md px-2 -mx-2"
@@ -150,13 +150,13 @@ function Header() {
               >
                 Practice
               </Link>
-              {/* <Link
+              <Link
                 to="/guides"
                 className="text-gray-600 hover:text-primary-600 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 focus-ring"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Guides
-              </Link> */}
+              </Link>
               <Link
                 to="/leaderboard"
                 className="text-gray-600 hover:text-primary-600 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 focus-ring"
