@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react'
 import { remark } from 'remark'
 import html from 'remark-html'
 import gfm from 'remark-gfm'
+import 'katex/dist/katex.min.css'
+import { InlineMath, BlockMath } from 'react-katex'
 
 interface GuideContentProps {
   content: string
@@ -19,9 +21,17 @@ export function GuideContent({ content }: GuideContentProps) {
         .process(content)
 
       if (contentRef.current) {
-        contentRef.current.innerHTML = result.toString()
+        let processedHtml = result.toString()
         
-        // Apply math highlighting after HTML is rendered
+        // Process KaTeX math expressions
+        processedHtml = processKaTeXMath(processedHtml)
+        
+        contentRef.current.innerHTML = processedHtml
+        
+        // Render KaTeX expressions
+        renderKaTeXMath(contentRef.current)
+        
+        // Apply remaining math highlighting for non-LaTeX expressions
         highlightMathInContent(contentRef.current)
       }
     }
@@ -63,16 +73,109 @@ export function GuideContent({ content }: GuideContentProps) {
   }
 
   const isMathExpression = (text: string): boolean => {
+    // Be much more conservative - only highlight very specific patterns
+    // that KaTeX won't handle automatically
     const mathPatterns = [
-      /[\+\-\*\/\=]/,                      // Basic operators
-      /\d+\.?\d*/,                         // Numbers
-      /\b(mg|mL|kg|hr|min|units?|mcg|g|L)\b/i,  // Medical units
-      /×|÷|→/,                             // Special math symbols
-      /\^/,                                // Exponents
-      /\(/,                                // Parentheses
+      // Only highlight isolated numbers with specific medical units
+      // if they're not already processed by KaTeX
+      /^\d+\s*(mg|mL|kg|hr|min|units?|mcg|g|L|gtt)$/i,
+      // Simple ratios without operators
+      /^\d+:\d+$/,
     ]
     
+    // Don't highlight if it contains LaTeX markup or complex expressions
+    if (text.includes('$$') || text.includes('\\') || text.includes('×') || text.includes('÷')) {
+      return false
+    }
+    
     return mathPatterns.some(pattern => pattern.test(text))
+  }
+
+  const processKaTeXMath = (html: string): string => {
+    // Convert mathematical expressions to KaTeX LaTeX format
+    let processed = html
+    
+    // Replace common mathematical expressions with LaTeX
+    processed = processed
+      // Formulas like D/H × Q (most common in guides)
+      .replace(/\b([A-Z])\/([A-Z])\s*×\s*([A-Z])\b/g, '$$\\frac{$1}{$2} \\times $3$$')
+      .replace(/\b([A-Z])\/([A-Z])\s*\*\s*([A-Z])\b/g, '$$\\frac{$1}{$2} \\times $3$$')
+      
+      // Basic arithmetic with equals (like 500/250 × 1 = 2)
+      .replace(/(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)\s*×\s*(\d+(?:\.\d+)?)\s*=\s*(\d+(?:\.\d+)?)/g, 
+        '$$\\frac{$1}{$2} \\times $3 = $4$$')
+      .replace(/(\d+(?:\.\d+)?)\s*÷\s*(\d+(?:\.\d+)?)\s*×\s*(\d+(?:\.\d+)?)\s*=\s*(\d+(?:\.\d+)?)/g, 
+        '$$\\frac{$1}{$2} \\times $3 = $4$$')
+      
+      // More complex formulas in parentheses
+      .replace(/\((\d+(?:\.\d+)?)\s*×\s*(\d+(?:\.\d+)?)\)\s*÷\s*(\d+(?:\.\d+)?)/g, 
+        '$$\\frac{($1 \\times $2)}{$3}$$')
+      
+      // Flow rate formulas like (Volume × Drop factor) ÷ Time
+      .replace(/\(([^)]+)\s*×\s*([^)]+)\)\s*÷\s*([^)]+)/g, 
+        '$$\\frac{($1 \\times $2)}{$3}$$')
+      
+      // Simple division fractions
+      .replace(/(\d+(?:\.\d+)?)\s*÷\s*(\d+(?:\.\d+)?)/g, '$$\\frac{$1}{$2}$$')
+      
+      // gtt/min format
+      .replace(/(\d+(?:\.\d+)?)\s*gtt\/min/gi, '$$1\\text{ gtt/min}$$')
+      .replace(/(\d+(?:\.\d+)?)\s*mL\/hr/gi, '$$1\\text{ mL/hr}$$')
+      
+      // Basic multiplication and division symbols
+      .replace(/(\d+(?:\.\d+)?)\s*×\s*(\d+(?:\.\d+)?)/g, '$$1 \\times $2$$')
+      .replace(/(\d+(?:\.\d+)?)\s*÷\s*(\d+(?:\.\d+)?)/g, '$$1 \\div $2$$')
+    
+    return processed
+  }
+
+  const renderKaTeXMath = (container: HTMLElement) => {
+    // Import KaTeX dynamically to avoid SSR issues
+    import('katex').then((katex) => {
+      // Find all math expressions marked with $$...$$
+      const mathExpressions = container.innerHTML.match(/\$\$([^$]+)\$\$/g)
+      
+      if (mathExpressions) {
+        mathExpressions.forEach((mathExpr) => {
+          const latex = mathExpr.replace(/\$\$/g, '')
+          try {
+            const rendered = katex.default.renderToString(latex, {
+              displayMode: true,
+              throwOnError: false,
+              errorColor: '#cc0000',
+              strict: false
+            })
+            container.innerHTML = container.innerHTML.replace(mathExpr, rendered)
+          } catch (error) {
+            console.warn('KaTeX rendering error:', error)
+            // Fallback to original text without $$
+            container.innerHTML = container.innerHTML.replace(mathExpr, latex)
+          }
+        })
+      }
+      
+      // Handle inline math with $...$
+      const inlineMath = container.innerHTML.match(/\$([^$]+)\$/g)
+      if (inlineMath) {
+        inlineMath.forEach((mathExpr) => {
+          const latex = mathExpr.replace(/\$/g, '')
+          try {
+            const rendered = katex.default.renderToString(latex, {
+              displayMode: false,
+              throwOnError: false,
+              errorColor: '#cc0000',
+              strict: false
+            })
+            container.innerHTML = container.innerHTML.replace(mathExpr, rendered)
+          } catch (error) {
+            console.warn('KaTeX rendering error:', error)
+            container.innerHTML = container.innerHTML.replace(mathExpr, latex)
+          }
+        })
+      }
+    }).catch((error) => {
+      console.warn('Failed to load KaTeX:', error)
+    })
   }
 
   const highlightMathExpression = (expr: string): string => {
