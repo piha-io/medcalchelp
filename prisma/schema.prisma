@@ -190,23 +190,28 @@ enum AchievementType {
   ALL_CATEGORIES
 }
 
-// Blog Models
-model BlogPost {
+// Educational Guide Models
+model Guide {
   id              String          @id @default(cuid())
   slug            String          @unique
   title           String
-  excerpt         String          @db.Text
+  description     String          @db.Text  // Brief description of what the guide covers
   content         String          @db.Text
   featuredImage   String?
   
+  // Educational metadata
+  difficulty      Difficulty      @default(BEGINNER)
+  prerequisites   String[]        // Array of guide slugs that should be completed first
+  learningOutcomes String[]       // What students will learn
+  practiceProblems Json?          // Embedded practice problems with solutions
+  order           Int             @default(0) // For ordering guides within a category
   
   categoryId      String
-  category        BlogCategory    @relation(fields: [categoryId], references: [id])
+  category        GuideCategory   @relation(fields: [categoryId], references: [id])
   
-  tags            BlogTag[]
+  concepts        GuideConcept[]  // Key concepts covered
   
-  publishedAt     DateTime?
-  isDraft         Boolean         @default(true)
+  isPublished     Boolean         @default(false)
   viewCount       Int             @default(0)
   readingTime     Int             // in minutes
   
@@ -218,18 +223,35 @@ model BlogPost {
   updatedAt       DateTime        @updatedAt
   
   @@index([slug])
-  @@index([publishedAt])
   @@index([categoryId])
-  @@index([isDraft, publishedAt])
+  @@index([difficulty])
+  @@index([isPublished])
 }
 
-model BlogCategory {
+model GuideCategory {
+  id              String          @id @default(cuid())
+  name            String          @unique
+  slug            String          @unique
+  description     String?
+  icon            String?         // Icon name for UI
+  order           Int             @default(0) // For ordering categories
+  
+  guides          Guide[]
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  @@index([slug])
+  @@index([order])
+}
+
+model GuideConcept {
   id              String          @id @default(cuid())
   name            String          @unique
   slug            String          @unique
   description     String?
   
-  posts           BlogPost[]
+  guides          Guide[]
   
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
@@ -237,21 +259,10 @@ model BlogCategory {
   @@index([slug])
 }
 
-model BlogTag {
-  id              String          @id @default(cuid())
-  name            String          @unique
-  slug            String          @unique
-  
-  posts           BlogPost[]
-  
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  
-  @@index([slug])
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
 }
 
-enum BlogStatus {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
-}

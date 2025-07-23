@@ -1,10 +1,28 @@
 ---
 title: "Body Surface Area (BSA) Calculations in Healthcare"
-excerpt: "Understanding BSA calculations using different formulas and their applications in chemotherapy and pediatric dosing."
+description: "Understanding BSA calculations using different formulas and their applications in chemotherapy and pediatric dosing."
 category: "Dosage Calculations"
-tags: ["bsa", "chemotherapy", "pediatric", "advanced"]
+difficulty: "INTERMEDIATE"
+concepts: ["BSA", "chemotherapy dosing", "pediatric dosing", "Mosteller formula", "dose capping"]
+prerequisites: ["Basic Dosage Calculations", "Unit Conversions"]
+learningOutcomes:
+  - "Calculate BSA using the Mosteller formula"
+  - "Apply BSA calculations to chemotherapy dosing"
+  - "Understand when and why BSA-based dosing is used"
+  - "Recognize dose capping protocols for safety"
+  - "Compare different BSA formulas and their applications"
+practiceProblems:
+  - question: "Calculate BSA for patient: 170 cm, 70 kg"
+    answer: "BSA = 1.82 m²"
+  - question: "Calculate carboplatin dose: 400 mg/m² for BSA 1.82 m²"
+    answer: "Dose = 728 mg"
+  - question: "Calculate doxorubicin dose: 60 mg/m² for patient 165 cm, 65 kg"
+    answer: "BSA = 1.73 m², Dose = 103.8 mg"
+order: 3
 featuredImage: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800"
 isDraft: true
+metaDescription: "Learn to calculate Body Surface Area (BSA) for medication dosing. Essential for chemotherapy and pediatric calculations with step-by-step examples."
+metaKeywords: ["BSA calculations", "body surface area", "chemotherapy dosing", "Mosteller formula", "pediatric dosing"]
 ---
 
 # Body Surface Area (BSA) Calculations in Healthcare

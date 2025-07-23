@@ -9,13 +9,13 @@ import {
 } from './functions/questions'
 import { getLeaderboard, getUserRank } from './functions/scores'
 import { 
-  getBlogPosts, 
-  getBlogPostBySlug, 
-  getBlogCategories, 
-  getBlogTags,
-  getRecentPosts,
-  getPopularPosts
-} from './functions/blog'
+  getGuides, 
+  getGuideBySlug, 
+  getGuideCategories, 
+  getGuideConcepts,
+  getRecentGuides,
+  getPopularGuides
+} from './functions/guides'
 import { verifyToken } from '../lib/auth/jwt'
 
 export async function handleApiRequest(req: IncomingMessage, res: ServerResponse) {
@@ -248,15 +248,16 @@ export async function handleApiRequest(req: IncomingMessage, res: ServerResponse
       return
     }
 
-    // Blog API Routes
-    // GET /api/blog/posts
-    if (pathname === '/api/blog/posts' && req.method === 'GET') {
+    // Guide API Routes
+    // GET /api/guides
+    if (pathname === '/api/guides' && req.method === 'GET') {
       const query = Object.fromEntries(url.searchParams)
-      const result = await getBlogPosts({
+      const result = await getGuides({
         page: query.page ? parseInt(query.page) : undefined,
         limit: query.limit ? parseInt(query.limit) : undefined,
         category: query.category,
-        tag: query.tag,
+        concept: query.concept,
+        difficulty: query.difficulty,
         search: query.search,
       })
 
@@ -266,16 +267,16 @@ export async function handleApiRequest(req: IncomingMessage, res: ServerResponse
       return
     }
 
-    // GET /api/blog/posts/:slug
-    const blogPostMatch = pathname.match(/^\/api\/blog\/posts\/([^\/]+)$/)
-    if (blogPostMatch && req.method === 'GET') {
-      const slug = blogPostMatch[1]
-      const result = await getBlogPostBySlug(slug)
+    // GET /api/guides/:slug
+    const guideMatch = pathname.match(/^\/api\/guides\/([^\/]+)$/)
+    if (guideMatch && req.method === 'GET') {
+      const slug = guideMatch[1]
+      const result = await getGuideBySlug(slug)
       
       if (!result) {
         res.statusCode = 404
         res.setHeader('Content-Type', 'application/json')
-        res.end(JSON.stringify({ error: 'Post not found' }))
+        res.end(JSON.stringify({ error: 'Guide not found' }))
         return
       }
 
@@ -285,9 +286,9 @@ export async function handleApiRequest(req: IncomingMessage, res: ServerResponse
       return
     }
 
-    // GET /api/blog/categories
-    if (pathname === '/api/blog/categories' && req.method === 'GET') {
-      const categories = await getBlogCategories()
+    // GET /api/guides/categories
+    if (pathname === '/api/guides/categories' && req.method === 'GET') {
+      const categories = await getGuideCategories()
       
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')
@@ -295,33 +296,33 @@ export async function handleApiRequest(req: IncomingMessage, res: ServerResponse
       return
     }
 
-    // GET /api/blog/tags
-    if (pathname === '/api/blog/tags' && req.method === 'GET') {
-      const tags = await getBlogTags()
+    // GET /api/guides/concepts
+    if (pathname === '/api/guides/concepts' && req.method === 'GET') {
+      const concepts = await getGuideConcepts()
       
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify({ tags }))
+      res.end(JSON.stringify({ concepts }))
       return
     }
 
-    // GET /api/blog/recent
-    if (pathname === '/api/blog/recent' && req.method === 'GET') {
-      const posts = await getRecentPosts()
+    // GET /api/guides/recent
+    if (pathname === '/api/guides/recent' && req.method === 'GET') {
+      const guides = await getRecentGuides()
       
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify({ posts }))
+      res.end(JSON.stringify({ guides }))
       return
     }
 
-    // GET /api/blog/popular
-    if (pathname === '/api/blog/popular' && req.method === 'GET') {
-      const posts = await getPopularPosts()
+    // GET /api/guides/popular
+    if (pathname === '/api/guides/popular' && req.method === 'GET') {
+      const guides = await getPopularGuides()
       
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify({ posts }))
+      res.end(JSON.stringify({ guides }))
       return
     }
 

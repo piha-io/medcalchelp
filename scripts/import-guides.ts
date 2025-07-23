@@ -9,9 +9,14 @@ const prisma = new PrismaClient()
 
 interface FrontMatter {
   title: string
-  excerpt: string
+  description: string
   category: string
-  tags?: string[]
+  difficulty?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT'
+  concepts?: string[]
+  prerequisites?: string[]
+  learningOutcomes?: string[]
+  practiceProblems?: any
+  order?: number
   featuredImage?: string
   publishedAt?: string
   isDraft?: boolean
@@ -20,12 +25,12 @@ interface FrontMatter {
   metaKeywords?: string[]
 }
 
-async function importBlogPosts() {
-  console.log('🚀 Starting blog post import...\n')
+async function importGuides() {
+  console.log('🚀 Starting guide import...\n')
 
   // Get all markdown files from both directories
-  const draftFiles = await getMarkdownFiles('blog-posts/drafts')
-  const publishedFiles = await getMarkdownFiles('blog-posts/published')
+  const draftFiles = await getMarkdownFiles('guide-content/drafts')
+  const publishedFiles = await getMarkdownFiles('guide-content/published')
 
   const allFiles = [
     ...draftFiles.map(f => ({ path: f, isDraft: true })),
@@ -33,7 +38,7 @@ async function importBlogPosts() {
   ]
 
   if (allFiles.length === 0) {
-    console.log('❌ No markdown files found in blog-posts/drafts or blog-posts/published')
+    console.log('❌ No markdown files found in guide-content/drafts or guide-content/published')
     return
   }
 
@@ -77,8 +82,8 @@ async function processMarkdownFile(filePath: string, defaultIsDraft: boolean) {
   if (!metadata.title) {
     throw new Error('Missing required field: title')
   }
-  if (!metadata.excerpt) {
-    throw new Error('Missing required field: excerpt')
+  if (!metadata.description) {
+    throw new Error('Missing required field: description')
   }
   if (!metadata.category) {
     throw new Error('Missing required field: category')
@@ -89,29 +94,29 @@ async function processMarkdownFile(filePath: string, defaultIsDraft: boolean) {
   let slug = baseSlug
   let counter = 1
 
-  // Check if post with this slug already exists
-  let existingPost = await prisma.blogPost.findUnique({ where: { slug } })
+  // Check if guide with this slug already exists
+  let existingGuide = await prisma.guide.findUnique({ where: { slug } })
   
   // If it exists and has the same title, update it
-  if (existingPost && existingPost.title === metadata.title) {
-    console.log(`  📝 Updating existing post: ${slug}`)
-    await updatePost(existingPost.id, metadata, markdownContent)
+  if (existingGuide && existingGuide.title === metadata.title) {
+    console.log(`  📝 Updating existing guide: ${slug}`)
+    await updateGuide(existingGuide.id, metadata, markdownContent)
     return
   }
 
   // Otherwise, ensure unique slug
-  while (existingPost) {
+  while (existingGuide) {
     slug = `${baseSlug}-${counter}`
     counter++
-    existingPost = await prisma.blogPost.findUnique({ where: { slug } })
+    existingGuide = await prisma.guide.findUnique({ where: { slug } })
   }
 
-  // Create new post
-  console.log(`  ✨ Creating new post: ${slug}`)
-  await createPost(slug, metadata, markdownContent, defaultIsDraft)
+  // Create new guide
+  console.log(`  ✨ Creating new guide: ${slug}`)
+  await createGuide(slug, metadata, markdownContent, defaultIsDraft)
 }
 
-async function createPost(slug: string, metadata: FrontMatter, content: string, defaultIsDraft: boolean) {
+async function createGuide(slug: string, metadata: FrontMatter, content: string, defaultIsDraft: boolean) {
   // Calculate reading time
   const stats = readingTime(content)
   const readingTimeMinutes = Math.ceil(stats.minutes)
@@ -119,30 +124,30 @@ async function createPost(slug: string, metadata: FrontMatter, content: string, 
   // Find or create category
   const category = await findOrCreateCategory(metadata.category)
 
-  // Find or create tags
-  const tags = metadata.tags ? await findOrCreateTags(metadata.tags) : []
+  // Find or create concepts
+  const concepts = metadata.concepts ? await findOrCreateConcepts(metadata.concepts) : []
 
-  // Create the post
-  await prisma.blogPost.create({
+  // Create the guide
+  await prisma.guide.create({
     data: {
       slug,
       title: metadata.title,
-      excerpt: metadata.excerpt,
+      description: metadata.description,
       content,
       featuredImage: metadata.featuredImage,
       categoryId: category.id,
-      tags: {
-        connect: tags.map(tag => ({ id: tag.id }))
+      difficulty: metadata.difficulty || 'BEGINNER',
+      prerequisites: metadata.prerequisites || [],
+      learningOutcomes: metadata.learningOutcomes || [],
+      practiceProblems: metadata.practiceProblems || null,
+      order: metadata.order || 0,
+      concepts: {
+        connect: concepts.map(concept => ({ id: concept.id }))
       },
-      isDraft: metadata.isDraft ?? defaultIsDraft,
-      publishedAt: metadata.publishedAt 
-        ? new Date(metadata.publishedAt) 
-        : (!metadata.isDraft && !defaultIsDraft) 
-          ? new Date() 
-          : null,
+      isPublished: !(metadata.isDraft ?? defaultIsDraft),
       readingTime: readingTimeMinutes,
       metaTitle: metadata.metaTitle || metadata.title,
-      metaDescription: metadata.metaDescription || metadata.excerpt,
+      metaDescription: metadata.metaDescription || metadata.description,
       metaKeywords: metadata.metaKeywords || []
     }
   })
@@ -150,7 +155,7 @@ async function createPost(slug: string, metadata: FrontMatter, content: string, 
   console.log(`  ✅ Created successfully!`)
 }
 
-async function updatePost(postId: string, metadata: FrontMatter, content: string) {
+async function updateGuide(guideId: string, metadata: FrontMatter, content: string) {
   // Calculate reading time
   const stats = readingTime(content)
   const readingTimeMinutes = Math.ceil(stats.minutes)
@@ -158,29 +163,31 @@ async function updatePost(postId: string, metadata: FrontMatter, content: string
   // Find or create category
   const category = await findOrCreateCategory(metadata.category)
 
-  // Find or create tags
-  const tags = metadata.tags ? await findOrCreateTags(metadata.tags) : []
+  // Find or create concepts
+  const concepts = metadata.concepts ? await findOrCreateConcepts(metadata.concepts) : []
 
-  // Update the post
-  await prisma.blogPost.update({
-    where: { id: postId },
+  // Update the guide
+  await prisma.guide.update({
+    where: { id: guideId },
     data: {
       title: metadata.title,
-      excerpt: metadata.excerpt,
+      description: metadata.description,
       content,
       featuredImage: metadata.featuredImage,
       categoryId: category.id,
-      tags: {
-        set: [], // Clear existing tags
-        connect: tags.map(tag => ({ id: tag.id }))
+      difficulty: metadata.difficulty || 'BEGINNER',
+      prerequisites: metadata.prerequisites || [],
+      learningOutcomes: metadata.learningOutcomes || [],
+      practiceProblems: metadata.practiceProblems || null,
+      order: metadata.order,
+      concepts: {
+        set: [], // Clear existing concepts
+        connect: concepts.map(concept => ({ id: concept.id }))
       },
-      isDraft: metadata.isDraft,
-      publishedAt: metadata.publishedAt 
-        ? new Date(metadata.publishedAt) 
-        : undefined,
+      isPublished: !metadata.isDraft,
       readingTime: readingTimeMinutes,
       metaTitle: metadata.metaTitle || metadata.title,
-      metaDescription: metadata.metaDescription || metadata.excerpt,
+      metaDescription: metadata.metaDescription || metadata.description,
       metaKeywords: metadata.metaKeywords || []
     }
   })
@@ -191,11 +198,27 @@ async function updatePost(postId: string, metadata: FrontMatter, content: string
 async function findOrCreateCategory(name: string) {
   const slug = slugify(name, { lower: true, strict: true })
   
-  let category = await prisma.blogCategory.findUnique({ where: { slug } })
+  let category = await prisma.guideCategory.findUnique({ where: { slug } })
   
   if (!category) {
-    category = await prisma.blogCategory.create({
-      data: { name, slug }
+    // Define icons for common categories
+    const categoryIcons: Record<string, string> = {
+      'dosage': '💊',
+      'iv': '💧',
+      'conversions': '🔄',
+      'pediatric': '👶',
+      'critical-care': '🚨',
+      'pharmacology': '💉',
+      'lab-values': '🧪',
+      'nutrition': '🍎'
+    }
+    
+    category = await prisma.guideCategory.create({
+      data: { 
+        name, 
+        slug,
+        icon: categoryIcons[slug] || '📚'
+      }
     })
     console.log(`  📁 Created new category: ${name}`)
   }
@@ -203,29 +226,31 @@ async function findOrCreateCategory(name: string) {
   return category
 }
 
-async function findOrCreateTags(tagNames: string[]) {
-  const tags = []
+async function findOrCreateConcepts(conceptNames: string[]) {
+  const concepts = []
   
-  for (const name of tagNames) {
+  for (const name of conceptNames) {
     const slug = slugify(name, { lower: true, strict: true })
     
-    let tag = await prisma.blogTag.findUnique({ where: { slug } })
+    let concept = await prisma.guideConcept.findUnique({ where: { slug } })
     
-    if (!tag) {
-      tag = await prisma.blogTag.create({
+    if (!concept) {
+      concept = await prisma.guideConcept.create({
         data: { name, slug }
       })
-      console.log(`  🏷️  Created new tag: ${name}`)
+      console.log(`  💡 Created new concept: ${name}`)
     }
     
-    tags.push(tag)
+    concepts.push(concept)
   }
   
-  return tags
+  return concepts
 }
 
+// Removed findPrerequisiteGuides function as prerequisites are stored as strings
+
 // Run the import
-importBlogPosts()
+importGuides()
   .catch(error => {
     console.error('❌ Import failed:', error)
     process.exit(1)

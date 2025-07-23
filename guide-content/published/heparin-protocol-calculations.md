@@ -1,10 +1,26 @@
 ---
 title: "Heparin Protocol Calculations: A Step-by-Step Guide"
-excerpt: "Learn how to calculate heparin bolus doses and infusion rates using weight-based protocols for safe anticoagulation therapy."
+description: "Learn how to calculate heparin bolus doses and infusion rates using weight-based protocols for safe anticoagulation therapy."
 category: "Critical Care"
-tags: ["heparin", "anticoagulation", "critical-care", "advanced"]
+difficulty: "ADVANCED"
+concepts: ["heparin", "anticoagulation", "critical-care", "weight-based dosing", "PTT monitoring"]
+prerequisites: ["Unit Conversions", "IV Flow Rate Calculations"]
+learningOutcomes:
+  - "Calculate heparin bolus doses using weight-based protocols"
+  - "Determine initial heparin infusion rates based on patient weight"
+  - "Adjust heparin infusion rates based on PTT results"
+  - "Convert between units/hr and mL/hr for different concentrations"
+  - "Apply maximum dose limits and obesity adjustments"
+practiceProblems:
+  - question: "Calculate the initial bolus and infusion rate for an 82 kg patient"
+    answer: "Bolus: 6,560 units; Initial rate: 1,476 units/hr (14.8 mL/hr)"
+  - question: "Adjust infusion for PTT of 38 seconds on 75 kg patient at 1,200 units/hr"
+    answer: "Give 3,000 unit bolus; Increase to 1,350 units/hr (13.5 mL/hr)"
+order: 5
 featuredImage: "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=800"
 publishedAt: "2024-01-18"
+metaDescription: "Master heparin protocol calculations with step-by-step instructions for bolus doses, infusion rates, and PTT-based adjustments. Essential for critical care nurses."
+metaKeywords: ["heparin calculations", "anticoagulation therapy", "PTT adjustments", "critical care nursing", "weight-based dosing"]
 ---
 
 # Heparin Protocol Calculations: A Step-by-Step Guide

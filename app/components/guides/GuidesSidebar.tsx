@@ -2,59 +2,63 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 
-interface BlogSidebarProps {
+interface GuidesSidebarProps {
   onCategorySelect: (slug: string | null) => void
-  onTagSelect: (slug: string | null) => void
+  onConceptSelect: (slug: string | null) => void
+  onDifficultySelect: (difficulty: string | null) => void
   onSearch: (query: string) => void
   selectedCategory: string | null
-  selectedTag: string | null
+  selectedConcept: string | null
+  selectedDifficulty: string | null
 }
 
-export function BlogSidebar({ 
+export function GuidesSidebar({ 
   onCategorySelect, 
-  onTagSelect, 
+  onConceptSelect,
+  onDifficultySelect,
   onSearch,
   selectedCategory,
-  selectedTag
-}: BlogSidebarProps) {
+  selectedConcept,
+  selectedDifficulty
+}: GuidesSidebarProps) {
   const [searchInput, setSearchInput] = useState('')
 
   // Fetch categories
   const { data: categoriesData } = useQuery({
-    queryKey: ['blog-categories'],
+    queryKey: ['guide-categories'],
     queryFn: async () => {
-      const response = await fetch('/api/blog/categories')
+      const response = await fetch('/api/guides/categories')
       if (!response.ok) throw new Error('Failed to fetch categories')
       return response.json()
     },
   })
 
-  // Fetch tags
-  const { data: tagsData } = useQuery({
-    queryKey: ['blog-tags'],
+  // Fetch concepts
+  const { data: conceptsData } = useQuery({
+    queryKey: ['guide-concepts'],
     queryFn: async () => {
-      const response = await fetch('/api/blog/tags')
-      if (!response.ok) throw new Error('Failed to fetch tags')
+      const response = await fetch('/api/guides/concepts')
+      if (!response.ok) throw new Error('Failed to fetch concepts')
       return response.json()
     },
   })
 
-  // Fetch recent posts
-  const { data: recentPostsData } = useQuery({
-    queryKey: ['blog-recent'],
+  // Fetch recent guides
+  const { data: recentGuidesData } = useQuery({
+    queryKey: ['guides-recent'],
     queryFn: async () => {
-      const response = await fetch('/api/blog/recent')
-      if (!response.ok) throw new Error('Failed to fetch recent posts')
+      const response = await fetch('/api/guides/recent')
+      if (!response.ok) throw new Error('Failed to fetch recent guides')
       return response.json()
     },
   })
 
-  // Fetch popular posts
-  const { data: popularPostsData } = useQuery({
-    queryKey: ['blog-popular'],
+  // Fetch popular guides
+  const { data: popularGuidesData } = useQuery({
+    queryKey: ['guides-popular'],
     queryFn: async () => {
-      const response = await fetch('/api/blog/popular')
-      if (!response.ok) throw new Error('Failed to fetch popular posts')
+      const response = await fetch('/api/guides/popular')
+      if (!response.ok) throw new Error('Failed to fetch popular guides')
       return response.json()
     },
   })
@@ -75,7 +79,7 @@ export function BlogSidebar({
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="Search articles..."
+              placeholder="Search guides..."
               className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
             <button
@@ -107,7 +111,7 @@ export function BlogSidebar({
                 >
                   <span>{category.name}</span>
                   <span className="text-sm text-gray-500">
-                    {category._count.posts}
+                    {category._count.guides}
                   </span>
                 </button>
               </li>
@@ -116,41 +120,61 @@ export function BlogSidebar({
         </div>
       )}
 
-      {/* Popular Tags */}
-      {tagsData && tagsData.tags.length > 0 && (
+      {/* Difficulty Levels */}
+      <div className="bg-white rounded-xl p-6 shadow-sm">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">Difficulty</h3>
+        <div className="space-y-2">
+          {['BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT'].map((difficulty) => (
+            <button
+              key={difficulty}
+              onClick={() => onDifficultySelect(difficulty === selectedDifficulty ? null : difficulty)}
+              className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                selectedDifficulty === difficulty
+                  ? 'bg-primary-50 text-primary-700'
+                  : 'hover:bg-gray-50'
+              }`}
+            >
+              <span className="capitalize">{difficulty.toLowerCase()}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Key Concepts */}
+      {conceptsData && conceptsData.concepts.length > 0 && (
         <div className="bg-white rounded-xl p-6 shadow-sm">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Popular Tags</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-4">Key Concepts</h3>
           <div className="flex flex-wrap gap-2">
-            {tagsData.tags.slice(0, 10).map((tag: any) => (
+            {conceptsData.concepts.slice(0, 10).map((concept: any) => (
               <button
-                key={tag.id}
-                onClick={() => onTagSelect(tag.slug === selectedTag ? null : tag.slug)}
+                key={concept.id}
+                onClick={() => onConceptSelect(concept.slug === selectedConcept ? null : concept.slug)}
                 className={`inline-block px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                  selectedTag === tag.slug
+                  selectedConcept === concept.slug
                     ? 'bg-accent-100 text-accent-700'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                #{tag.name}
+                {concept.name}
               </button>
             ))}
           </div>
         </div>
       )}
 
-      {/* Recent Posts */}
-      {recentPostsData && recentPostsData.posts.length > 0 && (
+      {/* Recent Guides */}
+      {recentGuidesData && recentGuidesData.guides.length > 0 && (
         <div className="bg-white rounded-xl p-6 shadow-sm">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Posts</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Guides</h3>
           <ul className="space-y-3">
-            {recentPostsData.posts.map((post: any) => (
-              <li key={post.id}>
+            {recentGuidesData.guides.map((guide: any) => (
+              <li key={guide.id}>
                 <Link
-                  to="/blog/$slug"
-                  params={{ slug: post.slug }}
+                  to="/guides/$slug"
+                  params={{ slug: guide.slug }}
                   className="text-gray-700 hover:text-primary-600 transition-colors line-clamp-2"
                 >
-                  {post.title}
+                  {guide.title}
                 </Link>
               </li>
             ))}
@@ -158,22 +182,22 @@ export function BlogSidebar({
         </div>
       )}
 
-      {/* Popular Posts */}
-      {popularPostsData && popularPostsData.posts.length > 0 && (
+      {/* Popular Guides */}
+      {popularGuidesData && popularGuidesData.guides.length > 0 && (
         <div className="bg-white rounded-xl p-6 shadow-sm">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Popular Posts</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-4">Popular Guides</h3>
           <ul className="space-y-3">
-            {popularPostsData.posts.map((post: any, index: number) => (
-              <li key={post.id} className="flex items-start gap-3">
+            {popularGuidesData.guides.map((guide: any, index: number) => (
+              <li key={guide.id} className="flex items-start gap-3">
                 <span className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-primary-400 to-accent-400 text-white rounded-full flex items-center justify-center text-sm font-bold">
                   {index + 1}
                 </span>
                 <Link
-                  to="/blog/$slug"
-                  params={{ slug: post.slug }}
+                  to="/guides/$slug"
+                  params={{ slug: guide.slug }}
                   className="text-gray-700 hover:text-primary-600 transition-colors line-clamp-2"
                 >
-                  {post.title}
+                  {guide.title}
                 </Link>
               </li>
             ))}
@@ -181,25 +205,18 @@ export function BlogSidebar({
         </div>
       )}
 
-      {/* Newsletter CTA */}
+      {/* Learning Progress CTA */}
       <div className="bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl p-6 text-white">
-        <h3 className="text-lg font-bold mb-2">Stay Updated</h3>
+        <h3 className="text-lg font-bold mb-2">Track Your Progress</h3>
         <p className="text-sm mb-4 opacity-90">
-          Get the latest medical math tips and practice questions delivered to your inbox.
+          Create an account to save your progress and get personalized recommendations.
         </p>
-        <form className="space-y-3">
-          <input
-            type="email"
-            placeholder="Your email"
-            className="w-full px-4 py-2 rounded-lg text-gray-900 placeholder-gray-500"
-          />
-          <button
-            type="submit"
-            className="w-full bg-white text-primary-600 font-semibold py-2 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            Subscribe
-          </button>
-        </form>
+        <Link
+          to="/signup"
+          className="block w-full bg-white text-primary-600 font-semibold py-2 rounded-lg hover:bg-gray-50 transition-colors text-center"
+        >
+          Get Started
+        </Link>
       </div>
     </aside>
   )

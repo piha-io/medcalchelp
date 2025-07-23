@@ -1,8 +1,22 @@
 ---
 title: "Complete Guide to Insulin Dosing Calculations"
-excerpt: "Master insulin dosing calculations including sliding scale, carbohydrate counting, and correction factors for safe diabetes management."
+description: "Master insulin dosing calculations including sliding scale, carbohydrate counting, and correction factors for safe diabetes management."
 category: "Clinical Practice"
-tags: ["insulin", "diabetes", "advanced", "critical-care"]
+difficulty: "ADVANCED"
+concepts: ["insulin", "diabetes", "carbohydrate counting", "correction factor", "sliding scale", "basal-bolus"]
+prerequisites: ["Basic Dosage Calculations", "Unit Conversions"]
+learningOutcomes:
+  - "Calculate total daily insulin dose based on patient weight"
+  - "Determine insulin-to-carbohydrate ratios for meal planning"
+  - "Apply correction factors for high blood glucose levels"
+  - "Use sliding scale protocols safely and effectively"
+  - "Combine meal and correction doses for optimal glucose control"
+practiceProblems:
+  - question: "Calculate TDD and ICR for 80 kg Type 1 diabetic patient"
+    answer: "TDD = 40 units; ICR = 1:12"
+  - question: "Calculate combined dose for BG 280, target 130, 75g carbs (ICR 1:15, CF 40)"
+    answer: "Meal: 5 units + Correction: 3.75 units = 9 units total"
+order: 4
 featuredImage: "https://images.unsplash.com/photo-1579165466741-7f35e4755660?w=800"
 publishedAt: "2024-01-20"
 metaTitle: "Insulin Dosing Calculations - Complete Clinical Guide"
