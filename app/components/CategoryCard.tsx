@@ -1,5 +1,4 @@
 import { Link } from '@tanstack/react-router'
-import { useAnalytics } from '../lib/analytics/analytics'
 import { useState } from 'react'
 
 export interface CategoryInfo {
@@ -34,22 +33,9 @@ export function CategoryCard({
   selected = false,
   stats
 }: CategoryCardProps) {
-  const { track } = useAnalytics()
-  const [hasHovered, setHasHovered] = useState(false)
-  const handleMouseEnter = () => {
-    if (!hasHovered) {
-      track('category_hover', {
-        category_id: category.id,
-        category_title: category.title,
-        question_count: category.questionCount,
-      })
-      setHasHovered(true)
-    }
-  }
 
   const content = (
     <div 
-      onMouseEnter={handleMouseEnter}
       className={`
         relative overflow-hidden rounded-2xl p-4 sm:p-6 
         transition-all duration-300 border-2

@@ -4,7 +4,6 @@ import toast from 'react-hot-toast'
 import { EmailForm } from '../components/auth/EmailForm'
 import { VerificationForm } from '../components/auth/VerificationForm'
 import { useAuth } from '../lib/auth/AuthContext'
-import { useAnalytics } from '../lib/analytics/PostHogProvider'
 
 export const Route = createFileRoute('/auth')({
   component: AuthPage,
@@ -13,7 +12,6 @@ export const Route = createFileRoute('/auth')({
 function AuthPage() {
   const navigate = useNavigate()
   const { login } = useAuth()
-  const { captureEvent } = useAnalytics()
   const [step, setStep] = useState<'email' | 'verify'>('email')
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -37,10 +35,6 @@ function AuthPage() {
       setStep('verify')
       toast.success('Verification code sent to your email!')
       
-      // Track email submission
-      captureEvent('auth_email_submitted', {
-        isNewUser: data.isNewUser || false,
-      })
     } catch (error: any) {
       toast.error(error.message || 'Failed to send verification code')
     } finally {
@@ -63,11 +57,6 @@ function AuthPage() {
         throw new Error(data.error || 'Invalid verification code')
       }
 
-      // Track successful verification
-      captureEvent('auth_verification_successful', {
-        isNewUser: data.isNewUser || false,
-        userId: data.user.id,
-      })
       
       // Update auth context
       await login(data.user)

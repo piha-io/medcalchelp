@@ -5,7 +5,6 @@ import { Link } from '@tanstack/react-router'
 import { GuideCard } from '../../components/guides/GuideCard'
 import { GuidesSidebar } from '../../components/guides/GuidesSidebar'
 import { GuidesHero } from '../../components/guides/GuidesHero'
-import { useAnalytics } from '../../lib/analytics/analytics'
 
 export const Route = createFileRoute('/guides/')({
   component: GuidesIndexPage,
@@ -38,7 +37,6 @@ function GuidesIndexPage() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null)
   const [selectedConcept, setSelectedConcept] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const { track } = useAnalytics()
 
   // Fetch guides
   const { data, isLoading, error } = useQuery({
@@ -60,42 +58,22 @@ function GuidesIndexPage() {
     setSelectedCategory(categorySlug)
     setSelectedConcept(null)
     
-    if (categorySlug) {
-      track('guides_category_selected', {
-        category_slug: categorySlug,
-      })
-    }
   }
 
   const handleDifficultySelect = (difficulty: string | null) => {
     setSelectedDifficulty(difficulty)
     
-    if (difficulty) {
-      track('guides_difficulty_selected', {
-        difficulty: difficulty,
-      })
-    }
   }
 
   const handleConceptSelect = (conceptSlug: string | null) => {
     setSelectedConcept(conceptSlug)
     setSelectedCategory(null)
     
-    if (conceptSlug) {
-      track('guides_concept_selected', {
-        concept_slug: conceptSlug,
-      })
-    }
   }
 
   const handleSearch = (query: string) => {
     setSearchQuery(query)
     
-    if (query) {
-      track('guides_search', {
-        search_query: query,
-      })
-    }
   }
 
   return (

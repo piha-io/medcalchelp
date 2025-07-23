@@ -4,7 +4,6 @@ import { cn } from '../lib/utils/cn'
 import { generateStepByStepSolution } from '../lib/questions/generator'
 import type { QuestionTemplate } from '@prisma/client'
 import { Celebration } from './Celebration'
-import { useAnalytics } from '../lib/analytics/analytics'
 
 interface ResultCardProps {
   isCorrect: boolean
@@ -33,7 +32,6 @@ export function ResultCard({
   isGuest = false,
 }: ResultCardProps) {
   const [showCelebration, setShowCelebration] = useState(false)
-  const { track } = useAnalytics()
   
   useEffect(() => {
     if (isCorrect) {
@@ -153,15 +151,7 @@ export function ResultCard({
 
       {/* Next Question Button */}
       <button
-        onClick={() => {
-          track('button_click', {
-            button_name: 'next_question',
-            button_location: 'result_card',
-            after_result: isCorrect ? 'correct' : 'incorrect',
-            points_earned: pointsEarned,
-          })
-          onNextQuestion()
-        }}
+        onClick={onNextQuestion}
         className="btn btn-primary btn-md w-full"
       >
         Next Question

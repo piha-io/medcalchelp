@@ -9,8 +9,6 @@ import { StatsCard } from '../components/StatsCard'
 import { CategoryCard } from '../components/CategoryCard'
 import { categories } from '../lib/categories'
 import { useAuth } from '../lib/auth/AuthContext'
-import { useAnalytics } from '../lib/analytics/analytics'
-import { useEngagementTracking } from '../lib/analytics/useEngagementTracking'
 
 // Define search params schema
 const practiceSearchSchema = z.object({
@@ -27,7 +25,6 @@ function PracticePage() {
   const navigate = useNavigate({ from: '/practice' })
   const { category, questionId } = Route.useSearch()
   const { user } = useAuth()
-  const { trackCategorySelected, track } = useAnalytics()
   const [selectedCategory, setSelectedCategory] = useState<string | null>(category || null)
   const [showStats, setShowStats] = useState(false)
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null)
@@ -46,13 +43,6 @@ function PracticePage() {
     }
   }, [category, navigate, selectedCategory])
 
-  // Track user engagement on practice page
-  useEngagementTracking({
-    trackScrollDepth: true,
-    trackTimeOnPage: true,
-    trackIdleTime: true,
-    idleThreshold: 60000, // 1 minute for practice page
-  })
   
   const {
     question,
@@ -136,12 +126,6 @@ function PracticePage() {
       <div className="lg:hidden">
         <button
           onClick={() => {
-            track('button_click', {
-              button_name: 'mobile_stats_toggle',
-              button_location: 'practice_page',
-              action: showStats ? 'hide' : 'show',
-              user_points: user?.profile?.totalPoints || 0,
-            })
             setShowStats(!showStats)
           }}
           className="w-full flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border border-gray-200"
@@ -198,7 +182,6 @@ function PracticePage() {
                       category={category}
                       onClick={() => {
                         setSelectedCategory(category.id)
-                        trackCategorySelected(category.id, category.questionCount)
                         // Update URL with selected category and clear questionId
                         navigate({ search: { category: category.id } })
                       }}

@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import type { GeneratedQuestion } from '../lib/questions/generator'
 import { cn } from '../lib/utils/cn'
-import { useAnalytics } from '../lib/analytics/analytics'
-import { useInputTracking } from '../lib/analytics/useClickTracking'
 
 interface QuestionCardProps {
   question: GeneratedQuestion & { shareableId?: string }
@@ -23,26 +21,15 @@ export function QuestionCard({
   const [showHint, setShowHint] = useState(false)
   const [timeElapsed, setTimeElapsed] = useState(0)
   const [showShareToast, setShowShareToast] = useState(false)
-  const { trackHintUsed, trackQuestionView, track } = useAnalytics()
   const inputRef = useRef<HTMLInputElement>(null)
-  
-  // Track input interactions
-  useInputTracking(inputRef, `answer_input_${question.category}`)
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeElapsed(prev => prev + 1)
     }, 1000)
 
-    // Track question view when component mounts
-    trackQuestionView({
-      question_id: question.id,
-      question_type: question.type,
-      category: question.category,
-    })
-
     return () => clearInterval(timer)
-  }, [question.id, trackQuestionView])
+  }, [question.id])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -52,37 +39,12 @@ export function QuestionCard({
       return
     }
 
-    // Track submit button click
-    track('button_click', {
-      button_name: 'submit_answer',
-      button_location: 'question_card',
-      time_to_submit: timeElapsed,
-      answer_length: userAnswer.length,
-    })
-
     await onSubmit(answer)
   }
 
   const handleUseHint = () => {
     onUseHint()
     setShowHint(true)
-    
-    // Track hint button click
-    track('button_click', {
-      button_name: 'use_hint',
-      button_location: 'question_card',
-      hints_remaining: question.hints.length - hintsUsed - 1,
-    })
-    
-    // Track hint usage with enhanced data
-    trackHintUsed({
-      question_id: question.id,
-      question_type: question.type,
-      category: question.category,
-      hints_used: hintsUsed + 1,
-      total_hints_available: question.hints.length,
-      time_to_hint: timeElapsed,
-    })
   }
 
   const handleShare = async () => {
@@ -117,13 +79,6 @@ export function QuestionCard({
         setShowShareToast(true)
         setTimeout(() => setShowShareToast(false), 3000)
       }
-      
-      track('share_question', {
-        question_id: question.id,
-        question_type: question.type,
-        category: question.category,
-        share_method: 'share' in navigator ? 'native' : 'clipboard'
-      })
     } catch (error) {
       console.error('Error sharing:', error)
     }
@@ -370,8 +325,8 @@ export function QuestionCard({
 // Icon components
 function QuestionIcon() {
   return (
-    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
     </svg>
   )
 }

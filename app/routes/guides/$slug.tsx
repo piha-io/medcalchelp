@@ -6,7 +6,6 @@ import { GuideNavigation } from '../../components/guides/GuideNavigation'
 import { RelatedGuides } from '../../components/guides/RelatedGuides'
 import { GuideSEO } from '../../components/guides/GuideSEO'
 import { DifficultyBadge } from '../../components/guides/DifficultyBadge'
-import { useAnalytics } from '../../lib/analytics/analytics'
 import { useEffect } from 'react'
 
 export const Route = createFileRoute('/guides/$slug')({
@@ -15,7 +14,6 @@ export const Route = createFileRoute('/guides/$slug')({
 
 function GuidePage() {
   const { slug } = Route.useParams()
-  const { track } = useAnalytics()
 
   // Fetch guide
   const { data, isLoading, error } = useQuery({
@@ -32,19 +30,6 @@ function GuidePage() {
     },
   })
 
-  // Track guide view
-  useEffect(() => {
-    if (data?.guide) {
-      track('guide_view', {
-        guide_id: data.guide.id,
-        guide_slug: data.guide.slug,
-        guide_title: data.guide.title,
-        category: data.guide.category.slug,
-        difficulty: data.guide.difficulty,
-        reading_time: data.guide.readingTime,
-      })
-    }
-  }, [data, track])
 
   // Loading state
   if (isLoading) {
