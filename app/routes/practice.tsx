@@ -1,5 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
+import { z } from 'zod'
 import { useQuestionFlow } from '../lib/hooks/useQuestions'
 import { QuestionCard } from '../components/QuestionCard'
 import { DimensionalAnalysisCard } from '../components/DimensionalAnalysisCard'
@@ -11,17 +12,40 @@ import { useAuth } from '../lib/auth/AuthContext'
 import { useAnalytics } from '../lib/analytics/analytics'
 import { useEngagementTracking } from '../lib/analytics/useEngagementTracking'
 
+// Define search params schema
+const practiceSearchSchema = z.object({
+  category: z.string().optional(),
+  questionId: z.string().optional(),
+})
+
 export const Route = createFileRoute('/practice')({
   component: PracticePage,
+  validateSearch: practiceSearchSchema,
 })
 
 function PracticePage() {
+  const navigate = useNavigate({ from: '/practice' })
+  const { category, questionId } = Route.useSearch()
   const { user } = useAuth()
   const { trackCategorySelected, track } = useAnalytics()
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(category || null)
   const [showStats, setShowStats] = useState(false)
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null)
   
+  // Sync URL params with state
+  useEffect(() => {
+    if (category && category !== selectedCategory) {
+      // Validate that the category exists
+      const validCategories = ['ALL', ...categories.map(c => c.id)]
+      if (validCategories.includes(category)) {
+        setSelectedCategory(category)
+      } else {
+        // Invalid category, clear it from URL
+        navigate({ search: {} })
+      }
+    }
+  }, [category, navigate, selectedCategory])
+
   // Track user engagement on practice page
   useEngagementTracking({
     trackScrollDepth: true,
@@ -45,7 +69,8 @@ function PracticePage() {
     nextQuestion,
     isSubmitting,
     lastResult,
-  } = useQuestionFlow()
+    updateQuestionId,
+  } = useQuestionFlow(questionId)
 
   // Update filters when category changes
   useEffect(() => {
@@ -56,19 +81,33 @@ function PracticePage() {
     }
   }, [selectedCategory, setFilters])
 
-  // Start question timer when question loads
+  // Start question timer when question loads and update URL with shareable ID
   useEffect(() => {
     if (question && !showSolution) {
       startQuestion()
+      // Update URL with the shareable question ID if available
+      if ('shareableId' in question && question.shareableId && !questionId) {
+        navigate({ 
+          search: { 
+            category: selectedCategory || undefined,
+            questionId: question.shareableId 
+          },
+          replace: true // Don't add to browser history
+        })
+      }
     }
-  }, [question, showSolution, startQuestion])
+  }, [question, showSolution, startQuestion, navigate, selectedCategory, questionId])
 
   const handleBack = () => {
     setSelectedCategory(null)
     setFilters({})
+    // Clear category and questionId from URL
+    navigate({ search: {} })
   }
 
   const handleNextQuestion = () => {
+    // Clear questionId from URL when getting next question
+    navigate({ search: { category: selectedCategory || undefined } })
     nextQuestion()
   }
 
@@ -160,6 +199,8 @@ function PracticePage() {
                       onClick={() => {
                         setSelectedCategory(category.id)
                         trackCategorySelected(category.id, category.questionCount)
+                        // Update URL with selected category and clear questionId
+                        navigate({ search: { category: category.id } })
                       }}
                       selected={selectedCategory === category.id}
                       delay={`${index * 0.1}s`}

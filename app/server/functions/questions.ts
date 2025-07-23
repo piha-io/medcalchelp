@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { prisma } from '../../lib/prisma'
 import { generateQuestion, calculateAnswer, checkAnswer } from '../../lib/questions/generator'
 import type { QuestionType, QuestionCategory } from '@prisma/client'
+import crypto from 'crypto'
 
 // Get base points for a question type based on complexity
 function getBasePointsForQuestionType(type: QuestionType): number {
@@ -29,11 +30,36 @@ function getBasePointsForQuestionType(type: QuestionType): number {
   return 20
 }
 
+// Simple in-memory cache for generated questions (15-minute TTL)
+const questionCache = new Map<string, { question: any; timestamp: number }>()
+const CACHE_TTL = 15 * 60 * 1000 // 15 minutes
+
+// Clean old entries from cache
+function cleanCache() {
+  const now = Date.now()
+  for (const [key, value] of questionCache.entries()) {
+    if (now - value.timestamp > CACHE_TTL) {
+      questionCache.delete(key)
+    }
+  }
+}
+
 // Get random question based on filters
 export async function getRandomQuestion(filters: {
   type?: QuestionType | 'ALL'
   category?: QuestionCategory
+  questionId?: string
 }) {
+  // Clean cache periodically
+  cleanCache()
+
+  // If questionId is provided, try to get from cache
+  if (filters.questionId) {
+    const cached = questionCache.get(filters.questionId)
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return cached.question
+    }
+  }
   // Build where clause
   const where: any = {}
   // Handle 'ALL' category - don't filter by type
@@ -63,11 +89,35 @@ export async function getRandomQuestion(filters: {
   // Generate question with random values
   const question = generateQuestion(template)
   
-  // Add base points to the question
-  return {
+  // Create a deterministic ID based on template and values
+  const questionData = {
+    templateId: template.id,
+    values: question.generatedValues,
+    timestamp: Math.floor(Date.now() / 1000) // Unix timestamp in seconds
+  }
+  
+  // Create a short hash for the shareable ID
+  const hash = crypto.createHash('sha256')
+    .update(JSON.stringify(questionData))
+    .digest('hex')
+    .substring(0, 12) // Use first 12 characters
+  
+  const shareableId = `q${hash}`
+  
+  // Add base points and shareable ID to the question
+  const enhancedQuestion = {
     ...question,
+    shareableId,
     basePoints: getBasePointsForQuestionType(template.type)
   }
+  
+  // Cache the question
+  questionCache.set(shareableId, {
+    question: enhancedQuestion,
+    timestamp: Date.now()
+  })
+  
+  return enhancedQuestion
 }
 
 // Submit answer schema

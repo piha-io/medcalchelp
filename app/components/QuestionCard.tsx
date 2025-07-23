@@ -5,7 +5,7 @@ import { useAnalytics } from '../lib/analytics/analytics'
 import { useInputTracking } from '../lib/analytics/useClickTracking'
 
 interface QuestionCardProps {
-  question: GeneratedQuestion
+  question: GeneratedQuestion & { shareableId?: string }
   onSubmit: (answer: number) => Promise<any>
   onUseHint: () => void
   hintsUsed: number
@@ -22,6 +22,7 @@ export function QuestionCard({
   const [userAnswer, setUserAnswer] = useState('')
   const [showHint, setShowHint] = useState(false)
   const [timeElapsed, setTimeElapsed] = useState(0)
+  const [showShareToast, setShowShareToast] = useState(false)
   const { trackHintUsed, trackQuestionView, track } = useAnalytics()
   const inputRef = useRef<HTMLInputElement>(null)
   
@@ -82,6 +83,37 @@ export function QuestionCard({
       total_hints_available: question.hints.length,
       time_to_hint: timeElapsed,
     })
+  }
+
+  const handleShare = async () => {
+    if (!question.shareableId) return
+    
+    const shareUrl = `${window.location.origin}/practice?questionId=${question.shareableId}`
+    
+    try {
+      if ('share' in navigator) {
+        // Use native share API on mobile
+        await navigator.share({
+          title: 'Medical Calculation Challenge',
+          text: `Can you solve this ${question.type.replace(/_/g, ' ').toLowerCase()} problem?`,
+          url: shareUrl
+        })
+      } else {
+        // Copy to clipboard on desktop
+        await navigator.clipboard.writeText(shareUrl)
+        setShowShareToast(true)
+        setTimeout(() => setShowShareToast(false), 3000)
+      }
+      
+      track('share_question', {
+        question_id: question.id,
+        question_type: question.type,
+        category: question.category,
+        share_method: 'share' in navigator ? 'native' : 'clipboard'
+      })
+    } catch (error) {
+      console.error('Error sharing:', error)
+    }
   }
 
   const formatTime = (seconds: number) => {
@@ -162,8 +194,23 @@ export function QuestionCard({
               </div>
             </div>
             
-            {/* Timer and Points Display */}
+            {/* Timer, Share and Points Display */}
             <div className="flex items-center gap-3">
+              {/* Share Button */}
+              {question.shareableId && (
+                <button
+                  onClick={handleShare}
+                  className="relative bg-white rounded-lg px-3 py-2 shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+                  title="Share this question"
+                >
+                  <div className="flex items-center gap-2 text-sm">
+                    <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m9.632 4.316C18.114 15.562 18 16.018 18 16.5c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3c.482 0 .938.114 1.342.316m0 0a3 3 0 10-5.368-2.684m5.368 2.684a3 3 0 00-5.368-2.684M3 12a3 3 0 106 0 3 3 0 00-6 0zm18 4.5a3 3 0 10-6 0 3 3 0 006 0zM8.25 7.5a3 3 0 10-6 0 3 3 0 006 0z" />
+                    </svg>
+                    <span className="font-medium text-gray-700">Share</span>
+                  </div>
+                </button>
+              )}
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-lg opacity-20 animate-pulse"></div>
                 <div className="relative bg-white rounded-lg px-3 py-2 shadow-sm border border-gray-200">
@@ -291,6 +338,18 @@ export function QuestionCard({
           )}
         </button>
       </form>
+      
+      {/* Share Toast Notification */}
+      {showShareToast && (
+        <div className="fixed bottom-4 right-4 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg animate-slide-up z-50">
+          <div className="flex items-center gap-2">
+            <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span>Link copied to clipboard!</span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

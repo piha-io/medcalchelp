@@ -55,40 +55,64 @@ class UnifiedAnalytics {
    * Track event to both PostHog and GTM/GA4
    */
   track(eventName: AnalyticsEvent, properties?: MedCalcEventProperties) {
-    // Format event name for GA4 compliance
-    const ga4EventName = GA4Events[eventName as keyof typeof GA4Events] || formatEventName(eventName);
-    
-    // Validate and enhance properties
-    const enhancedProperties = this.enhanceEventProperties(properties);
-    const validatedProperties = validateEventParams(enhancedProperties);
+    try {
+      // Format event name for GA4 compliance
+      const ga4EventName = GA4Events[eventName as keyof typeof GA4Events] || formatEventName(eventName);
+      
+      // Validate and enhance properties
+      const enhancedProperties = this.enhanceEventProperties(properties);
+      const validatedProperties = validateEventParams(enhancedProperties);
 
-    // Send to PostHog
-    if (this.posthog) {
-      this.posthog.capture(eventName, enhancedProperties);
+      // Send to PostHog with error handling
+      if (this.posthog) {
+        try {
+          this.posthog.capture(eventName, enhancedProperties);
+        } catch (error) {
+          console.warn('PostHog tracking error:', error);
+        }
+      }
+
+      // Send to GA4 with error handling
+      try {
+        ga4.sendEvent(ga4EventName, validatedProperties);
+      } catch (error) {
+        console.warn('GA4 tracking error:', error);
+      }
+
+      // Update session metrics
+      this.updateSessionMetrics(eventName, properties);
+    } catch (error) {
+      console.error('Analytics tracking error:', error);
     }
-
-    // Send to GA4
-    ga4.sendEvent(ga4EventName, validatedProperties);
-
-    // Update session metrics
-    this.updateSessionMetrics(eventName, properties);
   }
 
   /**
    * Identify user for both platforms
    */
   identify(userId: string, properties?: Record<string, any>) {
-    // PostHog identify
-    if (this.posthog) {
-      this.posthog.identify(userId, properties);
-    }
+    try {
+      // PostHog identify
+      if (this.posthog) {
+        try {
+          this.posthog.identify(userId, properties);
+        } catch (error) {
+          console.warn('PostHog identify error:', error);
+        }
+      }
 
-    // GA4 user properties
-    ga4.setUserId(userId);
-    ga4.setUserProperties({
-      user_type: 'authenticated' as const,
-      ...properties,
-    });
+      // GA4 user properties
+      try {
+        ga4.setUserId(userId);
+        ga4.setUserProperties({
+          user_type: 'authenticated' as const,
+          ...properties,
+        });
+      } catch (error) {
+        console.warn('GA4 identify error:', error);
+      }
+    } catch (error) {
+      console.error('Analytics identify error:', error);
+    }
   }
 
   /**
@@ -106,13 +130,26 @@ class UnifiedAnalytics {
    * Track page view
    */
   pageView(pagePath: string, pageTitle?: string) {
-    if (this.posthog) {
-      this.posthog.capture('$pageview', {
-        $current_url: pagePath,
-        title: pageTitle,
-      });
+    try {
+      if (this.posthog) {
+        try {
+          this.posthog.capture('$pageview', {
+            $current_url: pagePath,
+            title: pageTitle,
+          });
+        } catch (error) {
+          console.warn('PostHog pageView error:', error);
+        }
+      }
+      
+      try {
+        ga4.trackPageView(pagePath, pageTitle);
+      } catch (error) {
+        console.warn('GA4 pageView error:', error);
+      }
+    } catch (error) {
+      console.error('Analytics pageView error:', error);
     }
-    ga4.trackPageView(pagePath, pageTitle);
   }
 
   /**

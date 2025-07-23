@@ -18,6 +18,7 @@ interface DimensionalAnalysisCardProps {
     units: Record<string, string>
     hints: string[]
     conversionFactors?: ConversionFactor[]
+    shareableId?: string
   }
   onSubmit: (answer: number) => void
   onHint: () => void

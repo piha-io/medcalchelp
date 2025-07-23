@@ -2,34 +2,51 @@ import React, { useEffect } from 'react'
 import posthog from 'posthog-js'
 import { PostHogProvider as PHProvider } from 'posthog-js/react'
 
-// Initialize PostHog only in browser environment
+// Initialize PostHog only in browser environment with delay for AdSense compatibility
 let posthogInitialized = false
+let posthogInitTimer: NodeJS.Timeout | null = null
 
-if (typeof window !== 'undefined' && import.meta.env.VITE_POSTHOG_KEY && !posthogInitialized) {
-  try {
-    posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
-      api_host: import.meta.env.VITE_POSTHOG_HOST || 'https://app.posthog.com',
-      capture_pageview: false, // We'll manually track page views with TanStack Router
-      capture_pageleave: true,
-      persistence: 'localStorage+cookie',
-      autocapture: {
-        dom_event_allowlist: ['click', 'submit'], // Only capture clicks and form submissions
-        element_allowlist: ['button', 'input', 'a'], // Only capture specific elements
-      },
-      session_recording: {
-        maskAllInputs: false,
-        maskInputOptions: {
-          password: true,
-          email: true,
+function initializePostHog() {
+  if (typeof window !== 'undefined' && import.meta.env.VITE_POSTHOG_KEY && !posthogInitialized) {
+    try {
+      posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
+        api_host: import.meta.env.VITE_POSTHOG_HOST || 'https://app.posthog.com',
+        capture_pageview: false, // We'll manually track page views with TanStack Router
+        capture_pageleave: true,
+        persistence: 'localStorage+cookie',
+        autocapture: {
+          dom_event_allowlist: ['click', 'submit'], // Only capture clicks and form submissions
+          element_allowlist: ['button', 'input', 'a'], // Only capture specific elements
         },
-        maskTextSelector: '[data-sensitive]', // Add data-sensitive attribute to mask specific text
-      },
-      loaded: (ph) => {
-        posthogInitialized = true
-      }
+        session_recording: {
+          maskAllInputs: false,
+          maskInputOptions: {
+            password: true,
+            email: true,
+          },
+          maskTextSelector: '[data-sensitive]', // Add data-sensitive attribute to mask specific text
+        },
+        loaded: (ph) => {
+          posthogInitialized = true
+          console.log('PostHog initialized successfully')
+        }
+      })
+    } catch (error) {
+      console.error('Failed to initialize PostHog:', error)
+    }
+  }
+}
+
+// Delay PostHog initialization to avoid conflicts with AdSense
+if (typeof window !== 'undefined') {
+  // Wait for DOM to be fully loaded and give AdSense time to initialize
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      posthogInitTimer = setTimeout(initializePostHog, 2000)
     })
-  } catch (error) {
-    console.error('Failed to initialize PostHog:', error)
+  } else {
+    // DOM already loaded, still delay for AdSense
+    posthogInitTimer = setTimeout(initializePostHog, 2000)
   }
 }
 
@@ -38,7 +55,21 @@ interface PostHogProviderProps {
 }
 
 export function PostHogProvider({ children }: PostHogProviderProps) {
-  // If PostHog is not initialized, just render children
+  useEffect(() => {
+    // Ensure PostHog is initialized if it hasn't been already
+    if (!posthogInitialized && import.meta.env.VITE_POSTHOG_KEY) {
+      initializePostHog()
+    }
+
+    // Cleanup timer on unmount
+    return () => {
+      if (posthogInitTimer) {
+        clearTimeout(posthogInitTimer)
+      }
+    }
+  }, [])
+
+  // If PostHog is not configured, just render children
   if (!import.meta.env.VITE_POSTHOG_KEY) {
     return <>{children}</>
   }

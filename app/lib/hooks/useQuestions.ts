@@ -28,13 +28,14 @@ interface AnswerResult {
 }
 
 // Fetch a random question
-export function useRandomQuestion(filters: QuestionFilters) {
+export function useRandomQuestion(filters: QuestionFilters & { questionId?: string }) {
   return useQuery({
     queryKey: ['question', 'random', filters],
     queryFn: async () => {
       const params = new URLSearchParams()
       if (filters.type) params.append('type', filters.type)
       if (filters.category) params.append('category', filters.category)
+      if (filters.questionId) params.append('questionId', filters.questionId)
 
       const response = await fetch(`/api/questions/random?${params}`, {
         credentials: 'include',
@@ -45,7 +46,7 @@ export function useRandomQuestion(filters: QuestionFilters) {
       }
 
       const data = await response.json()
-      return data.question as GeneratedQuestion
+      return data.question as GeneratedQuestion & { shareableId?: string }
     },
     staleTime: 0, // Always fetch fresh questions
     gcTime: 0, // Don't cache questions
@@ -192,8 +193,10 @@ export function useUserStats(enabled: boolean = true) {
 }
 
 // Custom hook for managing the question flow
-export function useQuestionFlow() {
-  const [filters, setFilters] = useState<QuestionFilters>({})
+export function useQuestionFlow(initialQuestionId?: string) {
+  const [filters, setFilters] = useState<QuestionFilters & { questionId?: string }>(
+    initialQuestionId ? { questionId: initialQuestionId } : {}
+  )
   const [hintsUsed, setHintsUsed] = useState(0)
   const [startTime, setStartTime] = useState<number | null>(null)
   const [showSolution, setShowSolution] = useState(false)
@@ -232,9 +235,18 @@ export function useQuestionFlow() {
   }, [questionQuery.data, startTime, hintsUsed, submitMutation])
 
   const nextQuestion = useCallback(() => {
+    // Clear questionId when getting next question
+    setFilters(prev => {
+      const { questionId, ...rest } = prev
+      return rest
+    })
     questionQuery.refetch()
     startQuestion()
   }, [questionQuery, startQuestion])
+
+  const updateQuestionId = useCallback((questionId?: string) => {
+    setFilters(prev => ({ ...prev, questionId }))
+  }, [])
 
   return {
     question: questionQuery.data,
@@ -251,5 +263,6 @@ export function useQuestionFlow() {
     nextQuestion,
     isSubmitting: submitMutation.isPending,
     lastResult: submitMutation.data,
+    updateQuestionId,
   }
 }

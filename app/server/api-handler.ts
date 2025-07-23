@@ -100,6 +100,7 @@ export async function handleApiRequest(req: IncomingMessage, res: ServerResponse
       const question = await getRandomQuestion({
         type: query.type as any,
         category: query.category as any,
+        questionId: query.questionId,
       })
 
       res.statusCode = 200

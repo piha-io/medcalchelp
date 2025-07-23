@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import { useAnalytics } from './analytics'
 
 interface EngagementConfig {
@@ -6,6 +6,18 @@ interface EngagementConfig {
   trackTimeOnPage?: boolean
   trackIdleTime?: boolean
   idleThreshold?: number // milliseconds
+}
+
+// Debounce function to reduce event frequency
+function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: NodeJS.Timeout | null = null
+  return (...args: Parameters<T>) => {
+    if (timeout) clearTimeout(timeout)
+    timeout = setTimeout(() => func(...args), wait)
+  }
 }
 
 export function useEngagementTracking(config: EngagementConfig = {}) {
@@ -22,6 +34,7 @@ export function useEngagementTracking(config: EngagementConfig = {}) {
   const maxScrollRef = useRef(0)
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null)
   const isIdleRef = useRef(false)
+  const scrollDebounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     startTimeRef.current = Date.now()
@@ -29,8 +42,8 @@ export function useEngagementTracking(config: EngagementConfig = {}) {
     lastActivityRef.current = Date.now()
     isIdleRef.current = false
 
-    // Track scroll depth
-    const handleScroll = () => {
+    // Track scroll depth with debouncing
+    const handleScrollImmediate = () => {
       if (!trackScrollDepth) return
 
       const scrollHeight = document.documentElement.scrollHeight - window.innerHeight
@@ -43,10 +56,14 @@ export function useEngagementTracking(config: EngagementConfig = {}) {
 
         // Track significant scroll milestones
         if ([25, 50, 75, 90, 100].includes(scrollProgress)) {
-          track('scroll_milestone', {
-            scroll_depth: scrollProgress,
-            page_path: window.location.pathname,
-          })
+          // Debounce milestone tracking to prevent excessive events
+          if (scrollDebounceTimerRef.current) clearTimeout(scrollDebounceTimerRef.current)
+          scrollDebounceTimerRef.current = setTimeout(() => {
+            track('scroll_milestone', {
+              scroll_depth: scrollProgress,
+              page_path: window.location.pathname,
+            })
+          }, 250)
         }
       }
 
@@ -54,8 +71,14 @@ export function useEngagementTracking(config: EngagementConfig = {}) {
       handleActivity()
     }
 
-    // Track idle time
-    const handleActivity = () => {
+    // Debounced scroll handler
+    const handleScroll = useCallback(
+      debounce(handleScrollImmediate, 250),
+      [trackScrollDepth]
+    )
+
+    // Track idle time with debouncing
+    const handleActivityImmediate = () => {
       lastActivityRef.current = Date.now()
       
       if (isIdleRef.current) {
@@ -82,6 +105,12 @@ export function useEngagementTracking(config: EngagementConfig = {}) {
         }, idleThreshold)
       }
     }
+
+    // Debounced activity handler
+    const handleActivity = useCallback(
+      debounce(handleActivityImmediate, 500),
+      [trackIdleTime, idleThreshold]
+    )
 
     // Track page visibility changes
     const handleVisibilityChange = () => {
@@ -135,6 +164,9 @@ export function useEngagementTracking(config: EngagementConfig = {}) {
       // Clear timers
       if (idleTimerRef.current) {
         clearTimeout(idleTimerRef.current)
+      }
+      if (scrollDebounceTimerRef.current) {
+        clearTimeout(scrollDebounceTimerRef.current)
       }
 
       // Remove event listeners
