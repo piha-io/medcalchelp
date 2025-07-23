@@ -91,16 +91,29 @@ export function QuestionCard({
     const shareUrl = `${window.location.origin}/practice?questionId=${question.shareableId}`
     
     try {
-      if ('share' in navigator) {
+      // Check if native share is available
+      if ('share' in navigator && typeof (navigator as any).share === 'function') {
         // Use native share API on mobile
-        await navigator.share({
+        await (navigator as any).share({
           title: 'Medical Calculation Challenge',
           text: `Can you solve this ${question.type.replace(/_/g, ' ').toLowerCase()} problem?`,
           url: shareUrl
         })
-      } else {
+      } else if ('clipboard' in navigator && (navigator as any).clipboard) {
         // Copy to clipboard on desktop
-        await navigator.clipboard.writeText(shareUrl)
+        await (navigator as any).clipboard.writeText(shareUrl)
+        setShowShareToast(true)
+        setTimeout(() => setShowShareToast(false), 3000)
+      } else {
+        // Fallback for browsers without clipboard API
+        const textArea = document.createElement('textarea')
+        textArea.value = shareUrl
+        textArea.style.position = 'fixed'
+        textArea.style.opacity = '0'
+        document.body.appendChild(textArea)
+        textArea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textArea)
         setShowShareToast(true)
         setTimeout(() => setShowShareToast(false), 3000)
       }

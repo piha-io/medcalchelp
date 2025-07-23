@@ -101,7 +101,7 @@ export async function getGuideBySlug(slug: string) {
   })
 
   // Get prerequisites
-  let prerequisites = []
+  let prerequisites: any[] = []
   if (guide.prerequisites && guide.prerequisites.length > 0) {
     prerequisites = await prisma.guide.findMany({
       where: {

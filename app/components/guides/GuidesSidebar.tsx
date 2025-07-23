@@ -212,7 +212,7 @@ export function GuidesSidebar({
           Create an account to save your progress and get personalized recommendations.
         </p>
         <Link
-          to="/signup"
+          to="/auth"
           className="block w-full bg-white text-primary-600 font-semibold py-2 rounded-lg hover:bg-gray-50 transition-colors text-center"
         >
           Get Started
