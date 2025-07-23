@@ -85,7 +85,85 @@ async function seedGuides() {
       title: 'Mastering the Basic Dosage Formula: D/H × Q',
       slug: 'basic-dosage-formula',
       description: 'Learn the fundamental formula that forms the foundation of all medication calculations',
-      content: '# Mastering the Basic Dosage Formula: D/H × Q\n\n## Introduction\n\nThe basic dosage formula is the cornerstone of medication calculations in nursing. This guide will teach you how to master this essential formula and apply it confidently in clinical practice.\n\n## The Formula Explained\n\nThe basic dosage formula is:\n\n**Dose = (Desired ÷ Have) × Quantity**\n\nOr more commonly written as: **D/H × Q**\n\nWhere:\n- **D (Desired)** = The dose ordered by the physician\n- **H (Have)** = The dose available (what\'s on hand)\n- **Q (Quantity)** = The form in which the drug comes (tablets, mL, etc.)\n\n## Step-by-Step Process\n\n### Step 1: Identify the Components\nFirst, extract the key information from the medication order:\n- What dose is ordered? (Desired)\n- What strength is available? (Have)\n- What form does it come in? (Quantity)\n\n### Step 2: Ensure Unit Consistency\n**Critical**: All units must match before calculating!\n- If ordered in mg and available in g, convert first\n- If ordered in mcg and available in mg, convert first\n\n### Step 3: Set Up the Formula\nWrite out: D/H × Q = ?\n\n### Step 4: Calculate\nPerform the division and multiplication\n\n### Step 5: Verify Your Answer\nDoes the answer make clinical sense?\n\n## Example Problems\n\n### Example 1: Tablet Calculation\n**Order**: Amoxicillin 500 mg PO\n**Available**: Amoxicillin 250 mg tablets\n\nSolution:\n- D = 500 mg\n- H = 250 mg\n- Q = 1 tablet\n\nD/H × Q = 500/250 × 1 = 2 tablets\n\n### Example 2: Liquid Medication\n**Order**: Acetaminophen 650 mg PO\n**Available**: Acetaminophen 325 mg/5 mL\n\nSolution:\n- D = 650 mg\n- H = 325 mg\n- Q = 5 mL\n\nD/H × Q = 650/325 × 5 = 2 × 5 = 10 mL\n\n## Summary\n\nThe D/H × Q formula is your foundation for safe medication administration. Master this formula through practice, and you\'ll build confidence in medication calculations. Remember: accuracy saves lives!',
+      content: `# Mastering the Basic Dosage Formula: D/H × Q
+
+## Introduction
+
+The basic dosage formula is the cornerstone of medication calculations in nursing. This guide will teach you how to master this essential formula and apply it confidently in clinical practice.
+
+## The Formula Explained
+
+The basic dosage formula is:
+
+**Dose = (Desired ÷ Have) × Quantity**
+
+Or more commonly written as: **D/H × Q**
+
+Where:
+- **D (Desired)** = The dose ordered by the physician
+- **H (Have)** = The dose available (what's on hand)  
+- **Q (Quantity)** = The form in which the drug comes (tablets, mL, etc.)
+
+## Step-by-Step Process
+
+### Step 1: Identify the Components
+First, extract the key information from the medication order:
+
+- What dose is ordered? (Desired)
+- What strength is available? (Have)
+- What form does it come in? (Quantity)
+
+### Step 2: Ensure Unit Consistency
+**Critical**: All units must match before calculating!
+
+- If ordered in mg and available in g, convert first
+- If ordered in mcg and available in mg, convert first
+
+### Step 3: Set Up the Formula
+Write out: D/H × Q = ?
+
+### Step 4: Calculate
+Perform the division and multiplication
+
+### Step 5: Verify Your Answer
+Does the answer make clinical sense?
+
+## Example Problems
+
+### Example 1: Tablet Calculation
+**Order**: Amoxicillin 500 mg PO  
+**Available**: Amoxicillin 250 mg tablets
+
+**Solution:**
+- D = 500 mg
+- H = 250 mg  
+- Q = 1 tablet
+
+**Calculation:** D/H × Q = 500/250 × 1 = 2 tablets
+
+### Example 2: Liquid Medication
+**Order**: Acetaminophen 650 mg PO  
+**Available**: Acetaminophen 325 mg/5 mL
+
+**Solution:**
+- D = 650 mg
+- H = 325 mg
+- Q = 5 mL
+
+**Calculation:** D/H × Q = 650/325 × 5 = 2 × 5 = 10 mL
+
+## Key Clinical Tips
+
+- **Always double-check**: Especially with high-alert medications
+- **When in doubt**: Verify with pharmacy or a colleague
+- **Document clearly**: Show your work for verification
+- **Use calculators**: But understand the process first
+
+## Summary
+
+The D/H × Q formula is your foundation for safe medication administration. Master this formula through practice, and you'll build confidence in medication calculations. 
+
+**Remember: accuracy saves lives!**`,
       categoryId: categories[0].id,
       conceptIds: [concepts[0].id, concepts[2].id],
       difficulty: 'BEGINNER',
@@ -112,7 +190,132 @@ async function seedGuides() {
       title: 'IV Drip Rate Calculations: Complete Guide',
       slug: 'iv-drip-rate-calculations',
       description: 'Master IV flow rates, drip factors, and infusion time calculations',
-      content: '# IV Drip Rate Calculations: Complete Guide\n\n## Introduction\n\nIntravenous (IV) therapy is a critical nursing skill. Accurate IV drip rate calculations ensure patients receive medications and fluids at the prescribed rate.\n\n## Understanding IV Equipment\n\n### Drop Factors (gtt/mL)\nDifferent IV tubing delivers different drop sizes:\n\n**Macrodrip tubing:**\n- 10 gtt/mL\n- 15 gtt/mL\n- 20 gtt/mL\n\n**Microdrip tubing:**\n- 60 gtt/mL (always)\n\n## Essential Formulas\n\n### Formula 1: Drops per Minute\n**gtt/min = (Volume in mL × Drop factor) ÷ Time in minutes**\n\n### Formula 2: mL per Hour\n**mL/hr = Total volume in mL ÷ Time in hours**\n\n## Example Calculation\n**Order**: 1000 mL Normal Saline over 8 hours\n**Tubing**: 15 gtt/mL\n\n**Solution**:\n1. Volume = 1000 mL\n2. Time = 8 hours = 480 minutes\n3. Drop factor = 15 gtt/mL\n\ngtt/min = (1000 × 15) ÷ 480 = 31 gtt/min\n\n## Summary\n\nIV drip rate calculations are essential for safe patient care. With practice, these calculations become second nature!',
+      content: `# IV Drip Rate Calculations: Complete Guide
+
+## Introduction
+
+Intravenous (IV) therapy is a critical nursing skill. Accurate IV drip rate calculations ensure patients receive medications and fluids at the prescribed rate. This guide covers everything from basic drip rates to complex infusion calculations.
+
+## Understanding IV Equipment
+
+### Drop Factors (gtt/mL)
+Different IV tubing delivers different drop sizes:
+
+**Macrodrip tubing:**
+- 10 gtt/mL
+- 15 gtt/mL  
+- 20 gtt/mL
+
+**Microdrip tubing:**
+- 60 gtt/mL (always)
+
+**Important Note:** Microdrip (60 gtt/mL) is typically used for:
+- Pediatric patients
+- Precise medication delivery
+- When rate is ≤ 50 mL/hr
+
+## Essential Formulas
+
+### Formula 1: Drops per Minute
+\`\`\`
+gtt/min = (Volume in mL × Drop factor) ÷ Time in minutes
+\`\`\`
+
+### Formula 2: mL per Hour  
+\`\`\`
+mL/hr = Total volume in mL ÷ Time in hours
+\`\`\`
+
+### Formula 3: Infusion Time
+\`\`\`
+Time (hours) = Total volume (mL) ÷ Rate (mL/hr)
+\`\`\`
+
+## Step-by-Step Calculation Process
+
+### For Drops per Minute:
+
+1. **Identify the information:**
+   - Total volume to infuse
+   - Time for infusion  
+   - Drop factor of tubing
+
+2. **Convert time to minutes:**
+   - 1 hour = 60 minutes
+   - 30 minutes = 0.5 hours
+
+3. **Apply the formula:**
+   - Calculate step by step
+   - Round appropriately
+
+4. **Verify your answer:**
+   - Does it seem reasonable?
+   - Double-check math
+
+## Detailed Examples
+
+### Example 1: Basic Drip Rate
+**Order**: 1000 mL Normal Saline over 8 hours  
+**Tubing**: 15 gtt/mL
+
+**Solution:**
+1. Volume = 1000 mL
+2. Time = 8 hours = 480 minutes
+3. Drop factor = 15 gtt/mL
+
+**Calculation:**  
+gtt/min = (1000 × 15) ÷ 480 = 15,000 ÷ 480 = 31.25 ≈ **31 gtt/min**
+
+### Example 2: Microdrip Calculation
+**Order**: 250 mL D5W over 3 hours  
+**Tubing**: Microdrip (60 gtt/mL)
+
+**Solution:**
+1. First find mL/hr: 250 mL ÷ 3 hr = 83.33 mL/hr
+2. For microdrip: gtt/min = mL/hr (special property!)
+3. Therefore: **83 gtt/min**
+
+## Quick Reference Card
+
+**Microdrip Shortcut:** gtt/min = mL/hr (for 60 gtt/mL only!)
+
+**Time Conversions:**
+- 15 min = 0.25 hr
+- 30 min = 0.5 hr  
+- 45 min = 0.75 hr
+
+**Common Rates:**
+- KVO (keep vein open): 10-30 mL/hr
+- Maintenance fluids: 75-125 mL/hr
+- Rapid resuscitation: Up to 999 mL/hr
+
+## Safety Considerations
+
+1. **Always verify calculations** with another nurse for:
+   - High-alert medications
+   - Pediatric patients
+   - Unusual rates
+
+2. **Document clearly:**
+   - Start time
+   - Rate
+   - Any rate changes
+
+3. **Monitor patients for:**
+   - Fluid overload
+   - Infiltration  
+   - Adverse reactions
+
+## Summary
+
+IV drip rate calculations are essential for safe patient care. Remember to:
+
+- Identify the correct drop factor
+- Convert units appropriately  
+- Double-check calculations
+- Monitor patient response
+
+**With practice, these calculations become second nature!**`,
       categoryId: categories[1].id,
       conceptIds: [concepts[5].id, concepts[0].id],
       difficulty: 'INTERMEDIATE',
@@ -139,7 +342,169 @@ async function seedGuides() {
       title: 'Medical Unit Conversions: Essential Guide',
       slug: 'medical-unit-conversions',
       description: 'Master all unit conversion systems used in healthcare',
-      content: '# Medical Unit Conversions: Essential Guide\n\n## Introduction\n\nAccurate unit conversion is crucial for medication safety. This guide covers conversion systems you\'ll encounter in healthcare.\n\n## The Metric System\n\nThe metric system is the primary measurement system in healthcare.\n\n### Weight Conversions (Metric)\n\n**Essential conversions:**\n- 1 kg = 1,000 g\n- 1 g = 1,000 mg\n- 1 mg = 1,000 mcg\n\n### Volume Conversions (Metric)\n\n**Essential conversions:**\n- 1 L = 1,000 mL\n- 1 mL = 1 cc\n\n## Household Measurements\n\n### Volume (Household)\n\n- 1 teaspoon (tsp) = 5 mL\n- 1 tablespoon (tbsp) = 15 mL\n- 1 fluid ounce (fl oz) = 30 mL\n\n### Weight (Household)\n\n- 1 pound (lb) = 454 g\n- 2.2 pounds = 1 kg\n\n## Summary\n\nUnit conversion mastery requires memorizing key conversions, understanding conversion methods, and practicing regularly.',
+      content: `# Medical Unit Conversions: Essential Guide
+
+## Introduction
+
+Accurate unit conversion is crucial for medication safety. This comprehensive guide covers all conversion systems you'll encounter in healthcare, with practical strategies for quick and accurate conversions.
+
+## The Metric System
+
+The metric system is the primary measurement system in healthcare. It's based on units of 10, making conversions straightforward.
+
+### Metric Prefixes and Their Values
+
+| Prefix | Symbol | Value | Relation to Base |
+|--------|--------|-------|------------------|
+| kilo | k | 1,000 | 1,000 × base |
+| hecto | h | 100 | 100 × base |
+| deka | da | 10 | 10 × base |
+| **base** | - | 1 | gram, liter, meter |
+| deci | d | 0.1 | 1/10 of base |
+| centi | c | 0.01 | 1/100 of base |
+| milli | m | 0.001 | 1/1000 of base |
+| micro | mc/μ | 0.000001 | 1/1,000,000 of base |
+
+### Weight Conversions (Metric)
+
+**Essential conversions:**
+- 1 kg = 1,000 g
+- 1 g = 1,000 mg  
+- 1 mg = 1,000 mcg (or μg)
+
+**Memory trick:** "King Henry Died Monday Drinking Chocolate Milk"  
+(Kilo, Hecto, Deka, Meter/Liter/Gram, Deci, Centi, Milli)
+
+### Volume Conversions (Metric)
+
+**Essential conversions:**
+- 1 L = 1,000 mL
+- 1 mL = 1 cc (cubic centimeter)
+- 1 mL = 1 g (for water-based solutions)
+
+## Household Measurements
+
+Common in home healthcare and patient education:
+
+### Volume (Household)
+
+| Household | Metric Equivalent |
+|-----------|------------------|
+| 1 teaspoon (tsp) | 5 mL |
+| 1 tablespoon (tbsp) | 15 mL |
+| 1 fluid ounce (fl oz) | 30 mL |
+| 1 cup | 240 mL |
+| 1 pint (pt) | 480 mL |
+| 1 quart (qt) | 960 mL |
+
+### Weight (Household)
+
+| Household | Metric Equivalent |
+|-----------|------------------|
+| 1 ounce (oz) | 28.35 g |
+| 1 pound (lb) | 453.6 g (≈ 454 g) |
+| 2.2 pounds | 1 kg |
+
+## Conversion Strategies
+
+### Method 1: Dimensional Analysis
+
+Set up conversions as fractions that cancel units:
+
+**Example:** Convert 2.5 g to mg
+\`\`\`
+2.5 g × (1000 mg / 1 g) = 2,500 mg
+\`\`\`
+
+### Method 2: Decimal Movement
+
+For metric conversions, move decimal point:
+- **Larger to smaller unit:** move right
+- **Smaller to larger unit:** move left
+
+**Example:** 0.75 g to mg
+- mg is 1000× smaller than g  
+- Move decimal 3 places right: 750 mg
+
+### Method 3: Ratio and Proportion
+
+Set up equation:
+\`\`\`
+Known ratio = Unknown ratio
+1 g : 1000 mg = 2.5 g : x mg
+\`\`\`
+
+## Complex Conversion Examples
+
+### Example 1: Multi-Step Conversion
+**Convert:** 2 tablespoons to mg (for liquid medication with 250 mg/5 mL)
+
+**Solution:**
+1. Convert tbsp to mL: 2 tbsp × 15 mL/tbsp = 30 mL
+2. Set up proportion: 250 mg/5 mL = x mg/30 mL  
+3. Solve: x = (250 × 30) ÷ 5 = **1,500 mg**
+
+### Example 2: Weight-Based Dosing  
+**Order:** 15 mg/kg for patient weighing 176 lbs
+
+**Solution:**
+1. Convert lbs to kg: 176 lbs ÷ 2.2 = 80 kg
+2. Calculate dose: 15 mg/kg × 80 kg = 1,200 mg
+3. Convert if needed: 1,200 mg = **1.2 g**
+
+## Quick Reference Tables
+
+### Weight Quick Conversions
+| From | To | Multiply by |
+|------|-----|-------------|
+| kg | g | 1,000 |
+| g | mg | 1,000 |
+| mg | mcg | 1,000 |
+| lbs | kg | 0.454 |
+| kg | lbs | 2.2 |
+
+### Volume Quick Conversions  
+| From | To | Multiply by |
+|------|-----|-------------|
+| L | mL | 1,000 |
+| tsp | mL | 5 |
+| tbsp | mL | 15 |
+| oz | mL | 30 |
+
+## Common Pitfalls
+
+### 1. Decimal Point Errors
+- **Wrong:** 2.5 g = 25 mg
+- **Right:** 2.5 g = 2,500 mg
+
+### 2. Using Wrong Conversion Factor
+- **Wrong:** 1 kg = 2.2 lbs  
+- **Right:** 1 kg = 2.2 lbs (but 1 lb = 0.454 kg)
+
+### 3. Rounding Too Early
+Calculate with full precision, round only final answer.
+
+## Clinical Applications
+
+### Medication Dosing
+Always verify units match between order and available medication.
+
+### Patient Education  
+Convert medical measurements to familiar household units.
+
+### International Patients
+Be aware of measurement system differences.
+
+## Summary
+
+Unit conversion mastery requires:
+
+1. **Memorizing key conversions**
+2. **Understanding conversion methods**  
+3. **Practicing regularly**
+4. **Always double-checking work**
+
+**Remember:** A small conversion error can have serious consequences. When in doubt, verify with references or colleagues.`,
       categoryId: categories[2].id,
       conceptIds: [concepts[1].id],
       difficulty: 'BEGINNER',
