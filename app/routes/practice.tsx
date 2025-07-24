@@ -31,7 +31,7 @@ function PracticePage() {
   
   // Sync URL params with state
   useEffect(() => {
-    if (category && category !== selectedCategory) {
+    if (category) {
       // Validate that the category exists
       const validCategories = ['ALL', ...categories.map(c => c.id)]
       if (validCategories.includes(category)) {
@@ -39,9 +39,13 @@ function PracticePage() {
       } else {
         // Invalid category, clear it from URL
         navigate({ search: {} })
+        setSelectedCategory(null)
       }
+    } else {
+      // No category in URL, reset to category selection
+      setSelectedCategory(null)
     }
-  }, [category, navigate, selectedCategory])
+  }, [category, navigate])
 
   
   const {
@@ -68,6 +72,9 @@ function PracticePage() {
       setFilters({
         type: selectedCategory,
       })
+    } else {
+      // Clear filters when no category is selected
+      setFilters({})
     }
   }, [selectedCategory, setFilters])
 

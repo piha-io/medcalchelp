@@ -12,6 +12,7 @@ async function buildServer() {
         join(__dirname, 'app/server/functions/auth.ts'),
         join(__dirname, 'app/server/functions/questions.ts'),
         join(__dirname, 'app/server/functions/scores.ts'),
+        join(__dirname, 'app/server/functions/guides.ts'),
       ],
       bundle: true,
       outdir: 'dist/server',
