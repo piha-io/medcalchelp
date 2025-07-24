@@ -114,7 +114,7 @@ async function fresh() {
     execSync('npx prisma migrate reset --force', { stdio: 'inherit' })
     
     console.log('\\n2️⃣ Applying production seed...')
-    execSync('npm run db:seed:production', { stdio: 'inherit' })
+    execSync('npx tsx prisma/seed-production-no-faker.ts', { stdio: 'inherit' })
     
     console.log('\\n✅ Database reset to fresh production state!')
     

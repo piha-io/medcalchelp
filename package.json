@@ -12,7 +12,7 @@
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
-    "db:seed:production": "tsx prisma/seed-production.ts",
+    "db:seed:production": "tsx prisma/seed-production-no-faker.ts",
     "db:seed:dev": "tsx prisma/seed-dev.ts",
     "db:seed:guides": "tsx prisma/seed-guides.ts",
     "db:reset": "npx prisma migrate reset --force",
