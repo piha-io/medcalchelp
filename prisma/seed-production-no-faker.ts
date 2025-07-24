@@ -250,6 +250,107 @@ async function seedQuestionTemplates() {
         'Use the corresponding insulin dose for that range'
       ],
       explanation: 'Glucose {glucose}mg/dL falls in range requiring {answer} units of insulin'
+    },
+
+    // Dilution - Intermediate
+    {
+      type: 'DILUTION',
+      category: 'IV_MEDICATION',
+      title: 'Medication Dilution',
+      templateText: 'You need to dilute {initialVolume}mL of {initialConcentration}% solution to a {finalConcentration}% solution. How much diluent should be added?',
+      formulaTemplate: '({initialVolume} * {initialConcentration} / {finalConcentration}) - {initialVolume}',
+      variables: {
+        initialVolume: { min: 5, max: 50, step: 5 },
+        initialConcentration: { min: 10, max: 50, step: 5 },
+        finalConcentration: { min: 1, max: 10, step: 1 }
+      },
+      units: {
+        initialVolume: 'mL',
+        initialConcentration: '%',
+        finalConcentration: '%',
+        answer: 'mL'
+      },
+      hints: [
+        'Use dilution formula: C1V1 = C2V2',
+        'Amount of diluent = Final volume - Initial volume'
+      ],
+      explanation: 'Using C1V1 = C2V2: ({initialConcentration}% × {initialVolume}mL) ÷ {finalConcentration}% = Final volume. Diluent needed: Final volume - {initialVolume}mL = {answer}mL'
+    },
+
+    // Dimensional Analysis - Intermediate
+    {
+      type: 'DIMENSIONAL_ANALYSIS',
+      category: 'DIMENSIONAL_ANALYSIS',
+      title: 'Complex Unit Conversion',
+      templateText: 'Convert {amount} {fromUnit} to {toUnit} using dimensional analysis.',
+      formulaTemplate: '{amount} * {factor1} * {factor2}',
+      variables: {
+        amount: { min: 10, max: 100, step: 10 },
+        conversion: [
+          { from: 'mg/min', to: 'g/hr', factor1: 0.001, factor2: 60 },
+          { from: 'mcg/kg/min', to: 'mg/kg/hr', factor1: 0.001, factor2: 60 },
+          { from: 'L/day', to: 'mL/hr', factor1: 1000, factor2: 0.0417 }
+        ]
+      },
+      units: {
+        amount: 'varies',
+        answer: 'varies'
+      },
+      hints: [
+        'Set up conversion factors to cancel units systematically',
+        'Check that all unwanted units cancel out'
+      ],
+      explanation: 'Dimensional analysis: {amount} {fromUnit} × conversion factors = {answer} {toUnit}'
+    },
+
+    // Heparin Protocol - Expert
+    {
+      type: 'HEPARIN_PROTOCOL',
+      category: 'HEPARIN_CALCULATION',
+      title: 'Heparin Infusion Rate',
+      templateText: 'Patient weighs {weight}kg. Heparin protocol: {unitsPerKg} units/kg/hr. Concentration is {concentration} units/mL. What is the infusion rate in mL/hr?',
+      formulaTemplate: '({weight} * {unitsPerKg}) / {concentration}',
+      variables: {
+        weight: { min: 60, max: 100, step: 5 },
+        unitsPerKg: { min: 12, max: 20, step: 2 },
+        concentration: { min: 1000, max: 25000, step: 5000 }
+      },
+      units: {
+        weight: 'kg',
+        unitsPerKg: 'units/kg/hr',
+        concentration: 'units/mL',
+        answer: 'mL/hr'
+      },
+      hints: [
+        'Calculate total units/hr needed: weight × units/kg/hr',
+        'Divide by concentration to get mL/hr'
+      ],
+      explanation: 'Heparin rate: ({weight}kg × {unitsPerKg} units/kg/hr) ÷ {concentration} units/mL = {answer} mL/hr'
+    },
+
+    // Reconstitution - Advanced
+    {
+      type: 'RECONSTITUTION',
+      category: 'POWDER_RECONSTITUTION',
+      title: 'Powder Reconstitution',
+      templateText: 'You have a {vialSize}mg vial of powdered medication. After adding {diluentVolume}mL of diluent, the final volume is {finalVolume}mL. What is the concentration?',
+      formulaTemplate: '{vialSize} / {finalVolume}',
+      variables: {
+        vialSize: { min: 250, max: 2000, step: 250 },
+        diluentVolume: { min: 5, max: 20, step: 2.5 },
+        finalVolume: { min: 5, max: 25, step: 2.5 }
+      },
+      units: {
+        vialSize: 'mg',
+        diluentVolume: 'mL',
+        finalVolume: 'mL',
+        answer: 'mg/mL'
+      },
+      hints: [
+        'Use the final volume, not the diluent volume, for concentration',
+        'Concentration = Total drug amount ÷ Final volume'
+      ],
+      explanation: 'Concentration after reconstitution: {vialSize}mg ÷ {finalVolume}mL = {answer}mg/mL'
     }
   ]
 
