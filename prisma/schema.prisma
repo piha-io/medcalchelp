@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,114 +8,103 @@ datasource db {
 }
 
 model User {
-  id              String          @id @default(cuid())
-  email           String          @unique
-  username        String?         @unique
-  emailVerified   Boolean         @default(false)
+  id              String        @id @default(cuid())
+  email           String        @unique
+  username        String?       @unique
+  emailVerified   Boolean       @default(false)
   emailVerifiedAt DateTime?
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  lastActive      DateTime        @default(now())
-  
-  profile         UserProfile?
-  attempts        UserAttempt[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  lastActive      DateTime      @default(now())
   achievements    Achievement[]
   scores          Score?
-  
+  attempts        UserAttempt[]
+  profile         UserProfile?
+
   @@index([email])
   @@index([username])
 }
 
 model VerificationCode {
-  id              String          @id @default(cuid())
-  email           String
-  code            String
-  expiresAt       DateTime
-  used            Boolean         @default(false)
-  createdAt       DateTime        @default(now())
-  
+  id        String   @id @default(cuid())
+  email     String
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
   @@index([email, code])
   @@index([createdAt])
 }
 
 model UserProfile {
-  id              String          @id @default(cuid())
-  userId          String          @unique
-  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  displayName     String?
-  bio             String?
-  avatarUrl       String?
-  totalPoints     Int             @default(0)
-  currentStreak   Int             @default(0)
-  longestStreak   Int             @default(0)
-  level           Int             @default(1)
-  experience      Int             @default(0)
-  
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  displayName   String?
+  bio           String?
+  avatarUrl     String?
+  totalPoints   Int      @default(0)
+  currentStreak Int      @default(0)
+  longestStreak Int      @default(0)
+  level         Int      @default(1)
+  experience    Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model QuestionTemplate {
-  id              String          @id @default(cuid())
-  type            QuestionType
-  category        QuestionCategory
-  title           String
-  templateText    String          // Template with placeholders like {weight}, {dose}
-  formulaTemplate String          // Formula template for generating answer
-  variables       Json            // JSON object defining variable ranges
-  units           Json            // JSON object defining units for variables
-  hints           String[]        // Array of hints
-  explanation     String          // Detailed explanation template
-  conversionFactors Json?         // For dimensional analysis: array of conversion factors
-  
-  attempts        UserAttempt[]
-  
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  
+  id                String           @id @default(cuid())
+  type              QuestionType
+  category          QuestionCategory
+  title             String
+  templateText      String
+  formulaTemplate   String
+  variables         Json
+  units             Json
+  hints             String[]
+  explanation       String
+  conversionFactors Json?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  attempts          UserAttempt[]
+
   @@index([type, category])
 }
 
 model UserAttempt {
-  id              String          @id @default(cuid())
+  id              String           @id @default(cuid())
   userId          String
-  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   questionId      String
-  question        QuestionTemplate @relation(fields: [questionId], references: [id])
-  
-  generatedValues Json            // The actual values used in this attempt
+  generatedValues Json
   userAnswer      Float
   correctAnswer   Float
   isCorrect       Boolean
-  tolerance       Float           @default(0.01) // Acceptable margin of error
-  
-  timeSpent       Int             // Time in seconds
-  hintsUsed       Int             @default(0)
+  tolerance       Float            @default(0.01)
+  timeSpent       Int
+  hintsUsed       Int              @default(0)
   pointsEarned    Int
-  
-  attemptedAt     DateTime        @default(now())
-  
+  attemptedAt     DateTime         @default(now())
+  question        QuestionTemplate @relation(fields: [questionId], references: [id])
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId, attemptedAt])
   @@index([questionId])
 }
 
 model Score {
-  id              String          @id @default(cuid())
-  userId          String          @unique
-  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  dailyScore      Int             @default(0)
-  weeklyScore     Int             @default(0)
-  monthlyScore    Int             @default(0)
-  allTimeScore    Int             @default(0)
-  
-  lastResetDaily  DateTime        @default(now())
-  lastResetWeekly DateTime        @default(now())
-  lastResetMonthly DateTime       @default(now())
-  
-  updatedAt       DateTime        @updatedAt
-  
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  dailyScore       Int      @default(0)
+  weeklyScore      Int      @default(0)
+  monthlyScore     Int      @default(0)
+  allTimeScore     Int      @default(0)
+  lastResetDaily   DateTime @default(now())
+  lastResetWeekly  DateTime @default(now())
+  lastResetMonthly DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([dailyScore(sort: Desc)])
   @@index([weeklyScore(sort: Desc)])
   @@index([monthlyScore(sort: Desc)])
@@ -126,15 +112,71 @@ model Score {
 }
 
 model Achievement {
-  id              String          @id @default(cuid())
-  userId          String
-  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  type            AchievementType
-  unlockedAt      DateTime        @default(now())
-  
+  id         String          @id @default(cuid())
+  userId     String
+  type       AchievementType
+  unlockedAt DateTime        @default(now())
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, type])
   @@index([userId])
+}
+
+model Guide {
+  id               String         @id @default(cuid())
+  slug             String         @unique
+  title            String
+  description      String
+  content          String
+  featuredImage    String?
+  difficulty       Difficulty     @default(BEGINNER)
+  prerequisites    String[]
+  learningOutcomes String[]
+  practiceProblems Json?
+  order            Int            @default(0)
+  categoryId       String
+  isPublished      Boolean        @default(false)
+  viewCount        Int            @default(0)
+  readingTime      Int
+  metaTitle        String?
+  metaDescription  String?
+  metaKeywords     String[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  category         GuideCategory  @relation(fields: [categoryId], references: [id])
+  concepts         GuideConcept[] @relation("GuideToGuideConcept")
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([difficulty])
+  @@index([isPublished])
+}
+
+model GuideCategory {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  guides      Guide[]
+
+  @@index([slug])
+  @@index([order])
+}
+
+model GuideConcept {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  guides      Guide[]  @relation("GuideToGuideConcept")
+
+  @@index([slug])
 }
 
 enum QuestionType {
@@ -190,79 +232,9 @@ enum AchievementType {
   ALL_CATEGORIES
 }
 
-// Educational Guide Models
-model Guide {
-  id              String          @id @default(cuid())
-  slug            String          @unique
-  title           String
-  description     String          @db.Text  // Brief description of what the guide covers
-  content         String          @db.Text
-  featuredImage   String?
-  
-  // Educational metadata
-  difficulty      Difficulty      @default(BEGINNER)
-  prerequisites   String[]        // Array of guide slugs that should be completed first
-  learningOutcomes String[]       // What students will learn
-  practiceProblems Json?          // Embedded practice problems with solutions
-  order           Int             @default(0) // For ordering guides within a category
-  
-  categoryId      String
-  category        GuideCategory   @relation(fields: [categoryId], references: [id])
-  
-  concepts        GuideConcept[]  // Key concepts covered
-  
-  isPublished     Boolean         @default(false)
-  viewCount       Int             @default(0)
-  readingTime     Int             // in minutes
-  
-  metaTitle       String?
-  metaDescription String?
-  metaKeywords    String[]
-  
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  
-  @@index([slug])
-  @@index([categoryId])
-  @@index([difficulty])
-  @@index([isPublished])
-}
-
-model GuideCategory {
-  id              String          @id @default(cuid())
-  name            String          @unique
-  slug            String          @unique
-  description     String?
-  icon            String?         // Icon name for UI
-  order           Int             @default(0) // For ordering categories
-  
-  guides          Guide[]
-  
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  
-  @@index([slug])
-  @@index([order])
-}
-
-model GuideConcept {
-  id              String          @id @default(cuid())
-  name            String          @unique
-  slug            String          @unique
-  description     String?
-  
-  guides          Guide[]
-  
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  
-  @@index([slug])
-}
-
 enum Difficulty {
   BEGINNER
   INTERMEDIATE
   ADVANCED
   EXPERT
 }
-
