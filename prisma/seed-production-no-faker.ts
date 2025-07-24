@@ -465,27 +465,39 @@ The D/H × Q formula is your foundation for safe medication administration. Mast
 }
 
 async function seedFakeUsers() {
-  // Generate 20 realistic fake users using deterministic data
-  const firstNames = ['Emma', 'Liam', 'Olivia', 'Noah', 'Ava', 'Ethan', 'Sophia', 'Mason', 'Isabella', 'William',
-                      'Mia', 'James', 'Charlotte', 'Benjamin', 'Amelia', 'Lucas', 'Harper', 'Henry', 'Evelyn', 'Alexander']
-  const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
-                     'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin']
+  // Generate 20 users with random usernames
+  const randomUsernames = [
+    'medstudent92', 'nursepro2024', 'clinicalace', 'rxmaster', 'nursingstar',
+    'medcalcwiz', 'dosageguru', 'ivtherapist', 'pharmgenius', 'criticalcare23',
+    'pediatricpro', 'emergencymed', 'surgicalskills', 'cardiacnurse', 'traumateam',
+    'medsafety101', 'clinicalexpert', 'pharmtech22', 'icunurse', 'medmathninja'
+  ]
+  
+  const firstNames = ['Alex', 'Sam', 'Jordan', 'Taylor', 'Casey', 'Morgan', 'Drew', 'Blake', 'Avery', 'Quinn',
+                      'Riley', 'Cameron', 'Jamie', 'Skyler', 'Reese', 'Dakota', 'Sage', 'River', 'Rowan', 'Finley']
+  const lastNames = ['Chen', 'Patel', 'Kim', 'Singh', 'Lee', 'Wang', 'Zhang', 'Ali', 'Martin', 'Garcia',
+                     'Smith', 'Johnson', 'Brown', 'Williams', 'Jones', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor']
   
   const users = []
   
   for (let i = 0; i < 20; i++) {
+    const username = randomUsernames[i]
     const firstName = firstNames[i]
     const lastName = lastNames[i]
-    const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`
-    const username = `${firstName.toLowerCase()}${lastName.toLowerCase()}${i + 1}`
+    const email = `${username}@medcalchelp.com`
     
-    // Create dates within last 30 days
-    const daysAgo = Math.floor(Math.random() * 30)
+    // Distribute user creation dates across last 60 days for variety
+    const daysAgo = Math.floor(Math.random() * 60)
     const createdDate = new Date()
     createdDate.setDate(createdDate.getDate() - daysAgo)
     
+    // Vary last active times - some very recent, some weeks ago
+    const lastActiveDaysAgo = i < 5 ? Math.floor(Math.random() * 2) : // Top 5 users active in last 2 days
+                              i < 10 ? Math.floor(Math.random() * 7) : // Next 5 active in last week
+                              Math.floor(Math.random() * 30) // Rest active in last month
+    
     const lastActiveDate = new Date()
-    lastActiveDate.setDate(lastActiveDate.getDate() - Math.floor(Math.random() * 7))
+    lastActiveDate.setDate(lastActiveDate.getDate() - lastActiveDaysAgo)
     
     const user = await prisma.user.create({
       data: {
@@ -497,12 +509,12 @@ async function seedFakeUsers() {
         profile: {
           create: {
             displayName: `${firstName} ${lastName}`,
-            bio: `Medical student interested in ${['pediatrics', 'emergency medicine', 'internal medicine', 'surgery', 'nursing'][i % 5]}`,
+            bio: `${['Medical student', 'Nursing student', 'Pharmacy student', 'Healthcare professional', 'Clinical educator'][i % 5]} passionate about medical calculations`,
             totalPoints: 0, // Will be calculated from attempts
-            currentStreak: Math.floor(Math.random() * 15),
-            longestStreak: Math.floor(Math.random() * 30),
+            currentStreak: i < 10 ? Math.floor(Math.random() * 15) + 5 : Math.floor(Math.random() * 5),
+            longestStreak: Math.floor(Math.random() * 30) + 5,
             level: Math.floor(Math.random() * 8) + 1,
-            experience: Math.floor(Math.random() * 2000),
+            experience: 0, // Will be calculated from attempts
           },
         },
       },
@@ -514,27 +526,53 @@ async function seedFakeUsers() {
     users.push(user)
   }
 
-  console.log(`✅ Created ${users.length} fake users`)
+  console.log(`✅ Created ${users.length} users with random usernames`)
 
   // Generate realistic user attempts and scores
   const questionTemplates = await prisma.questionTemplate.findMany()
   let totalAttempts = 0
 
-  for (const user of users) {
-    // Generate attempts spanning last 30 days
-    const numAttempts = Math.floor(Math.random() * 90) + 10 // 10-100 attempts per user
+  for (let userIndex = 0; userIndex < users.length; userIndex++) {
+    const user = users[userIndex]
+    
+    // Vary number of attempts based on user activity level
+    // Top users have more attempts, bottom users have fewer
+    const baseAttempts = userIndex < 5 ? 80 : userIndex < 10 ? 50 : userIndex < 15 ? 30 : 10
+    const numAttempts = baseAttempts + Math.floor(Math.random() * 20)
+    
     let userTotalPoints = 0
+    let dailyPoints = 0
+    let weeklyPoints = 0
+    let monthlyPoints = 0
     
     for (let i = 0; i < numAttempts; i++) {
       const questionTemplate = questionTemplates[Math.floor(Math.random() * questionTemplates.length)]
       
-      // Create attempt date within last 30 days
-      const attemptDate = new Date()
-      attemptDate.setDate(attemptDate.getDate() - Math.floor(Math.random() * 30))
+      // Distribute attempts across different time periods
+      let daysAgo
+      if (userIndex < 5 && i > numAttempts * 0.7) {
+        // Top 5 users: 70% of recent attempts in last 1 day (daily leaderboard)
+        daysAgo = Math.random() < 0.7 ? 0 : Math.floor(Math.random() * 7)
+      } else if (userIndex < 10 && i > numAttempts * 0.5) {
+        // Next 5 users: 50% of recent attempts in last 7 days (weekly leaderboard)
+        daysAgo = Math.floor(Math.random() * 7)
+      } else if (userIndex < 15) {
+        // Next 5 users: attempts spread across last 30 days (monthly leaderboard)
+        daysAgo = Math.floor(Math.random() * 30)
+      } else {
+        // Remaining users: older attempts (30-60 days)
+        daysAgo = Math.floor(Math.random() * 30) + 30
+      }
       
-      const isCorrect = Math.random() > 0.25 // 75% accuracy
+      const attemptDate = new Date()
+      attemptDate.setDate(attemptDate.getDate() - daysAgo)
+      
+      // Top users have higher accuracy
+      const accuracyThreshold = userIndex < 5 ? 0.15 : userIndex < 10 ? 0.2 : 0.3
+      const isCorrect = Math.random() > accuracyThreshold // 85%, 80%, or 70% accuracy
+      
       const timeSpent = Math.floor(Math.random() * 270) + 30 // 30-300 seconds
-      const hintsUsed = Math.floor(Math.random() * 4) // 0-3 hints
+      const hintsUsed = userIndex < 10 ? Math.floor(Math.random() * 2) : Math.floor(Math.random() * 4) // Better users use fewer hints
       
       // Calculate points (similar to actual logic)
       let basePoints = 20 // Default
@@ -546,6 +584,17 @@ async function seedFakeUsers() {
       
       const pointsEarned = isCorrect ? Math.max(basePoints - (hintsUsed * 5), 5) : 0
       userTotalPoints += pointsEarned
+      
+      // Track points by time period
+      if (daysAgo === 0) {
+        dailyPoints += pointsEarned
+      }
+      if (daysAgo < 7) {
+        weeklyPoints += pointsEarned
+      }
+      if (daysAgo < 30) {
+        monthlyPoints += pointsEarned
+      }
       
       await prisma.userAttempt.create({
         data: {
@@ -565,10 +614,10 @@ async function seedFakeUsers() {
       totalAttempts++
     }
 
-    // Create score records with realistic time-based distribution
-    const dailyScore = Math.floor(Math.random() * Math.min(userTotalPoints, 200))
-    const weeklyScore = Math.max(dailyScore, Math.floor(Math.random() * Math.min(userTotalPoints, 800)))
-    const monthlyScore = Math.max(weeklyScore, Math.floor(Math.random() * userTotalPoints))
+    // Create score records with actual calculated time-based scores
+    const dailyScore = dailyPoints
+    const weeklyScore = weeklyPoints
+    const monthlyScore = monthlyPoints
     
     await prisma.score.create({
       data: {
@@ -634,6 +683,13 @@ async function seedFakeUsers() {
   }
 
   console.log(`✅ Generated ${totalAttempts} user attempts with realistic scoring`)
+  
+  // Show leaderboard preview
+  console.log('\n📊 Leaderboard Distribution:')
+  console.log('- Top 5 users: High daily scores (active today)')
+  console.log('- Users 6-10: High weekly scores (active this week)')
+  console.log('- Users 11-15: High monthly scores (active this month)')
+  console.log('- Users 16-20: Historical players (less recent activity)')
 }
 
 seedProduction()
