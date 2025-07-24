@@ -1,4 +1,4 @@
-import { prisma } from '../../lib/db/prisma'
+import { prisma } from '../../lib/prisma'
 import { generateToken } from '../../lib/auth/jwt'
 import { createVerificationCode, verifyCode } from '../../lib/auth/verification'
 import { sendVerificationCode } from '../../lib/email/email.service'
