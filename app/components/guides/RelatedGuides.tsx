@@ -1,5 +1,4 @@
 import { Link } from '@tanstack/react-router'
-import { formatDate } from '../../lib/utils/date'
 import { DifficultyBadge } from './DifficultyBadge'
 
 interface RelatedGuide {
@@ -8,7 +7,6 @@ interface RelatedGuide {
   title: string
   description: string
   featuredImage?: string
-  publishedAt: string
   readingTime: number
   difficulty: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT'
 }
@@ -61,8 +59,6 @@ export function RelatedGuides({ guides }: RelatedGuidesProps) {
               
               {/* Meta */}
               <div className="text-xs text-gray-500">
-                <span>{formatDate(new Date(guide.publishedAt))}</span>
-                <span className="mx-2">•</span>
                 <span>{guide.readingTime} min read</span>
               </div>
             </Link>
