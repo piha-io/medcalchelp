@@ -28,10 +28,6 @@ async function seedProduction() {
   console.log('📖 Seeding guides system...')
   await seedGuidesSystem()
 
-  // 3. Seed Fake Users with Realistic Data
-  console.log('👥 Seeding fake users...')
-  await seedFakeUsers()
-
   console.log('🎉 Production seeding completed!')
 }
 
@@ -135,26 +131,101 @@ async function seedQuestionTemplates() {
     {
       type: 'UNIT_CONVERSION',
       category: 'METRIC_CONVERSION',
-      title: 'Weight Unit Conversion',
-      templateText: 'Convert {amount} {fromUnit} to {toUnit}.',
-      formulaTemplate: '{amount} * {conversionFactor}',
+      title: 'Milligrams to Grams',
+      templateText: 'Convert {value}mg to grams.',
+      formulaTemplate: '{value} / 1000',
       variables: {
-        amount: { min: 0.5, max: 10, step: 0.5 },
-        conversion: [
-          { from: 'g', to: 'mg', factor: 1000 },
-          { from: 'kg', to: 'g', factor: 1000 },
-          { from: 'mg', to: 'mcg', factor: 1000 }
-        ]
+        value: { min: 250, max: 5000, step: 250 }
       },
       units: {
-        amount: 'varies',
-        answer: 'varies'
+        value: 'mg',
+        answer: 'g'
       },
       hints: [
-        'Remember: 1g = 1000mg, 1kg = 1000g, 1mg = 1000mcg',
-        'Moving from larger to smaller units: multiply'
+        '1 gram = 1000 milligrams',
+        'Divide by 1000'
       ],
-      explanation: 'Conversion: {amount} {fromUnit} × {conversionFactor} = {answer} {toUnit}'
+      explanation: 'To convert mg to g, divide by 1000. {value}mg ÷ 1000 = {answer}g'
+    },
+    
+    {
+      type: 'UNIT_CONVERSION',
+      category: 'METRIC_CONVERSION',
+      title: 'Grams to Milligrams',
+      templateText: 'Convert {value}g to milligrams.',
+      formulaTemplate: '{value} * 1000',
+      variables: {
+        value: { min: 0.5, max: 10, step: 0.5 }
+      },
+      units: {
+        value: 'g',
+        answer: 'mg'
+      },
+      hints: [
+        '1 gram = 1000 milligrams',
+        'Multiply by 1000'
+      ],
+      explanation: 'To convert g to mg, multiply by 1000. {value}g × 1000 = {answer}mg'
+    },
+    
+    {
+      type: 'UNIT_CONVERSION',
+      category: 'VOLUME_CONVERSION',
+      title: 'Liters to Milliliters',
+      templateText: 'Convert {value}L to milliliters.',
+      formulaTemplate: '{value} * 1000',
+      variables: {
+        value: { min: 0.5, max: 3, step: 0.5 }
+      },
+      units: {
+        value: 'L',
+        answer: 'mL'
+      },
+      hints: [
+        '1 liter = 1000 milliliters',
+        'Multiply by 1000'
+      ],
+      explanation: 'To convert L to mL, multiply by 1000. {value}L × 1000 = {answer}mL'
+    },
+    
+    {
+      type: 'UNIT_CONVERSION',
+      category: 'METRIC_CONVERSION',
+      title: 'Kilograms to Grams',
+      templateText: 'Convert {value}kg to grams.',
+      formulaTemplate: '{value} * 1000',
+      variables: {
+        value: { min: 0.5, max: 5, step: 0.5 }
+      },
+      units: {
+        value: 'kg',
+        answer: 'g'
+      },
+      hints: [
+        '1 kilogram = 1000 grams',
+        'Multiply by 1000'
+      ],
+      explanation: 'To convert kg to g, multiply by 1000. {value}kg × 1000 = {answer}g'
+    },
+    
+    {
+      type: 'UNIT_CONVERSION',
+      category: 'METRIC_CONVERSION',
+      title: 'Micrograms to Milligrams',
+      templateText: 'Convert {value}mcg to milligrams.',
+      formulaTemplate: '{value} / 1000',
+      variables: {
+        value: { min: 250, max: 2000, step: 250 }
+      },
+      units: {
+        value: 'mcg',
+        answer: 'mg'
+      },
+      hints: [
+        '1 milligram = 1000 micrograms',
+        'Divide by 1000'
+      ],
+      explanation: 'To convert mcg to mg, divide by 1000. {value}mcg ÷ 1000 = {answer}mg'
     },
 
     // Pediatric Dosing - Advanced
@@ -1833,233 +1904,7 @@ Vasoactive drip calculations require:
   console.log(`✅ Created ${guides.length} guides`)
 }
 
-async function seedFakeUsers() {
-  // Generate 20 users with random usernames
-  const randomUsernames = [
-    'medstudent92', 'nursepro2024', 'clinicalace', 'rxmaster', 'nursingstar',
-    'medcalcwiz', 'dosageguru', 'ivtherapist', 'pharmgenius', 'criticalcare23',
-    'pediatricpro', 'emergencymed', 'surgicalskills', 'cardiacnurse', 'traumateam',
-    'medsafety101', 'clinicalexpert', 'pharmtech22', 'icunurse', 'medmathninja'
-  ]
-  
-  const firstNames = ['Alex', 'Sam', 'Jordan', 'Taylor', 'Casey', 'Morgan', 'Drew', 'Blake', 'Avery', 'Quinn',
-                      'Riley', 'Cameron', 'Jamie', 'Skyler', 'Reese', 'Dakota', 'Sage', 'River', 'Rowan', 'Finley']
-  const lastNames = ['Chen', 'Patel', 'Kim', 'Singh', 'Lee', 'Wang', 'Zhang', 'Ali', 'Martin', 'Garcia',
-                     'Smith', 'Johnson', 'Brown', 'Williams', 'Jones', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor']
-  
-  const users = []
-  
-  for (let i = 0; i < 20; i++) {
-    const username = randomUsernames[i]
-    const firstName = firstNames[i]
-    const lastName = lastNames[i]
-    const email = `${username}@medcalchelp.com`
-    
-    // Distribute user creation dates across last 60 days for variety
-    const daysAgo = Math.floor(Math.random() * 60)
-    const createdDate = new Date()
-    createdDate.setDate(createdDate.getDate() - daysAgo)
-    
-    // Vary last active times - some very recent, some weeks ago
-    const lastActiveDaysAgo = i < 5 ? Math.floor(Math.random() * 2) : // Top 5 users active in last 2 days
-                              i < 10 ? Math.floor(Math.random() * 7) : // Next 5 active in last week
-                              Math.floor(Math.random() * 30) // Rest active in last month
-    
-    const lastActiveDate = new Date()
-    lastActiveDate.setDate(lastActiveDate.getDate() - lastActiveDaysAgo)
-    
-    const user = await prisma.user.create({
-      data: {
-        email: email,
-        username: username,
-        emailVerified: true,
-        emailVerifiedAt: createdDate,
-        lastActive: lastActiveDate,
-        profile: {
-          create: {
-            displayName: `${firstName} ${lastName}`,
-            bio: `${['Medical student', 'Nursing student', 'Pharmacy student', 'Healthcare professional', 'Clinical educator'][i % 5]} passionate about medical calculations`,
-            totalPoints: 0, // Will be calculated from attempts
-            currentStreak: i < 10 ? Math.floor(Math.random() * 15) + 5 : Math.floor(Math.random() * 5),
-            longestStreak: Math.floor(Math.random() * 30) + 5,
-            level: Math.floor(Math.random() * 8) + 1,
-            experience: 0, // Will be calculated from attempts
-          },
-        },
-      },
-      include: {
-        profile: true,
-      },
-    })
-    
-    users.push(user)
-  }
-
-  console.log(`✅ Created ${users.length} users with random usernames`)
-
-  // Generate realistic user attempts and scores
-  const questionTemplates = await prisma.questionTemplate.findMany()
-  let totalAttempts = 0
-
-  for (let userIndex = 0; userIndex < users.length; userIndex++) {
-    const user = users[userIndex]
-    
-    // Vary number of attempts based on user activity level
-    // Top users have more attempts, bottom users have fewer
-    const baseAttempts = userIndex < 5 ? 80 : userIndex < 10 ? 50 : userIndex < 15 ? 30 : 10
-    const numAttempts = baseAttempts + Math.floor(Math.random() * 20)
-    
-    let userTotalPoints = 0
-    let dailyPoints = 0
-    let weeklyPoints = 0
-    let monthlyPoints = 0
-    
-    for (let i = 0; i < numAttempts; i++) {
-      const questionTemplate = questionTemplates[Math.floor(Math.random() * questionTemplates.length)]
-      
-      // Distribute attempts across different time periods
-      let daysAgo
-      if (userIndex < 5 && i > numAttempts * 0.7) {
-        // Top 5 users: 70% of recent attempts in last 1 day (daily leaderboard)
-        daysAgo = Math.random() < 0.7 ? 0 : Math.floor(Math.random() * 7)
-      } else if (userIndex < 10 && i > numAttempts * 0.5) {
-        // Next 5 users: 50% of recent attempts in last 7 days (weekly leaderboard)
-        daysAgo = Math.floor(Math.random() * 7)
-      } else if (userIndex < 15) {
-        // Next 5 users: attempts spread across last 30 days (monthly leaderboard)
-        daysAgo = Math.floor(Math.random() * 30)
-      } else {
-        // Remaining users: older attempts (30-60 days)
-        daysAgo = Math.floor(Math.random() * 30) + 30
-      }
-      
-      const attemptDate = new Date()
-      attemptDate.setDate(attemptDate.getDate() - daysAgo)
-      
-      // Top users have higher accuracy
-      const accuracyThreshold = userIndex < 5 ? 0.15 : userIndex < 10 ? 0.2 : 0.3
-      const isCorrect = Math.random() > accuracyThreshold // 85%, 80%, or 70% accuracy
-      
-      const timeSpent = Math.floor(Math.random() * 270) + 30 // 30-300 seconds
-      const hintsUsed = userIndex < 10 ? Math.floor(Math.random() * 2) : Math.floor(Math.random() * 4) // Better users use fewer hints
-      
-      // Calculate points (similar to actual logic)
-      let basePoints = 20 // Default
-      if (questionTemplate.type === 'DOSAGE_CALCULATION' || questionTemplate.type === 'UNIT_CONVERSION') {
-        basePoints = 15
-      } else if (questionTemplate.type === 'CRITICAL_CARE' || questionTemplate.type === 'INSULIN_DOSING') {
-        basePoints = 40
-      }
-      
-      const pointsEarned = isCorrect ? Math.max(basePoints - (hintsUsed * 5), 5) : 0
-      userTotalPoints += pointsEarned
-      
-      // Track points by time period
-      if (daysAgo === 0) {
-        dailyPoints += pointsEarned
-      }
-      if (daysAgo < 7) {
-        weeklyPoints += pointsEarned
-      }
-      if (daysAgo < 30) {
-        monthlyPoints += pointsEarned
-      }
-      
-      await prisma.userAttempt.create({
-        data: {
-          userId: user.id,
-          questionId: questionTemplate.id,
-          generatedValues: { dose: 100, strength: 50 }, // Sample values
-          userAnswer: Math.random() * 10 + 1,
-          correctAnswer: Math.random() * 10 + 1,
-          isCorrect,
-          timeSpent,
-          hintsUsed,
-          pointsEarned,
-          attemptedAt: attemptDate,
-        },
-      })
-      
-      totalAttempts++
-    }
-
-    // Create score records with actual calculated time-based scores
-    const dailyScore = dailyPoints
-    const weeklyScore = weeklyPoints
-    const monthlyScore = monthlyPoints
-    
-    await prisma.score.create({
-      data: {
-        userId: user.id,
-        dailyScore,
-        weeklyScore,
-        monthlyScore,
-        allTimeScore: userTotalPoints,
-        lastResetDaily: new Date(),
-        lastResetWeekly: new Date(),
-        lastResetMonthly: new Date(),
-      },
-    })
-
-    // Update user profile with total points
-    await prisma.userProfile.update({
-      where: { userId: user.id },
-      data: {
-        totalPoints: userTotalPoints,
-        experience: userTotalPoints,
-      },
-    })
-
-    // Generate some achievements for active users
-    if (userTotalPoints > 100) {
-      const achievementDate = new Date()
-      achievementDate.setDate(achievementDate.getDate() - Math.floor(Math.random() * 20))
-      
-      await prisma.achievement.create({
-        data: {
-          userId: user.id,
-          type: 'FIRST_CORRECT',
-          unlockedAt: achievementDate,
-        },
-      })
-    }
-
-    if (userTotalPoints > 500) {
-      const achievementDate = new Date()
-      achievementDate.setDate(achievementDate.getDate() - Math.floor(Math.random() * 15))
-      
-      await prisma.achievement.create({
-        data: {
-          userId: user.id,
-          type: 'QUESTIONS_10',
-          unlockedAt: achievementDate,
-        },
-      })
-    }
-
-    if (userTotalPoints > 1000) {
-      const achievementDate = new Date()
-      achievementDate.setDate(achievementDate.getDate() - Math.floor(Math.random() * 10))
-      
-      await prisma.achievement.create({
-        data: {
-          userId: user.id,
-          type: 'ACCURACY_80',
-          unlockedAt: achievementDate,
-        },
-      })
-    }
-  }
-
-  console.log(`✅ Generated ${totalAttempts} user attempts with realistic scoring`)
-  
-  // Show leaderboard preview
-  console.log('\n📊 Leaderboard Distribution:')
-  console.log('- Top 5 users: High daily scores (active today)')
-  console.log('- Users 6-10: High weekly scores (active this week)')
-  console.log('- Users 11-15: High monthly scores (active this month)')
-  console.log('- Users 16-20: Historical players (less recent activity)')
-}
+// Function removed - no fake users in production
 
 seedProduction()
   .catch((e) => {
@@ -2069,3 +1914,4 @@ seedProduction()
   .finally(async () => {
     await prisma.$disconnect()
   })
+

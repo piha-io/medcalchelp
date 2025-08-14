@@ -29,10 +29,6 @@ async function seedProduction() {
   console.log('📖 Seeding guides system...')
   await seedGuidesSystem()
 
-  // 3. Seed Fake Users with Realistic Data
-  console.log('👥 Seeding fake users...')
-  await seedFakeUsers()
-
   console.log('🎉 Production seeding completed!')
 }
 
@@ -136,26 +132,101 @@ async function seedQuestionTemplates() {
     {
       type: 'UNIT_CONVERSION',
       category: 'METRIC_CONVERSION',
-      title: 'Weight Unit Conversion',
-      templateText: 'Convert {amount} {fromUnit} to {toUnit}.',
-      formulaTemplate: '{amount} * {conversionFactor}',
+      title: 'Milligrams to Grams',
+      templateText: 'Convert {value}mg to grams.',
+      formulaTemplate: '{value} / 1000',
       variables: {
-        amount: { min: 0.5, max: 10, step: 0.5 },
-        conversion: [
-          { from: 'g', to: 'mg', factor: 1000 },
-          { from: 'kg', to: 'g', factor: 1000 },
-          { from: 'mg', to: 'mcg', factor: 1000 }
-        ]
+        value: { min: 250, max: 5000, step: 250 }
       },
       units: {
-        amount: 'varies',
-        answer: 'varies'
+        value: 'mg',
+        answer: 'g'
       },
       hints: [
-        'Remember: 1g = 1000mg, 1kg = 1000g, 1mg = 1000mcg',
-        'Moving from larger to smaller units: multiply'
+        '1 gram = 1000 milligrams',
+        'Divide by 1000'
       ],
-      explanation: 'Conversion: {amount} {fromUnit} × {conversionFactor} = {answer} {toUnit}'
+      explanation: 'To convert mg to g, divide by 1000. {value}mg ÷ 1000 = {answer}g'
+    },
+    
+    {
+      type: 'UNIT_CONVERSION',
+      category: 'METRIC_CONVERSION',
+      title: 'Grams to Milligrams',
+      templateText: 'Convert {value}g to milligrams.',
+      formulaTemplate: '{value} * 1000',
+      variables: {
+        value: { min: 0.5, max: 10, step: 0.5 }
+      },
+      units: {
+        value: 'g',
+        answer: 'mg'
+      },
+      hints: [
+        '1 gram = 1000 milligrams',
+        'Multiply by 1000'
+      ],
+      explanation: 'To convert g to mg, multiply by 1000. {value}g × 1000 = {answer}mg'
+    },
+    
+    {
+      type: 'UNIT_CONVERSION',
+      category: 'VOLUME_CONVERSION',
+      title: 'Liters to Milliliters',
+      templateText: 'Convert {value}L to milliliters.',
+      formulaTemplate: '{value} * 1000',
+      variables: {
+        value: { min: 0.5, max: 3, step: 0.5 }
+      },
+      units: {
+        value: 'L',
+        answer: 'mL'
+      },
+      hints: [
+        '1 liter = 1000 milliliters',
+        'Multiply by 1000'
+      ],
+      explanation: 'To convert L to mL, multiply by 1000. {value}L × 1000 = {answer}mL'
+    },
+    
+    {
+      type: 'UNIT_CONVERSION',
+      category: 'METRIC_CONVERSION',
+      title: 'Kilograms to Grams',
+      templateText: 'Convert {value}kg to grams.',
+      formulaTemplate: '{value} * 1000',
+      variables: {
+        value: { min: 0.5, max: 5, step: 0.5 }
+      },
+      units: {
+        value: 'kg',
+        answer: 'g'
+      },
+      hints: [
+        '1 kilogram = 1000 grams',
+        'Multiply by 1000'
+      ],
+      explanation: 'To convert kg to g, multiply by 1000. {value}kg × 1000 = {answer}g'
+    },
+    
+    {
+      type: 'UNIT_CONVERSION',
+      category: 'METRIC_CONVERSION',
+      title: 'Micrograms to Milligrams',
+      templateText: 'Convert {value}mcg to milligrams.',
+      formulaTemplate: '{value} / 1000',
+      variables: {
+        value: { min: 250, max: 2000, step: 250 }
+      },
+      units: {
+        value: 'mcg',
+        answer: 'mg'
+      },
+      hints: [
+        '1 milligram = 1000 micrograms',
+        'Divide by 1000'
+      ],
+      explanation: 'To convert mcg to mg, divide by 1000. {value}mcg ÷ 1000 = {answer}mg'
     },
 
     // Pediatric Dosing - Advanced
@@ -465,151 +536,7 @@ The D/H × Q formula is your foundation for safe medication administration. Mast
   console.log(`✅ Created ${guides.length} guides`)
 }
 
-async function seedFakeUsers() {
-  // Generate 20 realistic fake users for leaderboard
-  const users = []
-  
-  for (let i = 0; i < 20; i++) {
-    const firstName = faker.person.firstName()
-    const lastName = faker.person.lastName()
-    const email = faker.internet.email({ firstName, lastName })
-    const username = faker.internet.username({ firstName, lastName })
-    
-    const user = await prisma.user.create({
-      data: {
-        email: email.toLowerCase(),
-        username: username.toLowerCase(),
-        emailVerified: true,
-        emailVerifiedAt: faker.date.recent({ days: 30 }),
-        lastActive: faker.date.recent({ days: 7 }),
-        profile: {
-          create: {
-            displayName: `${firstName} ${lastName}`,
-            bio: faker.lorem.sentence(),
-            totalPoints: 0, // Will be calculated from attempts
-            currentStreak: faker.number.int({ min: 0, max: 15 }),
-            longestStreak: faker.number.int({ min: 0, max: 30 }),
-            level: faker.number.int({ min: 1, max: 8 }),
-            experience: faker.number.int({ min: 0, max: 2000 }),
-          },
-        },
-      },
-      include: {
-        profile: true,
-      },
-    })
-    
-    users.push(user)
-  }
-
-  console.log(`✅ Created ${users.length} fake users`)
-
-  // Generate realistic user attempts and scores
-  const questionTemplates = await prisma.questionTemplate.findMany()
-  let totalAttempts = 0
-
-  for (const user of users) {
-    // Generate attempts spanning last 30 days
-    const numAttempts = faker.number.int({ min: 10, max: 100 })
-    let userTotalPoints = 0
-    
-    for (let i = 0; i < numAttempts; i++) {
-      const questionTemplate = faker.helpers.arrayElement(questionTemplates)
-      const attemptDate = faker.date.recent({ days: 30 })
-      const isCorrect = faker.datatype.boolean({ probability: 0.75 }) // 75% accuracy
-      const timeSpent = faker.number.int({ min: 30, max: 300 }) // 30 seconds to 5 minutes
-      const hintsUsed = faker.number.int({ min: 0, max: 3 })
-      
-      // Calculate points (similar to actual logic)
-      let basePoints = 20 // Default
-      if (questionTemplate.type === 'DOSAGE_CALCULATION' || questionTemplate.type === 'UNIT_CONVERSION') {
-        basePoints = 15
-      } else if (questionTemplate.type === 'CRITICAL_CARE' || questionTemplate.type === 'INSULIN_DOSING') {
-        basePoints = 40
-      }
-      
-      const pointsEarned = isCorrect ? Math.max(basePoints - (hintsUsed * 5), 5) : 0
-      userTotalPoints += pointsEarned
-      
-      await prisma.userAttempt.create({
-        data: {
-          userId: user.id,
-          questionId: questionTemplate.id,
-          generatedValues: { dose: 100, strength: 50 }, // Sample values
-          userAnswer: faker.number.float({ min: 1, max: 10, fractionDigits: 2 }),
-          correctAnswer: faker.number.float({ min: 1, max: 10, fractionDigits: 2 }),
-          isCorrect,
-          timeSpent,
-          hintsUsed,
-          pointsEarned,
-          attemptedAt: attemptDate,
-        },
-      })
-      
-      totalAttempts++
-    }
-
-    // Create score records with realistic time-based distribution
-    const dailyScore = faker.number.int({ min: 0, max: Math.min(userTotalPoints, 200) })
-    const weeklyScore = faker.number.int({ min: dailyScore, max: Math.min(userTotalPoints, 800) })
-    const monthlyScore = faker.number.int({ min: weeklyScore, max: userTotalPoints })
-    
-    await prisma.score.create({
-      data: {
-        userId: user.id,
-        dailyScore,
-        weeklyScore,
-        monthlyScore,
-        allTimeScore: userTotalPoints,
-        lastResetDaily: new Date(),
-        lastResetWeekly: new Date(),
-        lastResetMonthly: new Date(),
-      },
-    })
-
-    // Update user profile with total points
-    await prisma.userProfile.update({
-      where: { userId: user.id },
-      data: {
-        totalPoints: userTotalPoints,
-        experience: userTotalPoints,
-      },
-    })
-
-    // Generate some achievements for active users
-    if (userTotalPoints > 100) {
-      await prisma.achievement.create({
-        data: {
-          userId: user.id,
-          type: 'FIRST_CORRECT',
-          unlockedAt: faker.date.recent({ days: 20 }),
-        },
-      })
-    }
-
-    if (userTotalPoints > 500) {
-      await prisma.achievement.create({
-        data: {
-          userId: user.id,
-          type: 'QUESTIONS_10',
-          unlockedAt: faker.date.recent({ days: 15 }),
-        },
-      })
-    }
-
-    if (userTotalPoints > 1000) {
-      await prisma.achievement.create({
-        data: {
-          userId: user.id,
-          type: 'ACCURACY_80',
-          unlockedAt: faker.date.recent({ days: 10 }),
-        },
-      })
-    }
-  }
-
-  console.log(`✅ Generated ${totalAttempts} user attempts with realistic scoring`)
-}
+// Function removed - no fake users in production
 
 seedProduction()
   .catch((e) => {
