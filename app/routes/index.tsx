@@ -56,59 +56,6 @@ function HomePage() {
       </section>
 
 
-      {/* Features Section - Condensed for mobile */}
-      <section className="max-w-6xl mx-auto px-4" aria-labelledby="features-heading">
-        <h2 id="features-heading" className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-center mb-3 sm:mb-4 text-gray-900">
-          Everything You Need to <span className="text-primary-600">Excel</span>
-        </h2>
-        <p className="text-sm sm:text-base text-center text-gray-600 mb-8 sm:mb-12 max-w-2xl mx-auto">
-          Master medical calculations with confidence and ease.
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-          <FeatureCard
-            icon={<CalculatorIcon />}
-            title="Real-World Scenarios"
-            description="Practice with actual medication orders and clinical situations you'll encounter on the floor"
-            color="primary"
-            delay="0s"
-          />
-          <FeatureCard
-            icon={<ChartIcon />}
-            title="Adaptive Learning"
-            description="Questions adjust to your skill level, focusing on areas where you need the most practice"
-            color="secondary"
-            delay="0.1s"
-          />
-          <FeatureCard
-            icon={<ClockIcon />}
-            title="Learn at Your Pace"
-            description="Study during breaks, between shifts, or whenever you have time. Progress saves automatically"
-            color="accent"
-            delay="0.2s"
-          />
-          <FeatureCard
-            icon={<BookIcon />}
-            title="Detailed Explanations"
-            description="Step-by-step solutions help you understand the 'why' behind every calculation"
-            color="purple"
-            delay="0.3s"
-          />
-          <FeatureCard
-            icon={<ShieldIcon />}
-            title="NCLEX-RN Aligned"
-            description="Questions mirror the format and difficulty of nursing board examinations"
-            color="amber"
-            delay="0.4s"
-          />
-          <FeatureCard
-            icon={<HeartIcon />}
-            title="Stay Test-Ready"
-            description="Keep your skills sharp for exams, clinical rotations, and professional practice"
-            color="accent"
-            delay="0.5s"
-          />
-        </div>
-      </section>
 
       {/* Categories Section with gradient background */}
       <section className="relative -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20" aria-labelledby="categories-heading">
