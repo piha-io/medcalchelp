@@ -348,30 +348,67 @@ async function seedQuestionTemplates() {
       explanation: 'Using C1V1 = C2V2: ({initialConcentration}% × {initialVolume}mL) ÷ {finalConcentration}% = Final volume. Diluent needed: Final volume - {initialVolume}mL = {answer}mL'
     },
 
-    // Dimensional Analysis - Intermediate
+    // Dimensional Analysis - mg/min to g/hr
     {
       type: 'DIMENSIONAL_ANALYSIS',
       category: 'DIMENSIONAL_ANALYSIS',
-      title: 'Complex Unit Conversion',
-      templateText: 'Convert {amount} {fromUnit} to {toUnit} using dimensional analysis.',
-      formulaTemplate: '{amount} * {factor1} * {factor2}',
+      title: 'Milligrams per Minute to Grams per Hour',
+      templateText: 'Convert {amount} mg/min to g/hr using dimensional analysis.',
+      formulaTemplate: '{amount} × (1 g / 1000 mg) × (60 min / 1 hr)',
       variables: {
-        amount: { min: 10, max: 100, step: 10 },
-        conversion: [
-          { from: 'mg/min', to: 'g/hr', factor1: 0.001, factor2: 60 },
-          { from: 'mcg/kg/min', to: 'mg/kg/hr', factor1: 0.001, factor2: 60 },
-          { from: 'L/day', to: 'mL/hr', factor1: 1000, factor2: 0.0417 }
-        ]
+        amount: { min: 10, max: 100, step: 10 }
       },
       units: {
-        amount: 'varies',
-        answer: 'varies'
+        amount: 'mg/min',
+        answer: 'g/hr'
       },
       hints: [
-        'Set up conversion factors to cancel units systematically',
-        'Check that all unwanted units cancel out'
+        'Convert milligrams to grams first (÷ 1000)',
+        'Convert minutes to hours (× 60)'
       ],
-      explanation: 'Dimensional analysis: {amount} {fromUnit} × conversion factors = {answer} {toUnit}'
+      explanation: 'Dimensional analysis: {amount} mg/min × (1 g/1000 mg) × (60 min/1 hr) = {answer} g/hr'
+    },
+
+    // Dimensional Analysis - mcg/kg/min to mg/kg/hr  
+    {
+      type: 'DIMENSIONAL_ANALYSIS',
+      category: 'DIMENSIONAL_ANALYSIS',
+      title: 'Micrograms per Kilogram per Minute to Milligrams per Kilogram per Hour',
+      templateText: 'Convert {amount} mcg/kg/min to mg/kg/hr using dimensional analysis.',
+      formulaTemplate: '{amount} × (1 mg / 1000 mcg) × (60 min / 1 hr)',
+      variables: {
+        amount: { min: 5, max: 50, step: 5 }
+      },
+      units: {
+        amount: 'mcg/kg/min',
+        answer: 'mg/kg/hr'
+      },
+      hints: [
+        'Convert micrograms to milligrams (÷ 1000)',
+        'Convert minutes to hours (× 60)'
+      ],
+      explanation: 'Dimensional analysis: {amount} mcg/kg/min × (1 mg/1000 mcg) × (60 min/1 hr) = {answer} mg/kg/hr'
+    },
+
+    // Dimensional Analysis - L/day to mL/hr
+    {
+      type: 'DIMENSIONAL_ANALYSIS',
+      category: 'DIMENSIONAL_ANALYSIS', 
+      title: 'Liters per Day to Milliliters per Hour',
+      templateText: 'Convert {amount} L/day to mL/hr using dimensional analysis.',
+      formulaTemplate: '{amount} × (1000 mL / 1 L) × (1 day / 24 hr)',
+      variables: {
+        amount: { min: 1, max: 5, step: 0.5, decimal: 1 }
+      },
+      units: {
+        amount: 'L/day',
+        answer: 'mL/hr'
+      },
+      hints: [
+        'Convert liters to milliliters (× 1000)',
+        'Convert days to hours (÷ 24)'
+      ],
+      explanation: 'Dimensional analysis: {amount} L/day × (1000 mL/1 L) × (1 day/24 hr) = {answer} mL/hr'
     },
 
     // Heparin Protocol - Expert

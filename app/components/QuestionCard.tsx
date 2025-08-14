@@ -156,9 +156,6 @@ export function QuestionCard({
                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${colors.badge}`}>
                   {question.type.replace(/_/g, ' ')}
                 </span>
-                <h2 className="text-lg font-semibold text-gray-900 mt-1">
-                  Question {question.id.slice(-4)}
-                </h2>
               </div>
             </div>
             
