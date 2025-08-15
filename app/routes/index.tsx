@@ -1,18 +1,17 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { useAuth } from '../lib/auth/AuthContext'
-import { CategoryCard } from '../components/CategoryCard'
-import { categories } from '../lib/categories'
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useAuth } from "../lib/auth/AuthContext";
+import { Calculator, Brain, Target, Timer, Trophy, Book, Github, Twitter, Mail, ExternalLink } from 'lucide-react';
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: HomePage,
-})
+});
 
 function HomePage() {
-  const { user } = useAuth()
-  
-  return (
-    <div className="space-y-12 sm:space-y-16 lg:space-y-20 overflow-hidden">
+  const { user } = useAuth();
 
+  return (
+    <>
+      <div className="space-y-12 sm:space-y-16 lg:space-y-20 overflow-hidden">
       {/* Hero Section */}
       <section className="text-center py-6 sm:py-10 lg:py-16 relative">
         <div className="max-w-4xl mx-auto px-4">
@@ -22,27 +21,51 @@ function HomePage() {
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-6xl font-display font-bold text-gray-900 mb-4 sm:mb-6 text-balance">
-            Master Medical Math with{' '}
+            Master Medical Math with{" "}
             <span className="text-primary-600">Confidence</span>
           </h1>
           <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-10 max-w-2xl mx-auto text-balance">
-            Built for students and nurses to stay sharp. Practice dosage calculations, IV drip rates, 
-            and unit conversions with real-world scenarios and instant feedback.
+            Built for students and nurses to stay sharp. Practice dosage
+            calculations, IV drip rates, and unit conversions with real-world
+            scenarios and instant feedback.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {user ? (
               <Link to="/practice" className="btn btn-primary btn-lg group">
                 Continue Practice
-                <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                <svg
+                  className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
                 </svg>
               </Link>
             ) : (
               <>
-                <Link to="/practice" className="btn btn-primary btn-lg shadow-xl hover:shadow-2xl group">
+                <Link
+                  to="/practice"
+                  className="btn btn-primary btn-lg shadow-xl hover:shadow-2xl group"
+                >
                   Start Free Practice
-                  <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  <svg
+                    className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
                   </svg>
                 </Link>
                 <Link to="/auth" className="btn btn-secondary btn-lg">
@@ -51,178 +74,207 @@ function HomePage() {
               </>
             )}
           </div>
-          
         </div>
       </section>
 
-
-
-      {/* Categories Section with gradient background */}
-      <section className="relative -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20" aria-labelledby="categories-heading">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-purple-50 to-secondary-50"></div>
-        <div className="relative max-w-6xl mx-auto">
-          <h2 id="categories-heading" className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-center mb-3 sm:mb-4 text-gray-900">
-            Practice Categories
-          </h2>
-          <p className="text-sm sm:text-base text-center text-gray-600 mb-8 sm:mb-12 max-w-2xl mx-auto">
-            Higher difficulty levels earn more points per question!
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
-            {categories.map((category, index) => (
-              <CategoryCard 
-                key={category.id}
-                category={category}
-                delay={`${index * 0.1}s`}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section - Optimized for mobile */}
-      <section className="text-center py-12 sm:py-16 lg:py-20 relative">
-        <div className="max-w-3xl mx-auto px-4">
-          <div className="glass rounded-2xl sm:rounded-3xl p-8 sm:p-10 lg:p-12 animate-scale-in">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold mb-3 sm:mb-4 text-gray-900">
-              Ready to Build Your <span className="gradient-text">Confidence?</span>
+      {/* Features Section */}
+      <section className="py-12 sm:py-16 lg:py-20">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-10 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold mb-4 text-gray-900">
+              Master Medical Math for <span className="text-primary-600">NCLEX Success</span>
             </h2>
-            <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8">
-              Join thousands who have mastered medical math.
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+              Practice the exact calculations you'll see on your exam with instant feedback and detailed explanations.
             </p>
-            <Link to="/practice" className="btn btn-primary btn-lg animate-pulse-glow">
-              Start Practicing Now
-              <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </Link>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            <FeatureCard
+              icon={<Calculator className="w-full h-full" />}
+              title="NCLEX-Style Questions"
+              description="Practice dosage calculations, IV rates, and unit conversions exactly as they appear on the real exam"
+              color="primary"
+              highlight="500+ Questions"
+            />
+            <FeatureCard
+              icon={<Brain className="w-full h-full" />}
+              title="Instant Learning"
+              description="Get immediate explanations for every answer to understand the 'why' behind each calculation"
+              color="secondary"
+              highlight="Step-by-Step"
+            />
+            <FeatureCard
+              icon={<Target className="w-full h-full" />}
+              title="Weakness Detection"
+              description="Focus your study time on areas where you need the most improvement with smart tracking"
+              color="accent"
+              highlight="Adaptive"
+            />
+            <FeatureCard
+              icon={<Timer className="w-full h-full" />}
+              title="Exam Preparation"
+              description="Build speed and confidence with timed practice sessions that mirror real testing conditions"
+              color="purple"
+              highlight="Timed Practice"
+            />
+            <FeatureCard
+              icon={<Trophy className="w-full h-full" />}
+              title="Progress Tracking"
+              description="Watch your scores improve over time with detailed analytics and achievement badges"
+              color="amber"
+              highlight="Visual Progress"
+            />
+            <FeatureCard
+              icon={<Book className="w-full h-full" />}
+              title="Study Resources"
+              description="Access comprehensive guides and formulas to reinforce your learning between practice sessions"
+              color="green"
+              highlight="Complete Guides"
+            />
           </div>
         </div>
       </section>
     </div>
-  )
+
+    {/* Footer */}
+    <footer className="bg-gray-900 text-white py-12 lg:py-16 relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen mt-12 sm:mt-16 lg:mt-20">
+      <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Brand */}
+            <div className="md:col-span-1">
+              <h3 className="text-xl font-bold mb-4 gradient-text">MedCalcHelp</h3>
+              <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                Master medical math calculations with confidence. Practice NCLEX-style questions 
+                and build the skills you need for nursing success.
+              </p>
+              <div className="flex space-x-4">
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Github className="w-5 h-5" />
+                </a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Twitter className="w-5 h-5" />
+                </a>
+                <a href="mailto:support@medcalchelp.com" className="text-gray-400 hover:text-white transition-colors">
+                  <Mail className="w-5 h-5" />
+                </a>
+              </div>
+            </div>
+
+            {/* Practice */}
+            <div>
+              <h4 className="font-semibold mb-4">Practice</h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <Link to="/practice" className="text-gray-400 hover:text-white transition-colors">
+                    Start Practice
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/leaderboard" className="text-gray-400 hover:text-white transition-colors">
+                    Leaderboard
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/guides" className="text-gray-400 hover:text-white transition-colors">
+                    Study Guides
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Account */}
+            <div>
+              <h4 className="font-semibold mb-4">Account</h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <Link to="/auth" className="text-gray-400 hover:text-white transition-colors">
+                    Sign In
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/profile" className="text-gray-400 hover:text-white transition-colors">
+                    Profile
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-400 text-sm">
+              © 2024 MedCalcHelp. All rights reserved.
+            </p>
+            <div className="flex items-center space-x-4 mt-4 md:mt-0">
+              <span className="text-gray-400 text-sm">Built for nursing students</span>
+              <div className="flex items-center space-x-1">
+                <span className="text-red-500">❤️</span>
+                <span className="text-gray-400 text-sm">by </span>
+                <a href="https://piha.io" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors text-sm underline">
+                  piha
+                </a>
+              </div>
+            </div>
+        </div>
+      </div>
+    </footer>
+    </>
+  );
 }
 
-
-function FeatureCard({ 
-  icon, 
-  title, 
-  description, 
-  color, 
-  delay 
-}: { 
-  icon: React.ReactNode; 
-  title: string; 
-  description: string; 
+function FeatureCard({
+  icon,
+  title,
+  description,
+  color,
+  highlight,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
   color: string;
-  delay: string;
+  highlight: string;
 }) {
-  const colorClasses = {
-    primary: 'from-primary-500 to-primary-600 text-primary-600',
-    secondary: 'from-secondary-500 to-secondary-600 text-secondary-600',
-    accent: 'from-accent-500 to-accent-600 text-accent-600',
-    purple: 'from-purple-500 to-purple-600 text-purple-600',
-    amber: 'from-amber-500 to-amber-600 text-amber-600',
-  }[color] || 'from-gray-500 to-gray-600 text-gray-600'
+  const colorClasses =
+    {
+      primary: "from-primary-500 to-primary-600 text-primary-600",
+      secondary: "from-secondary-500 to-secondary-600 text-secondary-600",
+      accent: "from-accent-500 to-accent-600 text-accent-600",
+      purple: "from-purple-500 to-purple-600 text-purple-600",
+      amber: "from-amber-500 to-amber-600 text-amber-600",
+      green: "from-green-500 to-green-600 text-green-600",
+    }[color] || "from-gray-500 to-gray-600 text-gray-600";
+
+  const badgeClasses =
+    {
+      primary: "bg-primary-100 text-primary-700",
+      secondary: "bg-secondary-100 text-secondary-700",
+      accent: "bg-accent-100 text-accent-700",
+      purple: "bg-purple-100 text-purple-700",
+      amber: "bg-amber-100 text-amber-700",
+      green: "bg-green-100 text-green-700",
+    }[color] || "bg-gray-100 text-gray-700";
 
   return (
-    <div className="card p-4 sm:p-6 group hover:shadow-lg transition-shadow">
-      <div className={`w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br ${colorClasses} bg-opacity-10 rounded-xl flex items-center justify-center mb-3 sm:mb-4`}>
-        <div className="w-7 h-7 sm:w-8 sm:h-8 text-white">
-          <div className={`w-full h-full bg-gradient-to-br ${colorClasses} rounded-lg p-1.5`}>
+    <div className="card p-6 group hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-l-4 border-transparent hover:border-primary-500 relative overflow-hidden">
+      <div className="flex items-start justify-between mb-4">
+        <div className={`w-12 h-12 bg-gradient-to-br ${colorClasses} rounded-xl flex items-center justify-center shadow-lg`}>
+          <div className="w-6 h-6 text-white">
             {icon}
           </div>
         </div>
+        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${badgeClasses} shadow-sm`}>
+          {highlight}
+        </span>
       </div>
-      <h3 className="text-base sm:text-lg font-semibold mb-2 text-gray-900">{title}</h3>
-      <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{description}</p>
+      <h3 className="text-lg font-bold mb-3 text-gray-900 group-hover:text-primary-700 transition-colors">
+        {title}
+      </h3>
+      <p className="text-gray-600 text-sm leading-relaxed">
+        {description}
+      </p>
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-200 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
     </div>
-  )
-}
-
-
-// Icon Components
-function CalculatorIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
-      <path d="M6.5 7.5h5v1h-5zM13 7.5h5v1h-5zM13 15.5h5v1h-5zM13 13.5h5v1h-5zM13 11.5h5v1h-5zM13 9.5h5v1h-5zM6.5 9.5h5v5h-5zM6.5 15.5h5v1h-5z"/>
-    </svg>
-  )
-}
-
-function ChartIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/>
-    </svg>
-  )
-}
-
-function ClockIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
-      <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
-    </svg>
-  )
-}
-
-function BookIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
-    </svg>
-  )
-}
-
-function ShieldIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
-    </svg>
-  )
-}
-
-function HeartIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-    </svg>
-  )
-}
-
-
-function HeartPulseIcon() {
-  return (
-    <svg className="w-12 h-12 text-primary-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h1.5L12 9.5 13.5 14.5 15 12h1.5" />
-    </svg>
-  )
-}
-
-function StethoscopeIcon() {
-  return (
-    <svg className="w-12 h-12 text-secondary-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <circle cx="12" cy="10" r="3" strokeWidth={1.5} />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 7V3m0 0a2 2 0 012 2h4a2 2 0 012 2v2a2 2 0 01-2 2h-4m-2-8a2 2 0 00-2 2H6a2 2 0 00-2 2v2a2 2 0 002 2h4m-3 4v3a5 5 0 0010 0v-3" />
-    </svg>
-  )
-}
-
-function PillIcon() {
-  return (
-    <svg className="w-12 h-12 text-accent-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-    </svg>
-  )
-}
-
-function SyringeIcon() {
-  return (
-    <svg className="w-12 h-12 text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-2 2m0 0l-2 2m2-2l2 2m-2-2l-2-2m-1-1L9 8m0 0L6.5 5.5M9 8l3 3m-7.5 9.5L3 22m0 0l1.5-1.5M3 22l1.5-1.5m0 0L9 16m-4.5 4.5L6 19" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 6l3-3 3 3-3 3m-6 2l7-7" />
-    </svg>
-  )
+  );
 }
