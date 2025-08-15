@@ -354,7 +354,7 @@ async function seedQuestionTemplates() {
       category: 'DIMENSIONAL_ANALYSIS',
       title: 'Milligrams per Minute to Grams per Hour',
       templateText: 'Convert {amount} mg/min to g/hr using dimensional analysis.',
-      formulaTemplate: '{amount} × (1 g / 1000 mg) × (60 min / 1 hr)',
+      formulaTemplate: '{amount} * (1 / 1000) * 60',
       variables: {
         amount: { min: 10, max: 100, step: 10 }
       },
@@ -375,7 +375,7 @@ async function seedQuestionTemplates() {
       category: 'DIMENSIONAL_ANALYSIS',
       title: 'Micrograms per Kilogram per Minute to Milligrams per Kilogram per Hour',
       templateText: 'Convert {amount} mcg/kg/min to mg/kg/hr using dimensional analysis.',
-      formulaTemplate: '{amount} × (1 mg / 1000 mcg) × (60 min / 1 hr)',
+      formulaTemplate: '{amount} * (1 / 1000) * 60',
       variables: {
         amount: { min: 5, max: 50, step: 5 }
       },
@@ -396,7 +396,7 @@ async function seedQuestionTemplates() {
       category: 'DIMENSIONAL_ANALYSIS', 
       title: 'Liters per Day to Milliliters per Hour',
       templateText: 'Convert {amount} L/day to mL/hr using dimensional analysis.',
-      formulaTemplate: '{amount} × (1000 mL / 1 L) × (1 day / 24 hr)',
+      formulaTemplate: '{amount} * 1000 / 24',
       variables: {
         amount: { min: 1, max: 5, step: 0.5, decimal: 1 }
       },

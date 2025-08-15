@@ -143,7 +143,7 @@ function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Brand */}
             <div className="md:col-span-1">
-              <h3 className="text-xl font-bold mb-4 gradient-text">MedCalcHelp</h3>
+              <h3 className="text-xl font-bold mb-4 gradient-text">Learn Med Math</h3>
               <p className="text-gray-400 text-sm leading-relaxed mb-4">
                 Master medical math calculations with confidence. Practice NCLEX-style questions 
                 and build the skills you need for nursing success.
@@ -155,7 +155,7 @@ function HomePage() {
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
                   <Twitter className="w-5 h-5" />
                 </a>
-                <a href="mailto:support@medcalchelp.com" className="text-gray-400 hover:text-white transition-colors">
+                <a href="mailto:support@learnmedmath.com" className="text-gray-400 hover:text-white transition-colors">
                   <Mail className="w-5 h-5" />
                 </a>
               </div>
@@ -204,7 +204,7 @@ function HomePage() {
           {/* Bottom Bar */}
           <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2024 MedCalcHelp. All rights reserved.
+              © 2024 Learn Med Math. All rights reserved.
             </p>
             <div className="flex items-center space-x-4 mt-4 md:mt-0">
               <span className="text-gray-400 text-sm">Built for nursing students</span>

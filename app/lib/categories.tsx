@@ -1,17 +1,17 @@
 import type { CategoryInfo } from '../components/CategoryCard'
-import {
-  DosageIcon,
-  IVDripIcon,
-  ConversionIcon,
-  PediatricIcon,
-  CriticalCareIcon,
-  InsulinIcon,
-  HeparinIcon,
-  ReconstitutionIcon,
-  DimensionalAnalysisIcon,
-  ConcentrationIcon,
-  DilutionIcon
-} from '../components/CategoryCard'
+import { 
+  Calculator, 
+  Droplets, 
+  ArrowRightLeft, 
+  Baby, 
+  Heart, 
+  Syringe, 
+  Activity, 
+  FlaskRound, 
+  GitBranch, 
+  TestTube, 
+  Beaker 
+} from 'lucide-react'
 
 export const categories: CategoryInfo[] = [
   {
@@ -22,7 +22,7 @@ export const categories: CategoryInfo[] = [
     gradient: 'from-blue-400 to-blue-600',
     bgGradient: 'from-blue-50 to-blue-100',
     iconBg: 'bg-blue-500',
-    icon: <DosageIcon />,
+    icon: <Calculator className="w-6 h-6" />,
     pointsMultiplier: 1
   },
   {
@@ -33,7 +33,7 @@ export const categories: CategoryInfo[] = [
     gradient: 'from-cyan-400 to-teal-600',
     bgGradient: 'from-cyan-50 to-teal-100',
     iconBg: 'bg-teal-500',
-    icon: <IVDripIcon />,
+    icon: <Droplets className="w-6 h-6" />,
     pointsMultiplier: 1.5
   },
   {
@@ -44,7 +44,7 @@ export const categories: CategoryInfo[] = [
     gradient: 'from-purple-400 to-purple-600',
     bgGradient: 'from-purple-50 to-purple-100',
     iconBg: 'bg-purple-500',
-    icon: <ConversionIcon />,
+    icon: <ArrowRightLeft className="w-6 h-6" />,
     pointsMultiplier: 1
   },
   {
@@ -55,7 +55,7 @@ export const categories: CategoryInfo[] = [
     gradient: 'from-pink-400 to-rose-600',
     bgGradient: 'from-pink-50 to-rose-100',
     iconBg: 'bg-rose-500',
-    icon: <PediatricIcon />,
+    icon: <Baby className="w-6 h-6" />,
     pointsMultiplier: 2
   },
   {
@@ -66,7 +66,7 @@ export const categories: CategoryInfo[] = [
     gradient: 'from-red-400 to-red-600',
     bgGradient: 'from-red-50 to-red-100',
     iconBg: 'bg-red-500',
-    icon: <CriticalCareIcon />,
+    icon: <Heart className="w-6 h-6" />,
     pointsMultiplier: 2
   },
   {
@@ -77,7 +77,7 @@ export const categories: CategoryInfo[] = [
     gradient: 'from-emerald-400 to-green-600',
     bgGradient: 'from-emerald-50 to-green-100',
     iconBg: 'bg-green-500',
-    icon: <InsulinIcon />,
+    icon: <Syringe className="w-6 h-6" />,
     pointsMultiplier: 1.5
   },
   {
@@ -88,7 +88,7 @@ export const categories: CategoryInfo[] = [
     gradient: 'from-indigo-400 to-indigo-600',
     bgGradient: 'from-indigo-50 to-indigo-100',
     iconBg: 'bg-indigo-500',
-    icon: <HeparinIcon />,
+    icon: <Activity className="w-6 h-6" />,
     pointsMultiplier: 2
   },
   {
@@ -99,7 +99,7 @@ export const categories: CategoryInfo[] = [
     gradient: 'from-amber-400 to-orange-600',
     bgGradient: 'from-amber-50 to-orange-100',
     iconBg: 'bg-orange-500',
-    icon: <ReconstitutionIcon />,
+    icon: <FlaskRound className="w-6 h-6" />,
     pointsMultiplier: 1.5
   },
   {
@@ -110,7 +110,7 @@ export const categories: CategoryInfo[] = [
     gradient: 'from-orange-400 to-amber-600',
     bgGradient: 'from-orange-50 to-amber-100',
     iconBg: 'bg-amber-500',
-    icon: <DimensionalAnalysisIcon />,
+    icon: <GitBranch className="w-6 h-6" />,
     pointsMultiplier: 1.5
   },
   {
@@ -121,7 +121,7 @@ export const categories: CategoryInfo[] = [
     gradient: 'from-lime-400 to-green-600',
     bgGradient: 'from-lime-50 to-green-100',
     iconBg: 'bg-lime-500',
-    icon: <ConcentrationIcon />,
+    icon: <TestTube className="w-6 h-6" />,
     pointsMultiplier: 1
   },
   {
@@ -132,7 +132,7 @@ export const categories: CategoryInfo[] = [
     gradient: 'from-sky-400 to-blue-600',
     bgGradient: 'from-sky-50 to-blue-100',
     iconBg: 'bg-sky-500',
-    icon: <DilutionIcon />,
+    icon: <Beaker className="w-6 h-6" />,
     pointsMultiplier: 1
   }
 ]

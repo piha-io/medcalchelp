@@ -1,5 +1,18 @@
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
+import { 
+  Calculator, 
+  Droplets, 
+  ArrowRightLeft, 
+  Baby, 
+  Heart, 
+  Syringe, 
+  Activity, 
+  FlaskRound, 
+  GitBranch, 
+  TestTube, 
+  Beaker 
+} from 'lucide-react'
 
 export interface CategoryInfo {
   id: string
@@ -124,94 +137,5 @@ export function CategoryCard({
     >
       {content}
     </Link>
-  )
-}
-
-// Category icons
-export function DosageIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M19 8h-2v3h-3v2h3v3h2v-3h3v-2h-3zM4 8h8v2H4zM4 13h8v2H4zM4 18h8v2H4z"/>
-    </svg>
-  )
-}
-
-export function IVDripIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 2c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2s2-.9 2-2V4c0-1.1-.9-2-2-2zm0 10c-1.1 0-2 .9-2 2v8h4v-8c0-1.1-.9-2-2-2z"/>
-    </svg>
-  )
-}
-
-export function ConversionIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-    </svg>
-  )
-}
-
-export function PediatricIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/>
-    </svg>
-  )
-}
-
-export function CriticalCareIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"/>
-    </svg>
-  )
-}
-
-export function InsulinIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M17 6V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2c-2.21 0-4 1.79-4 4v6c0 2.21 1.79 4 4 4v2h2v-2h6v2h2v-2c2.21 0 4-1.79 4-4v-6c0-2.21-1.79-4-4-4zM9 4h6v2H9V4zm10 12c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2v-6c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v6z"/>
-    </svg>
-  )
-}
-
-export function HeparinIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M21 5h-3V4c0-.55-.45-1-1-1s-1 .45-1 1v1H8V4c0-.55-.45-1-1-1s-1 .45-1 1v1H3c-.55 0-1 .45-1 1s.45 1 1 1h3v1c0 .55.45 1 1 1s1-.45 1-1V7h8v1c0 .55.45 1 1 1s1-.45 1-1V7h3c.55 0 1-.45 1-1s-.45-1-1-1zM7 12v8c0 .55.45 1 1 1h8c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1H8c-.55 0-1 .45-1 1zm2 1h6v6H9v-6z"/>
-    </svg>
-  )
-}
-
-export function ReconstitutionIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M7 2v5l-1.5 1.5L9 12v10h6V12l3.5-3.5L17 7V2H7zm2 2h6v2.17l1.5 1.5L14 10.17V20h-4v-9.83L7.5 7.67 9 6.17V4z"/>
-    </svg>
-  )
-}
-
-export function DimensionalAnalysisIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M3 17h18v2H3v-2zm0-7h18v2H3v-2zm0-7h18v2H3V3zm0 3.5h6v1H3v-1zm12 0h6v1h-6v-1zm-6 7h6v1H9v-1zm-6 0h3v1H3v-1zm15 0h3v1h-3v-1z"/>
-    </svg>
-  )
-}
-
-export function ConcentrationIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M7 2v2h1v14a4 4 0 0 0 8 0V4h1V2H7zm4 2h2v3h-2V4zm0 5h2v3h-2V9zm0 5h2v2a2 2 0 0 1-4 0v-2h2z"/>
-    </svg>
-  )
-}
-
-export function DilutionIcon() {
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 2l-5.5 14.5c-.37.93-.03 2 .91 2.35L11 21l3.59-2.15c.94-.35 1.28-1.42.91-2.35L12 2zm0 3.84L14.91 14H9.09L12 5.84zM12 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
-    </svg>
   )
 }
