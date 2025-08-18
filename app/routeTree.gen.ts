@@ -14,9 +14,12 @@ import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LearnIndexRouteImport } from './routes/learn/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
+import { Route as LearnLevelRouteImport } from './routes/learn/$level'
 import { Route as GuidesSlugRouteImport } from './routes/guides/$slug'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as LearnLevelTopicRouteImport } from './routes/learn/$level/$topic'
 
 const PracticeRoute = PracticeRouteImport.update({
   id: '/practice',
@@ -42,9 +45,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LearnIndexRoute = LearnIndexRouteImport.update({
+  id: '/learn/',
+  path: '/learn/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GuidesIndexRoute = GuidesIndexRouteImport.update({
   id: '/guides/',
   path: '/guides/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnLevelRoute = LearnLevelRouteImport.update({
+  id: '/learn/$level',
+  path: '/learn/$level',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GuidesSlugRoute = GuidesSlugRouteImport.update({
@@ -57,6 +70,11 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const LearnLevelTopicRoute = LearnLevelTopicRouteImport.update({
+  id: '/$topic',
+  path: '/$topic',
+  getParentRoute: () => LearnLevelRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -65,7 +83,10 @@ export interface FileRoutesByFullPath {
   '/practice': typeof PracticeRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/guides/$slug': typeof GuidesSlugRoute
+  '/learn/$level': typeof LearnLevelRouteWithChildren
   '/guides': typeof GuidesIndexRoute
+  '/learn': typeof LearnIndexRoute
+  '/learn/$level/$topic': typeof LearnLevelTopicRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -74,7 +95,10 @@ export interface FileRoutesByTo {
   '/practice': typeof PracticeRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/guides/$slug': typeof GuidesSlugRoute
+  '/learn/$level': typeof LearnLevelRouteWithChildren
   '/guides': typeof GuidesIndexRoute
+  '/learn': typeof LearnIndexRoute
+  '/learn/$level/$topic': typeof LearnLevelTopicRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -85,7 +109,10 @@ export interface FileRoutesById {
   '/practice': typeof PracticeRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/guides/$slug': typeof GuidesSlugRoute
+  '/learn/$level': typeof LearnLevelRouteWithChildren
   '/guides/': typeof GuidesIndexRoute
+  '/learn/': typeof LearnIndexRoute
+  '/learn/$level/$topic': typeof LearnLevelTopicRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -96,7 +123,10 @@ export interface FileRouteTypes {
     | '/practice'
     | '/profile'
     | '/guides/$slug'
+    | '/learn/$level'
     | '/guides'
+    | '/learn'
+    | '/learn/$level/$topic'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -105,7 +135,10 @@ export interface FileRouteTypes {
     | '/practice'
     | '/profile'
     | '/guides/$slug'
+    | '/learn/$level'
     | '/guides'
+    | '/learn'
+    | '/learn/$level/$topic'
   id:
     | '__root__'
     | '/'
@@ -115,7 +148,10 @@ export interface FileRouteTypes {
     | '/practice'
     | '/_authenticated/profile'
     | '/guides/$slug'
+    | '/learn/$level'
     | '/guides/'
+    | '/learn/'
+    | '/learn/$level/$topic'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -125,7 +161,9 @@ export interface RootRouteChildren {
   LeaderboardRoute: typeof LeaderboardRoute
   PracticeRoute: typeof PracticeRoute
   GuidesSlugRoute: typeof GuidesSlugRoute
+  LearnLevelRoute: typeof LearnLevelRouteWithChildren
   GuidesIndexRoute: typeof GuidesIndexRoute
+  LearnIndexRoute: typeof LearnIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -165,11 +203,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/learn/': {
+      id: '/learn/'
+      path: '/learn'
+      fullPath: '/learn'
+      preLoaderRoute: typeof LearnIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/guides/': {
       id: '/guides/'
       path: '/guides'
       fullPath: '/guides'
       preLoaderRoute: typeof GuidesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/$level': {
+      id: '/learn/$level'
+      path: '/learn/$level'
+      fullPath: '/learn/$level'
+      preLoaderRoute: typeof LearnLevelRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guides/$slug': {
@@ -186,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/learn/$level/$topic': {
+      id: '/learn/$level/$topic'
+      path: '/$topic'
+      fullPath: '/learn/$level/$topic'
+      preLoaderRoute: typeof LearnLevelTopicRouteImport
+      parentRoute: typeof LearnLevelRoute
+    }
   }
 }
 
@@ -201,6 +260,18 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface LearnLevelRouteChildren {
+  LearnLevelTopicRoute: typeof LearnLevelTopicRoute
+}
+
+const LearnLevelRouteChildren: LearnLevelRouteChildren = {
+  LearnLevelTopicRoute: LearnLevelTopicRoute,
+}
+
+const LearnLevelRouteWithChildren = LearnLevelRoute._addFileChildren(
+  LearnLevelRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
@@ -208,7 +279,9 @@ const rootRouteChildren: RootRouteChildren = {
   LeaderboardRoute: LeaderboardRoute,
   PracticeRoute: PracticeRoute,
   GuidesSlugRoute: GuidesSlugRoute,
+  LearnLevelRoute: LearnLevelRouteWithChildren,
   GuidesIndexRoute: GuidesIndexRoute,
+  LearnIndexRoute: LearnIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

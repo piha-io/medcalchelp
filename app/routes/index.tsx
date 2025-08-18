@@ -31,27 +31,64 @@ function HomePage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {user ? (
-              <Link to="/practice" className="btn btn-primary btn-lg group">
-                Continue Practice
-                <svg
-                  className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                  />
-                </svg>
-              </Link>
+              <>
+                <Link to="/learn" className="btn btn-primary btn-lg group">
+                  Continue Learning
+                  <svg
+                    className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
+                  </svg>
+                </Link>
+                <Link to="/practice" className="btn btn-secondary btn-lg group">
+                  Quick Practice
+                  <svg
+                    className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
+                  </svg>
+                </Link>
+              </>
             ) : (
               <>
                 <Link
-                  to="/practice"
+                  to="/learn"
                   className="btn btn-primary btn-lg shadow-xl hover:shadow-2xl group"
+                >
+                  Start Learning Path
+                  <svg
+                    className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
+                  </svg>
+                </Link>
+                <Link
+                  to="/practice"
+                  className="btn btn-secondary btn-lg shadow-xl hover:shadow-2xl group"
                 >
                   Start Free Practice
                   <svg
@@ -67,9 +104,6 @@ function HomePage() {
                       d="M13 7l5 5m0 0l-5 5m5-5H6"
                     />
                   </svg>
-                </Link>
-                <Link to="/auth" className="btn btn-secondary btn-lg">
-                  Sign In / Sign Up
                 </Link>
               </>
             )}
@@ -161,23 +195,28 @@ function HomePage() {
               </div>
             </div>
 
-            {/* Practice */}
+            {/* Learning */}
             <div>
-              <h4 className="font-semibold mb-4">Practice</h4>
+              <h4 className="font-semibold mb-4">Learning</h4>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Link to="/practice" className="text-gray-400 hover:text-white transition-colors">
-                    Start Practice
+                  <Link to="/learn" className="text-gray-400 hover:text-white transition-colors">
+                    Learning Path
                   </Link>
                 </li>
                 <li>
-                  <Link to="/leaderboard" className="text-gray-400 hover:text-white transition-colors">
-                    Leaderboard
+                  <Link to="/practice" className="text-gray-400 hover:text-white transition-colors">
+                    Practice Questions
                   </Link>
                 </li>
                 <li>
                   <Link to="/guides" className="text-gray-400 hover:text-white transition-colors">
                     Study Guides
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/leaderboard" className="text-gray-400 hover:text-white transition-colors">
+                    Leaderboard
                   </Link>
                 </li>
               </ul>

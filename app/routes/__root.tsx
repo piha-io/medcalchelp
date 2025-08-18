@@ -57,6 +57,12 @@ function Header() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
             <Link
+              to="/learn"
+              className="text-gray-600 hover:text-primary-600 font-medium transition-colors focus-ring rounded-md px-2 -mx-2"
+            >
+              Learn
+            </Link>
+            <Link
               to="/practice"
               className="text-gray-600 hover:text-primary-600 font-medium transition-colors focus-ring rounded-md px-2 -mx-2"
             >
@@ -143,6 +149,13 @@ function Header() {
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t animate-slide-in">
             <div className="flex flex-col space-y-3">
+              <Link
+                to="/learn"
+                className="text-gray-600 hover:text-primary-600 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 focus-ring"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Learn
+              </Link>
               <Link
                 to="/practice"
                 className="text-gray-600 hover:text-primary-600 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 focus-ring"
