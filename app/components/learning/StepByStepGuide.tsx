@@ -113,7 +113,7 @@ export function StepByStepGuide({
         <div className="mt-4">
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
-              className="h-2 bg-gradient-to-r from-primary-500 to-purple-500 rounded-full transition-all duration-500"
+              className="h-2 bg-primary-500 rounded-full transition-all duration-500"
               style={{ width: `${progressPercentage}%` }}
             />
           </div>

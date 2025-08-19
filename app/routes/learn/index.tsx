@@ -38,8 +38,8 @@ const learningLevels: LearningLevel[] = [
       'Understand percentages in medical contexts',
       'Read and interpret medical notation'
     ],
-    color: 'from-blue-500 to-cyan-600',
-    bgColor: 'from-blue-50 to-cyan-50',
+    color: 'bg-blue-500',
+    bgColor: 'bg-blue-50',
     icon: <BookOpen className="w-6 h-6" />,
     isLocked: false,
     progress: 0
@@ -58,8 +58,8 @@ const learningLevels: LearningLevel[] = [
       'Handle complex multi-step conversions',
       'Apply conversions to real medical scenarios'
     ],
-    color: 'from-purple-500 to-pink-600',
-    bgColor: 'from-purple-50 to-pink-50',
+    color: 'bg-purple-500',
+    bgColor: 'bg-purple-50',
     icon: <Target className="w-6 h-6" />,
     isLocked: false,
     progress: 0
@@ -78,8 +78,8 @@ const learningLevels: LearningLevel[] = [
       'Read medication labels correctly',
       'Apply safety checks and validation'
     ],
-    color: 'from-emerald-500 to-teal-600',
-    bgColor: 'from-emerald-50 to-teal-50',
+    color: 'bg-emerald-500',
+    bgColor: 'bg-emerald-50',
     icon: <Award className="w-6 h-6" />,
     isLocked: false,
     progress: 0
@@ -98,8 +98,8 @@ const learningLevels: LearningLevel[] = [
       'Manage special populations (pediatric, critical care)',
       'Integrate all calculation skills seamlessly'
     ],
-    color: 'from-red-500 to-orange-600',
-    bgColor: 'from-red-50 to-orange-50',
+    color: 'bg-red-500',
+    bgColor: 'bg-red-50',
     icon: <Target className="w-6 h-6" />,
     isLocked: false,
     progress: 0
@@ -112,7 +112,7 @@ function LearnIndexPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-600 via-purple-600 to-accent-600 text-white py-12 lg:py-16">
+      <section className="bg-primary-600 text-white py-12 lg:py-16">
         <div className="container-app">
           <div className="text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center justify-center p-1 px-4 bg-white/20 rounded-full mb-6">
@@ -123,7 +123,7 @@ function LearnIndexPage() {
             <h1 className="text-3xl sm:text-4xl lg:text-6xl font-display font-bold mb-6">
               Learn Medical Math
               <br />
-              <span className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
+              <span className="text-white">
                 Step by Step
               </span>
             </h1>
@@ -259,18 +259,15 @@ function LearningLevelCard({ level, index }: LearningLevelCardProps) {
         className="block"
       >
         <div 
-          className="group relative overflow-hidden rounded-xl border transition-all duration-300 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 border-gray-200 cursor-pointer"
+          className="group rounded-xl border transition-all duration-200 bg-white shadow-sm hover:shadow-lg border-gray-200 cursor-pointer"
           style={{ animationDelay: `${index * 0.1}s` }}
         >
-          {/* Background Gradient */}
-          <div className={`absolute inset-0 bg-gradient-to-br ${level.bgColor} opacity-50`} />
-          
-            <div className="relative p-6">
-              {/* Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${level.color} flex items-center justify-center shadow-lg text-white`}>
-                  {level.icon}
-                </div>
+          <div className="p-6">
+            {/* Header */}
+            <div className="flex items-start justify-between mb-4">
+              <div className={`w-12 h-12 rounded-xl ${level.color} flex items-center justify-center shadow-sm text-white`}>
+                {level.icon}
+              </div>
                 <div className="text-right">
                   <span className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
                     level.difficulty === 'FOUNDATION' ? 'bg-blue-100 text-blue-700' :
@@ -329,7 +326,7 @@ function LearningLevelCard({ level, index }: LearningLevelCardProps) {
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div 
-                      className={`h-2 rounded-full bg-gradient-to-r ${level.color} transition-all duration-300`}
+                      className={`h-2 rounded-full ${level.color} transition-all duration-300`}
                       style={{ width: `${level.progress}%` }}
                     />
                   </div>

@@ -46,8 +46,8 @@ function getLevelData(levelId: string): LevelData | null {
       description: foundationContent.level.description,
       difficulty: 'FOUNDATION',
       overview: 'Before diving into medical calculations, we need to ensure you have a solid foundation in basic mathematical concepts. This level covers fractions, decimals, ratios, proportions, and percentages - the building blocks of all medical math.',
-      color: 'from-blue-500 to-cyan-600',
-      bgColor: 'from-blue-50 to-cyan-50',
+      color: 'bg-blue-500',
+      bgColor: 'bg-blue-50',
       completedTopics: completedCount,
       totalTopics: foundationContent.topics.length,
       topics: foundationContent.topics.map((topic) => ({
@@ -72,8 +72,8 @@ function getLevelData(levelId: string): LevelData | null {
       description: conversionsContent.level.description,
       difficulty: 'BEGINNER',
       overview: 'Unit conversion is the backbone of medical calculations. Learn the systematic approach of dimensional analysis that will make any conversion problem straightforward and error-free.',
-      color: 'from-purple-500 to-pink-600',
-      bgColor: 'from-purple-50 to-pink-50',
+      color: 'bg-purple-500',
+      bgColor: 'bg-purple-50',
       completedTopics: completedCount,
       totalTopics: conversionsContent.topics.length,
       topics: conversionsContent.topics.map((topic) => ({
@@ -98,8 +98,8 @@ function getLevelData(levelId: string): LevelData | null {
       description: medicationsContent.level.description,
       difficulty: 'INTERMEDIATE',
       overview: 'Now that you have strong foundational skills, learn how to apply them to real medication scenarios. Understand drug concentrations, dosage calculations, and safety principles.',
-      color: 'from-emerald-500 to-teal-600',
-      bgColor: 'from-emerald-50 to-teal-50',
+      color: 'bg-emerald-500',
+      bgColor: 'bg-emerald-50',
       completedTopics: completedCount,
       totalTopics: medicationsContent.topics.length,
       topics: medicationsContent.topics.map((topic) => ({
@@ -124,8 +124,8 @@ function getLevelData(levelId: string): LevelData | null {
       description: clinicalContent.level.description,
       difficulty: 'ADVANCED',
       overview: 'Put all your skills together in complex, real-world clinical scenarios. Master IV calculations, special populations, and critical care situations.',
-      color: 'from-red-500 to-orange-600',
-      bgColor: 'from-red-50 to-orange-50',
+      color: 'bg-red-500',
+      bgColor: 'bg-red-50',
       completedTopics: completedCount,
       totalTopics: clinicalContent.topics.length,
       topics: clinicalContent.topics.map((topic) => ({
@@ -189,7 +189,7 @@ function LearningLevelPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className={`bg-gradient-to-br ${levelInfo.color} text-white py-8 lg:py-12`}>
+      <div className={`${levelInfo.color} text-white py-8 lg:py-12`}>
         <div className="container-app">
           {/* Breadcrumb */}
           <nav className="mb-6">
@@ -313,7 +313,7 @@ function LearningLevelPage() {
                     className="block p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                      <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
                         <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                         </svg>
@@ -336,7 +336,7 @@ function LearningLevelPage() {
                     className="block p-3 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-colors group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                      <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
                         <Target className="w-4 h-4 text-white" />
                       </div>
                       <div>
@@ -405,19 +405,19 @@ function TopicCard({ topic, index, isSelected, onSelect }: TopicCardProps) {
   const getTypeColor = (type: Topic['type']) => {
     switch (type) {
       case 'concept':
-        return 'from-blue-500 to-blue-600 bg-blue-100 text-blue-700';
+        return 'bg-blue-500 bg-blue-100 text-blue-700';
       case 'practice':
-        return 'from-purple-500 to-purple-600 bg-purple-100 text-purple-700';
+        return 'bg-purple-500 bg-purple-100 text-purple-700';
       case 'assessment':
-        return 'from-amber-500 to-amber-600 bg-amber-100 text-amber-700';
+        return 'bg-amber-500 bg-amber-100 text-amber-700';
       default:
-        return 'from-gray-500 to-gray-600 bg-gray-100 text-gray-700';
+        return 'bg-gray-500 bg-gray-100 text-gray-700';
     }
   };
 
   const typeColors = getTypeColor(topic.type).split(' ');
-  const gradientColors = typeColors.slice(0, 2).join(' ');
-  const badgeColors = typeColors.slice(2).join(' ');
+  const iconColor = typeColors[0]; // bg-blue-500
+  const badgeColors = typeColors.slice(1).join(' '); // bg-blue-100 text-blue-700
 
   if (topic.isUnlocked) {
     return (
@@ -434,7 +434,7 @@ function TopicCard({ topic, index, isSelected, onSelect }: TopicCardProps) {
             <div className="flex items-start justify-between mb-4">
               {/* Topic Number & Icon */}
               <div className="flex items-center gap-4">
-                <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${gradientColors} flex items-center justify-center text-white font-bold shadow-sm`}>
+                <div className={`w-10 h-10 rounded-lg ${iconColor} flex items-center justify-center text-white font-bold shadow-sm`}>
                   {topic.isCompleted ? (
                     <CheckCircle className="w-6 h-6" />
                   ) : (
@@ -501,7 +501,7 @@ function TopicCard({ topic, index, isSelected, onSelect }: TopicCardProps) {
           <div className="flex items-start justify-between mb-4">
             {/* Topic Number & Icon */}
             <div className="flex items-center gap-4">
-              <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${gradientColors} flex items-center justify-center text-white font-bold shadow-sm`}>
+              <div className={`w-10 h-10 rounded-lg ${iconColor} flex items-center justify-center text-white font-bold shadow-sm`}>
                 {topic.isCompleted ? (
                   <CheckCircle className="w-6 h-6" />
                 ) : (

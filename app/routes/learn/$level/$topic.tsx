@@ -79,13 +79,13 @@ function LearningTopicPage() {
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'concept':
-        return 'from-blue-500 to-blue-600';
+        return 'bg-blue-500';
       case 'practice':
-        return 'from-purple-500 to-purple-600';
+        return 'bg-purple-500';
       case 'assessment':
-        return 'from-amber-500 to-amber-600';
+        return 'bg-amber-500';
       default:
-        return 'from-gray-500 to-gray-600';
+        return 'bg-gray-500';
     }
   };
 
@@ -96,7 +96,7 @@ function LearningTopicPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className={`bg-gradient-to-br ${getTypeColor(topicContent.type)} text-white py-8`}>
+      <div className={`${getTypeColor(topicContent.type)} text-white py-8`}>
         <div className="container-app">
           {/* Breadcrumb */}
           <nav className="mb-6">
@@ -152,7 +152,7 @@ function LearningTopicPage() {
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div
-                className={`h-2 bg-gradient-to-r ${getTypeColor(topicContent.type)} rounded-full transition-all duration-500`}
+                className={`h-2 ${getTypeColor(topicContent.type)} rounded-full transition-all duration-500`}
                 style={{ width: `${((currentTopicIndex + 1) / levelData.topics.length) * 100}%` }}
               />
             </div>
@@ -199,7 +199,7 @@ function LearningTopicPage() {
           </div>
 
           {/* Practice Integration */}
-          <div className="mt-8 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-6 border border-purple-100">
+          <div className="mt-8 bg-purple-50 rounded-xl p-6 border border-purple-100">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Ready to Test Your Skills?</h3>
