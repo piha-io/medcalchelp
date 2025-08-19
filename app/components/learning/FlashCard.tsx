@@ -113,7 +113,7 @@ export function FlashCard({
               Convert to {conversion.toUnit}
             </h2>
             <div className="text-4xl font-bold text-primary-600 mb-4">
-              1 {conversion.fromUnit}
+              {conversion.displayFactor.split(' = ')[0]}
             </div>
             <div className="text-sm text-gray-500">
               Click to reveal answer
@@ -138,12 +138,10 @@ export function FlashCard({
         >
           <div className="text-center mb-6">
             <div className="text-3xl font-bold text-green-700 mb-2">
-              {conversion.displayFactor}
+              {conversion.displayFactor.split(' = ')[1]}
             </div>
             <div className="text-lg text-green-600">
-              1 {conversion.fromUnit} = {conversion.factor === 1 ? '1' : 
-                conversion.factor > 1 ? conversion.factor.toString() : 
-                conversion.factor.toString()} {conversion.toUnit}
+              {conversion.displayFactor}
             </div>
           </div>
 
