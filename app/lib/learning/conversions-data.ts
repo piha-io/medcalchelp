@@ -73,7 +73,7 @@ export const conversionData: ConversionCategory[] = [
         category: 'weight-mass',
         fromUnit: 'lbs',
         toUnit: 'kg',
-        factor: 0.4545,
+        factor: 0.4536,
         displayFactor: '2.2 lbs = 1 kg',
         memoryTricks: ['2.2 pounds per kilogram - remember "2 point 2"'],
         commonMistakes: ['Using 2.0 instead of 2.2'],

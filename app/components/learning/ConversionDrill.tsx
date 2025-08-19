@@ -87,15 +87,21 @@ export function ConversionDrill({
       let correctAnswer: string;
 
       if (isReverse) {
-        // Ask reverse direction (e.g., "How many mg in 1000 mcg?")
-        const amount = conversion.factor > 1 ? 1 : Math.round(1 / conversion.factor);
-        questionText = `How many ${conversion.fromUnit} in ${amount} ${conversion.toUnit}?`;
-        correctAnswer = conversion.factor > 1 ? conversion.factor.toString() : '1';
+        // Calculate reverse: if original is 1 fromUnit = factor toUnit
+        // Then reverse is: 1 toUnit = (1/factor) fromUnit
+        const reverseAmount = 1;
+        const reverseFactor = 1 / conversion.factor;
+        questionText = `How many ${conversion.fromUnit} in ${reverseAmount} ${conversion.toUnit}?`;
+        // Handle precision for very large or very small numbers
+        correctAnswer = reverseFactor % 1 === 0 ? reverseFactor.toString() : 
+                      reverseFactor > 100 ? Math.round(reverseFactor).toString() :
+                      reverseFactor.toPrecision(4).replace(/\.?0+$/, '');
       } else {
-        // Ask forward direction (e.g., "How many mcg in 1 mg?")
+        // Ask forward direction (e.g., "How many mg in 1 mcg?")
         questionText = `How many ${conversion.toUnit} in 1 ${conversion.fromUnit}?`;
-        correctAnswer = conversion.factor > 1 ? conversion.factor.toString() : 
-          conversion.factor === 1 ? '1' : Math.round(1 / conversion.factor).toString();
+        // Handle precision for decimals
+        correctAnswer = conversion.factor % 1 === 0 ? conversion.factor.toString() :
+                       conversion.factor.toPrecision(4).replace(/\.?0+$/, '');
       }
 
       questions.push({

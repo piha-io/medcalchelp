@@ -143,7 +143,7 @@ export function FlashCard({
             <div className="text-lg text-green-600">
               1 {conversion.fromUnit} = {conversion.factor === 1 ? '1' : 
                 conversion.factor > 1 ? conversion.factor.toString() : 
-                `1/${Math.round(1/conversion.factor)}`} {conversion.toUnit}
+                conversion.factor.toString()} {conversion.toUnit}
             </div>
           </div>
 
