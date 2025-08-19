@@ -58,7 +58,9 @@ function LearningTopicPage() {
 
   const handleSectionComplete = (sectionType: string, score?: number) => {
     if (topicId) {
-      completeSection(topicId, sectionType, score);
+      // Check if this topic has a stepByStep section
+      const hasStepByStep = !!topicContent?.content.stepByStep;
+      completeSection(topicId, sectionType, score, hasStepByStep);
       forceRefresh(); // Update UI to show completion
     }
   };

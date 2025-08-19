@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate, Outlet } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ArrowLeft, CheckCircle, Play, Book, Trophy, Target } from 'lucide-react';
 import foundationContent from '../../lib/learning/foundation';
 import conversionsContent from '../../lib/learning/conversions';
@@ -150,13 +150,23 @@ function LearningLevelPage() {
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   
-  const levelInfo = getLevelData(levelId) || levelDataMock[levelId];
+  // Use useMemo to recalculate level data when progress changes
+  const levelInfo = useMemo(() => {
+    return getLevelData(levelId) || levelDataMock[levelId];
+  }, [levelId, refreshTrigger]);
 
   // Refresh level data when returning from a topic (to show updated progress)
   useEffect(() => {
     const handleFocus = () => setRefreshTrigger(prev => prev + 1);
+    const handleProgressChange = () => setRefreshTrigger(prev => prev + 1);
+    
     window.addEventListener('focus', handleFocus);
-    return () => window.removeEventListener('focus', handleFocus);
+    window.addEventListener('learningProgressChanged', handleProgressChange);
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('learningProgressChanged', handleProgressChange);
+    };
   }, []);
 
   // Also refresh when the URL changes back to just the level

@@ -32,13 +32,15 @@ export function getAnonymousProgress(): LearningProgress {
 export function saveAnonymousProgress(progress: LearningProgress): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    // Dispatch custom event to notify components about progress changes
+    window.dispatchEvent(new CustomEvent('learningProgressChanged', { detail: progress }));
   } catch (error) {
     console.warn('Error saving progress to localStorage:', error);
   }
 }
 
 // Mark a topic section as completed
-export function completeSection(topicId: string, sectionId: string, score?: number): void {
+export function completeSection(topicId: string, sectionId: string, score?: number, hasStepByStep?: boolean): void {
   const progress = getAnonymousProgress();
   
   // Initialize topic sections if not exists
@@ -59,13 +61,34 @@ export function completeSection(topicId: string, sectionId: string, score?: numb
     progress.scores[topicId][sectionId] = score;
   }
   
-  // Check if topic is fully completed (has concept + practice/assessment)
+  // Check if topic is fully completed
   const completedSections = progress.completedSections[topicId];
-  const hasRequiredSections = completedSections.includes('concept') && 
-    (completedSections.includes('practice') || completedSections.includes('assessment'));
   
-  if (hasRequiredSections && !progress.completedTopics.includes(topicId)) {
-    progress.completedTopics.push(topicId);
+  // For assessment-only topics, just need assessment
+  if (completedSections.includes('assessment')) {
+    if (!progress.completedTopics.includes(topicId)) {
+      progress.completedTopics.push(topicId);
+    }
+  }
+  // For concept sections, check if topic is complete
+  else if (sectionId === 'concept' && completedSections.includes('concept')) {
+    // If this topic has stepByStep, we need both concept and stepByStep
+    // If hasStepByStep is explicitly false or if we're not told, assume concept is enough
+    const needsStepByStep = hasStepByStep === true;
+    const hasStepByStepCompleted = completedSections.includes('stepByStep');
+    
+    if (!needsStepByStep || hasStepByStepCompleted) {
+      if (!progress.completedTopics.includes(topicId)) {
+        progress.completedTopics.push(topicId);
+      }
+    }
+  }
+  // For stepByStep sections, check if we now have both required sections
+  else if (sectionId === 'stepByStep' && completedSections.includes('stepByStep')) {
+    const hasConceptCompleted = completedSections.includes('concept');
+    if (hasConceptCompleted && !progress.completedTopics.includes(topicId)) {
+      progress.completedTopics.push(topicId);
+    }
   }
   
   progress.lastAccessed = new Date().toISOString();

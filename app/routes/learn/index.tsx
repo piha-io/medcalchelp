@@ -1,6 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAuth } from "../../lib/auth/AuthContext";
 import { BookOpen, Target, Award, ArrowRight, Lock, CheckCircle } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import foundationContent from '../../lib/learning/foundation';
+import conversionsContent from '../../lib/learning/conversions';
+import medicationsContent from '../../lib/learning/medications';
+import clinicalContent from '../../lib/learning/clinical';
+import { getLevelProgress } from '../../lib/learning/progress';
 
 export const Route = createFileRoute("/learn/")({
   component: LearnIndexPage,
@@ -108,6 +114,48 @@ const learningLevels: LearningLevel[] = [
 
 function LearnIndexPage() {
   const { user } = useAuth();
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  // Refresh progress when returning to this page or when progress changes
+  useEffect(() => {
+    const handleFocus = () => setRefreshTrigger(prev => prev + 1);
+    const handleProgressChange = () => setRefreshTrigger(prev => prev + 1);
+    
+    window.addEventListener('focus', handleFocus);
+    window.addEventListener('learningProgressChanged', handleProgressChange);
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('learningProgressChanged', handleProgressChange);
+    };
+  }, []);
+
+  // Calculate dynamic progress for each level
+  const learningLevelsWithProgress = useMemo(() => {
+    return learningLevels.map(level => {
+      let topicIds: string[] = [];
+      
+      switch (level.id) {
+        case 'foundation':
+          topicIds = foundationContent.topics.map(t => t.id);
+          break;
+        case 'conversions':
+          topicIds = conversionsContent.topics.map(t => t.id);
+          break;
+        case 'medications':
+          topicIds = medicationsContent.topics.map(t => t.id);
+          break;
+        case 'clinical':
+          topicIds = clinicalContent.topics.map(t => t.id);
+          break;
+      }
+      
+      return {
+        ...level,
+        progress: getLevelProgress(topicIds)
+      };
+    });
+  }, [refreshTrigger]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -158,7 +206,7 @@ function LearnIndexPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-            {learningLevels.map((level, index) => (
+            {learningLevelsWithProgress.map((level, index) => (
               <LearningLevelCard key={level.id} level={level} index={index} />
             ))}
           </div>
@@ -168,10 +216,10 @@ function LearnIndexPage() {
             <div className="mt-12 bg-white rounded-xl shadow-sm p-6">
               <h3 className="text-xl font-bold mb-4 text-gray-900">Your Progress</h3>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                {learningLevels.map((level) => (
+                {learningLevelsWithProgress.map((level) => (
                   <div key={level.id} className="text-center">
                     <div className="w-16 h-16 mx-auto mb-2 relative">
-                      <div className={`w-full h-full rounded-full bg-gradient-to-br ${level.bgColor} flex items-center justify-center border-4 ${level.progress === 100 ? 'border-green-400' : level.progress > 0 ? 'border-primary-400' : 'border-gray-200'}`}>
+                      <div className={`w-full h-full rounded-full ${level.bgColor} flex items-center justify-center border-4 ${level.progress === 100 ? 'border-green-400' : level.progress > 0 ? 'border-primary-400' : 'border-gray-200'}`}>
                         {level.progress === 100 ? (
                           <CheckCircle className="w-8 h-8 text-green-600" />
                         ) : level.isLocked ? (
