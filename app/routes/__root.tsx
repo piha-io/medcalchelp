@@ -20,7 +20,7 @@ function RootComponent() {
           Skip to main content
         </a>
         <Header />
-        <main id="main-content" className="container-app py-4 sm:py-6 lg:py-8">
+        <main id="main-content">
           <Outlet />
         </main>
         <Toaster 
@@ -67,6 +67,12 @@ function Header() {
               className="text-gray-600 hover:text-primary-600 font-medium transition-colors focus-ring rounded-md px-2 -mx-2"
             >
               Practice
+            </Link>
+            <Link
+              to="/memorize"
+              className="text-gray-600 hover:text-primary-600 font-medium transition-colors focus-ring rounded-md px-2 -mx-2"
+            >
+              Memorize
             </Link>
             <Link
               to="/guides"
@@ -162,6 +168,13 @@ function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Practice
+              </Link>
+              <Link
+                to="/memorize"
+                className="text-gray-600 hover:text-primary-600 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 focus-ring"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Memorize
               </Link>
               <Link
                 to="/guides"

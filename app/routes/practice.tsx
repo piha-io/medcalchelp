@@ -127,7 +127,8 @@ function PracticePage() {
 
 
   return (
-    <div className="space-y-6">
+    <div className="container-app py-4 sm:py-6 lg:py-8">
+      <div className="space-y-6">
 
       {/* Mobile Stats Toggle - Compact */}
       <div className="lg:hidden">
@@ -313,6 +314,7 @@ function PracticePage() {
             <StatsCard />
           </div>
         </div>
+      </div>
       </div>
     </div>
   )

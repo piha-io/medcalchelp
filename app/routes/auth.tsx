@@ -80,7 +80,8 @@ function AuthPage() {
   }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+    <div className="container-app py-4 sm:py-6 lg:py-8">
+      <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         {/* Logo and Title */}
         <div className="text-center mb-8">
@@ -133,6 +134,7 @@ function AuthPage() {
               Privacy Policy
             </a>
           </p>
+        </div>
         </div>
       </div>
     </div>

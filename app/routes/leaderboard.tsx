@@ -11,7 +11,8 @@ function LeaderboardPage() {
   const [timeFrame, setTimeFrame] = useState<TimeFrame>('daily')
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="container-app py-4 sm:py-6 lg:py-8">
+      <div className="max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-8">Leaderboard</h1>
 
       <div className="bg-white rounded-lg shadow-sm border p-2 inline-flex mb-8">
@@ -31,6 +32,7 @@ function LeaderboardPage() {
       </div>
 
       <LeaderboardTable timeFrame={timeFrame} />
+      </div>
     </div>
   )
 }

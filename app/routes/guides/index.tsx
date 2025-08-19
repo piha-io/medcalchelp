@@ -77,7 +77,8 @@ function GuidesIndexPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="container-app py-4 sm:py-6 lg:py-8">
+      <div className="min-h-screen bg-gray-50">
       <GuidesHero />
       
       <div className="container-app py-8 lg:py-12">
@@ -194,6 +195,7 @@ function GuidesIndexPage() {
               selectedConcept={selectedConcept}
             />
           </aside>
+        </div>
         </div>
       </div>
     </div>

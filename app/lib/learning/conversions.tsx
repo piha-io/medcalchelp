@@ -190,7 +190,8 @@ export const conversionsContent = {
             'Always write out units - they guide your setup',
             'If units don\'t cancel properly, flip your conversion factor',
             'For multi-step conversions, chain the factors together',
-            'Double-check by estimating: does the answer make sense?'
+            'Double-check by estimating: does the answer make sense?',
+            '💡 Struggling to remember conversion factors? Build instant recall with our Memorization Training at /memorize/conversions'
           ],
           warnings: [
             'Wrong conversion factor orientation is the #1 error',
@@ -309,7 +310,8 @@ Makes sense: small dose, small volume`,
             'When going DOWN the scale (kg→g→mg→mcg), multiply by 1000',
             'When going UP the scale (mcg→mg→g→kg), divide by 1000',
             'Moving the decimal: 3 places right when multiplying by 1000',
-            'Moving the decimal: 3 places left when dividing by 1000'
+            'Moving the decimal: 3 places left when dividing by 1000',
+            '💡 Need to memorize these conversions? Try our focused Memorization Training at /memorize/conversions'
           ],
           warnings: [
             'Never confuse mg and mcg - there\'s a 1000× difference!',

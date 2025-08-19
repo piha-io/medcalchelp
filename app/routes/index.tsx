@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAuth } from "../lib/auth/AuthContext";
-import { Calculator, Brain, Target, Timer, Trophy, Book, Github, Twitter, Mail, ExternalLink } from 'lucide-react';
+import { Calculator, Brain, Target, Timer, Trophy, Book, Github, Twitter, Mail, ExternalLink, Zap } from 'lucide-react';
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -10,7 +10,7 @@ function HomePage() {
   const { user } = useAuth();
 
   return (
-    <>
+    <div className="py-4 sm:py-6 lg:py-8">
       <div className="space-y-12 sm:space-y-16 lg:space-y-20 overflow-hidden">
       {/* Hero Section */}
       <section className="text-center py-6 sm:py-10 lg:py-16 relative">
@@ -64,6 +64,10 @@ function HomePage() {
                     />
                   </svg>
                 </Link>
+                <Link to="/memorize" className="btn btn-outline btn-lg group">
+                  Memorize Facts
+                  <Zap className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Link>
               </>
             ) : (
               <>
@@ -104,6 +108,13 @@ function HomePage() {
                       d="M13 7l5 5m0 0l-5 5m5-5H6"
                     />
                   </svg>
+                </Link>
+                <Link
+                  to="/memorize"
+                  className="btn btn-outline btn-lg shadow-xl hover:shadow-2xl group"
+                >
+                  Try Memorization
+                  <Zap className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </>
             )}
@@ -160,11 +171,11 @@ function HomePage() {
               highlight="Visual Progress"
             />
             <FeatureCard
-              icon={<Book className="w-full h-full" />}
-              title="Study Resources"
-              description="Access comprehensive guides and formulas to reinforce your learning between practice sessions"
-              color="green"
-              highlight="Complete Guides"
+              icon={<Zap className="w-full h-full" />}
+              title="Memorization Training"
+              description="Build instant recall of critical conversions and formulas through flashcards and speed drills"
+              color="indigo"
+              highlight="Focused Practice"
             />
           </div>
         </div>
@@ -207,6 +218,11 @@ function HomePage() {
                 <li>
                   <Link to="/practice" className="text-gray-400 hover:text-white transition-colors">
                     Practice Questions
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/memorize" className="text-gray-400 hover:text-white transition-colors">
+                    Memorization Training
                   </Link>
                 </li>
                 <li>
@@ -258,7 +274,7 @@ function HomePage() {
         </div>
       </div>
     </footer>
-    </>
+    </div>
   );
 }
 

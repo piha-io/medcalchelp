@@ -10,12 +10,15 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PracticeRouteImport } from './routes/practice'
+import { Route as MemorizeRouteImport } from './routes/memorize'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MemorizeIndexRouteImport } from './routes/memorize/index'
 import { Route as LearnIndexRouteImport } from './routes/learn/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
+import { Route as MemorizeConversionsRouteImport } from './routes/memorize/conversions'
 import { Route as LearnLevelRouteImport } from './routes/learn/$level'
 import { Route as GuidesSlugRouteImport } from './routes/guides/$slug'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
@@ -24,6 +27,11 @@ import { Route as LearnLevelTopicRouteImport } from './routes/learn/$level/$topi
 const PracticeRoute = PracticeRouteImport.update({
   id: '/practice',
   path: '/practice',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MemorizeRoute = MemorizeRouteImport.update({
+  id: '/memorize',
+  path: '/memorize',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LeaderboardRoute = LeaderboardRouteImport.update({
@@ -45,6 +53,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MemorizeIndexRoute = MemorizeIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MemorizeRoute,
+} as any)
 const LearnIndexRoute = LearnIndexRouteImport.update({
   id: '/learn/',
   path: '/learn/',
@@ -54,6 +67,11 @@ const GuidesIndexRoute = GuidesIndexRouteImport.update({
   id: '/guides/',
   path: '/guides/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const MemorizeConversionsRoute = MemorizeConversionsRouteImport.update({
+  id: '/conversions',
+  path: '/conversions',
+  getParentRoute: () => MemorizeRoute,
 } as any)
 const LearnLevelRoute = LearnLevelRouteImport.update({
   id: '/learn/$level',
@@ -80,12 +98,15 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/memorize': typeof MemorizeRouteWithChildren
   '/practice': typeof PracticeRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/learn/$level': typeof LearnLevelRouteWithChildren
+  '/memorize/conversions': typeof MemorizeConversionsRoute
   '/guides': typeof GuidesIndexRoute
   '/learn': typeof LearnIndexRoute
+  '/memorize/': typeof MemorizeIndexRoute
   '/learn/$level/$topic': typeof LearnLevelTopicRoute
 }
 export interface FileRoutesByTo {
@@ -96,8 +117,10 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/learn/$level': typeof LearnLevelRouteWithChildren
+  '/memorize/conversions': typeof MemorizeConversionsRoute
   '/guides': typeof GuidesIndexRoute
   '/learn': typeof LearnIndexRoute
+  '/memorize': typeof MemorizeIndexRoute
   '/learn/$level/$topic': typeof LearnLevelTopicRoute
 }
 export interface FileRoutesById {
@@ -106,12 +129,15 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/memorize': typeof MemorizeRouteWithChildren
   '/practice': typeof PracticeRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/learn/$level': typeof LearnLevelRouteWithChildren
+  '/memorize/conversions': typeof MemorizeConversionsRoute
   '/guides/': typeof GuidesIndexRoute
   '/learn/': typeof LearnIndexRoute
+  '/memorize/': typeof MemorizeIndexRoute
   '/learn/$level/$topic': typeof LearnLevelTopicRoute
 }
 export interface FileRouteTypes {
@@ -120,12 +146,15 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/leaderboard'
+    | '/memorize'
     | '/practice'
     | '/profile'
     | '/guides/$slug'
     | '/learn/$level'
+    | '/memorize/conversions'
     | '/guides'
     | '/learn'
+    | '/memorize/'
     | '/learn/$level/$topic'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -136,8 +165,10 @@ export interface FileRouteTypes {
     | '/profile'
     | '/guides/$slug'
     | '/learn/$level'
+    | '/memorize/conversions'
     | '/guides'
     | '/learn'
+    | '/memorize'
     | '/learn/$level/$topic'
   id:
     | '__root__'
@@ -145,12 +176,15 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/leaderboard'
+    | '/memorize'
     | '/practice'
     | '/_authenticated/profile'
     | '/guides/$slug'
     | '/learn/$level'
+    | '/memorize/conversions'
     | '/guides/'
     | '/learn/'
+    | '/memorize/'
     | '/learn/$level/$topic'
   fileRoutesById: FileRoutesById
 }
@@ -159,6 +193,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
   LeaderboardRoute: typeof LeaderboardRoute
+  MemorizeRoute: typeof MemorizeRouteWithChildren
   PracticeRoute: typeof PracticeRoute
   GuidesSlugRoute: typeof GuidesSlugRoute
   LearnLevelRoute: typeof LearnLevelRouteWithChildren
@@ -173,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/practice'
       fullPath: '/practice'
       preLoaderRoute: typeof PracticeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/memorize': {
+      id: '/memorize'
+      path: '/memorize'
+      fullPath: '/memorize'
+      preLoaderRoute: typeof MemorizeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/leaderboard': {
@@ -203,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/memorize/': {
+      id: '/memorize/'
+      path: '/'
+      fullPath: '/memorize/'
+      preLoaderRoute: typeof MemorizeIndexRouteImport
+      parentRoute: typeof MemorizeRoute
+    }
     '/learn/': {
       id: '/learn/'
       path: '/learn'
@@ -216,6 +265,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/guides'
       preLoaderRoute: typeof GuidesIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/memorize/conversions': {
+      id: '/memorize/conversions'
+      path: '/conversions'
+      fullPath: '/memorize/conversions'
+      preLoaderRoute: typeof MemorizeConversionsRouteImport
+      parentRoute: typeof MemorizeRoute
     }
     '/learn/$level': {
       id: '/learn/$level'
@@ -260,6 +316,20 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface MemorizeRouteChildren {
+  MemorizeConversionsRoute: typeof MemorizeConversionsRoute
+  MemorizeIndexRoute: typeof MemorizeIndexRoute
+}
+
+const MemorizeRouteChildren: MemorizeRouteChildren = {
+  MemorizeConversionsRoute: MemorizeConversionsRoute,
+  MemorizeIndexRoute: MemorizeIndexRoute,
+}
+
+const MemorizeRouteWithChildren = MemorizeRoute._addFileChildren(
+  MemorizeRouteChildren,
+)
+
 interface LearnLevelRouteChildren {
   LearnLevelTopicRoute: typeof LearnLevelTopicRoute
 }
@@ -277,6 +347,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
   LeaderboardRoute: LeaderboardRoute,
+  MemorizeRoute: MemorizeRouteWithChildren,
   PracticeRoute: PracticeRoute,
   GuidesSlugRoute: GuidesSlugRoute,
   LearnLevelRoute: LearnLevelRouteWithChildren,

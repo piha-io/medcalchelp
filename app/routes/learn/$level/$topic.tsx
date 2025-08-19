@@ -198,6 +198,7 @@ function LearningTopicPage() {
                 />
               </section>
             )}
+
           </div>
 
           {/* Practice Integration */}
@@ -222,6 +223,27 @@ function LearningTopicPage() {
               </Link>
             </div>
           </div>
+
+          {/* Memorization Training Integration - Only for Conversions */}
+          {levelId === 'conversions' && (
+            <div className="mt-6 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Need Instant Recall?</h3>
+                  <p className="text-gray-600 text-sm">Master conversions through focused memorization training</p>
+                </div>
+                <Link
+                  to="/memorize/conversions"
+                  className="btn btn-outline flex items-center gap-2 border-indigo-300 text-indigo-700 hover:bg-indigo-100"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  Memorize Now
+                </Link>
+              </div>
+            </div>
+          )}
 
           {/* Navigation */}
           <div className="mt-8 pt-8 border-t border-gray-200">
