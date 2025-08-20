@@ -188,6 +188,130 @@ async function main() {
       explanation: 'To calculate the volume: {dose}mg ÷ ({concentration}mg/{volume}mL) = {answer} mL'
     },
 
+    // Additional Dosage Calculations - More Diverse
+    {
+      type: 'DOSAGE_CALCULATION',
+      category: 'ORAL_MEDICATION',
+      title: 'Microgram Dosage Calculation',
+      templateText: 'A patient needs {dose}mcg of medication. Available tablets are {strength}mcg each. How many tablets should be given?',
+      formulaTemplate: '{dose} / {strength}',
+      variables: {
+        dose: { min: 500, max: 2500, step: 250 },
+        strength: { min: 250, max: 1000, step: 250 }
+      },
+      units: {
+        dose: 'mcg',
+        strength: 'mcg',
+        answer: 'tablets'
+      },
+      hints: [
+        'Divide the required dose by the tablet strength',
+        'Watch the units - both are in micrograms'
+      ],
+      explanation: 'For microgram calculations: {dose}mcg ÷ {strength}mcg = {answer} tablets'
+    },
+
+    {
+      type: 'DOSAGE_CALCULATION',
+      category: 'INJECTABLE_MEDICATION',
+      title: 'Unit-Based Medication',
+      templateText: 'A patient needs {dose} units of insulin. The vial contains {strength} units/mL. How many mL should you draw up?',
+      formulaTemplate: '{dose} / {strength}',
+      variables: {
+        dose: { min: 10, max: 80, step: 5 },
+        strength: { min: 50, max: 100, step: 25 }
+      },
+      units: {
+        dose: 'units',
+        strength: 'units/mL',
+        answer: 'mL'
+      },
+      hints: [
+        'Divide the required units by the concentration per mL',
+        'Units can be used like any other dose measurement'
+      ],
+      explanation: 'Unit calculations: {dose} units ÷ {strength} units/mL = {answer} mL'
+    },
+
+    {
+      type: 'DOSAGE_CALCULATION',
+      category: 'ORAL_MEDICATION',
+      title: 'Gram to Milligram Conversion Dosage',
+      templateText: 'A patient needs {dose_grams} g of medication. Available tablets are {strength}mg each. How many tablets should be given?',
+      formulaTemplate: '{dose_grams} * 1000 / {strength}',
+      variables: {
+        dose_grams: { min: 0.5, max: 2, step: 0.5 },
+        strength: { min: 250, max: 1000, step: 250 }
+      },
+      units: {
+        dose_grams: 'g',
+        strength: 'mg',
+        answer: 'tablets'
+      },
+      hints: [
+        'First convert grams to milligrams (multiply by 1000)',
+        'Then divide by the tablet strength'
+      ],
+      explanation: 'Convert units first: {dose_grams}g = {dose_grams} × 1000 = {dose_mg}mg. Then: {dose_mg}mg ÷ {strength}mg = {answer} tablets',
+      conversionFactors: {
+        dose_mg: '{dose_grams} * 1000'
+      }
+    },
+
+    {
+      type: 'DOSAGE_CALCULATION',
+      category: 'INJECTABLE_MEDICATION',
+      title: 'Weight-Based Dosing',
+      templateText: 'A patient weighing {weight}kg needs {dose_per_kg}mg/kg of medication. The vial contains {concentration}mg/mL. How many mL should be given?',
+      formulaTemplate: '{weight} * {dose_per_kg} / {concentration}',
+      variables: {
+        weight: { min: 50, max: 100, step: 10 },
+        dose_per_kg: { min: 5, max: 25, step: 5 },
+        concentration: { min: 50, max: 200, step: 25 }
+      },
+      units: {
+        weight: 'kg',
+        dose_per_kg: 'mg/kg',
+        concentration: 'mg/mL',
+        answer: 'mL'
+      },
+      hints: [
+        'First calculate total dose: weight × dose per kg',
+        'Then divide by concentration to get volume'
+      ],
+      explanation: 'Weight-based dosing: {weight}kg × {dose_per_kg}mg/kg = {total_dose}mg. Then {total_dose}mg ÷ {concentration}mg/mL = {answer}mL',
+      conversionFactors: {
+        total_dose: '{weight} * {dose_per_kg}'
+      }
+    },
+
+    {
+      type: 'DOSAGE_CALCULATION',
+      category: 'ORAL_MEDICATION',
+      title: 'Liquid Medication with mL to tsp',
+      templateText: 'A patient needs {dose}mg of liquid medication. The bottle contains {concentration}mg/{volume}mL. How many teaspoons should be given? (1 tsp = 5 mL)',
+      formulaTemplate: '{dose} / {concentration} * {volume} / 5',
+      variables: {
+        dose: { min: 100, max: 400, step: 50 },
+        concentration: { min: 50, max: 100, step: 25 },
+        volume: { min: 5, max: 10, step: 5 }
+      },
+      units: {
+        dose: 'mg',
+        concentration: 'mg',
+        volume: 'mL',
+        answer: 'tsp'
+      },
+      hints: [
+        'First calculate mL needed',
+        'Then convert mL to teaspoons (divide by 5)'
+      ],
+      explanation: 'Calculate volume: {dose}mg ÷ ({concentration}mg/{volume}mL) = {volume_ml}mL. Convert: {volume_ml}mL ÷ 5 = {answer}tsp',
+      conversionFactors: {
+        volume_ml: '{dose} / {concentration} * {volume}'
+      }
+    },
+
     // Concentration calculations
     {
       type: 'CONCENTRATION',

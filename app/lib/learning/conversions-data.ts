@@ -200,6 +200,202 @@ export const conversionData: ConversionCategory[] = [
         difficulty: 'hard'
       }
     ]
+  },
+
+  {
+    id: 'dosage-calculations',
+    name: 'Dosage Calculations',
+    description: 'Essential dosage calculation conversions from medical reference tables',
+    memoryTricks: [
+      'Remember the basic metric ladder: kg → g → mg → mcg',
+      'Volume equivalents: 1 mL = 1 cc always',
+      'Household measures: 3 tsp = 1 Tbsp, 2 Tbsp = 1 oz'
+    ],
+    conversions: [
+      // Weight conversions from reference table
+      {
+        id: '1000mcg-to-1mg',
+        category: 'dosage-calculations',
+        fromUnit: '1000 mcg',
+        toUnit: '1 mg',
+        factor: 1,
+        displayFactor: '1000 mcg = 1 mg',
+        memoryTricks: ['Micro means one-millionth, so 1000 micrograms = 1 milligram'],
+        commonMistakes: ['Confusing mcg with mg - critical medication error!'],
+        priority: 'critical',
+        difficulty: 'hard'
+      },
+      {
+        id: '1000mg-to-1g',
+        category: 'dosage-calculations',
+        fromUnit: '1000 mg',
+        toUnit: '1 g',
+        factor: 1,
+        displayFactor: '1000 mg = 1 g',
+        memoryTricks: ['Milli means one-thousandth'],
+        priority: 'critical',
+        difficulty: 'easy'
+      },
+      {
+        id: '1000g-to-1kg',
+        category: 'dosage-calculations',
+        fromUnit: '1000 g',
+        toUnit: '1 kg',
+        factor: 1,
+        displayFactor: '1000 g = 1 kg',
+        memoryTricks: ['Kilo means one thousand'],
+        priority: 'important',
+        difficulty: 'easy'
+      },
+      {
+        id: '2.2lbs-to-1kg',
+        category: 'dosage-calculations',
+        fromUnit: '2.2 lbs',
+        toUnit: '1 kg',
+        factor: 1,
+        displayFactor: '2.2 lbs = 1 kg',
+        memoryTricks: ['Remember 2.2 pounds per kilogram'],
+        commonMistakes: ['Using 2.0 instead of 2.2'],
+        priority: 'critical',
+        difficulty: 'medium'
+      },
+      
+      // Volume conversions from reference table
+      {
+        id: '1ml-to-1cc',
+        category: 'dosage-calculations',
+        fromUnit: '1 mL',
+        toUnit: '1 cc',
+        factor: 1,
+        displayFactor: '1 mL = 1 cc',
+        memoryTricks: ['mL and cc are exactly the same - cubic centimeter = milliliter'],
+        priority: 'critical',
+        difficulty: 'easy'
+      },
+      {
+        id: '1tsp-to-5ml',
+        category: 'dosage-calculations',
+        fromUnit: '1 tsp',
+        toUnit: '5 mL',
+        factor: 1,
+        displayFactor: '1 tsp = 5 mL',
+        memoryTricks: ['Teaspoon = Take 5 (mL)'],
+        priority: 'critical',
+        difficulty: 'medium'
+      },
+      {
+        id: '3tsp-to-1tbsp',
+        category: 'dosage-calculations',
+        fromUnit: '3 tsp',
+        toUnit: '1 Tbsp',
+        factor: 1,
+        displayFactor: '3 tsp = 1 Tbsp',
+        memoryTricks: ['Table(spoon) is bigger - holds 3 teaspoons'],
+        priority: 'important',
+        difficulty: 'easy'
+      },
+      {
+        id: '15ml-to-1tbsp',
+        category: 'dosage-calculations',
+        fromUnit: '15 mL',
+        toUnit: '1 Tbsp',
+        factor: 1,
+        displayFactor: '15 mL = 1 Tbsp',
+        memoryTricks: ['3 tsp × 5 mL = 15 mL = 1 Tbsp'],
+        priority: 'important',
+        difficulty: 'medium'
+      },
+      {
+        id: '30ml-to-1oz',
+        category: 'dosage-calculations',
+        fromUnit: '30 mL',
+        toUnit: '1 oz',
+        factor: 1,
+        displayFactor: '30 mL = 1 oz',
+        memoryTricks: ['30 mL per ounce - think "30"'],
+        priority: 'critical',
+        difficulty: 'medium'
+      },
+      {
+        id: '2tbsp-to-1oz',
+        category: 'dosage-calculations',
+        fromUnit: '2 Tbsp',
+        toUnit: '1 oz',
+        factor: 1,
+        displayFactor: '2 Tbsp = 1 oz',
+        memoryTricks: ['2 tablespoons fill 1 ounce'],
+        priority: 'useful',
+        difficulty: 'easy'
+      },
+      {
+        id: '1000ml-to-1l',
+        category: 'dosage-calculations',
+        fromUnit: '1000 mL',
+        toUnit: '1 L',
+        factor: 1,
+        displayFactor: '1000 mL = 1 L',
+        memoryTricks: ['Same as mg to g - 1000 smaller units = 1 larger unit'],
+        priority: 'important',
+        difficulty: 'easy'
+      },
+      
+      // Additional conversions from reference table
+      {
+        id: '5ml-to-1tsp',
+        category: 'dosage-calculations',
+        fromUnit: '5 mL',
+        toUnit: '1 tsp',
+        factor: 1,
+        displayFactor: '5 mL = 1 tsp',
+        memoryTricks: ['5 mL fills exactly 1 teaspoon'],
+        priority: 'critical',
+        difficulty: 'medium'
+      },
+      {
+        id: '8oz-to-1cup',
+        category: 'dosage-calculations',
+        fromUnit: '8 oz',
+        toUnit: '1 cup',
+        factor: 1,
+        displayFactor: '8 oz = 1 cup',
+        memoryTricks: ['8 ounces make a standard cup'],
+        priority: 'useful',
+        difficulty: 'easy'
+      },
+      {
+        id: '1cup-to-240ml',
+        category: 'dosage-calculations',
+        fromUnit: '1 cup',
+        toUnit: '240 mL',
+        factor: 1,
+        displayFactor: '1 cup = 240 mL',
+        memoryTricks: ['240 mL in a cup - close to 250 mL or 1/4 liter'],
+        priority: 'useful',
+        difficulty: 'medium'
+      },
+      {
+        id: '1kg-to-1000g',
+        category: 'dosage-calculations',
+        fromUnit: '1 kg',
+        toUnit: '1000 g',
+        factor: 1,
+        displayFactor: '1 kg = 1000 g',
+        memoryTricks: ['Kilogram = 1000 grams'],
+        priority: 'important',
+        difficulty: 'easy'
+      },
+      {
+        id: '1kg-to-2.2lbs',
+        category: 'dosage-calculations',
+        fromUnit: '1 kg',
+        toUnit: '2.2 lbs',
+        factor: 1,
+        displayFactor: '1 kg = 2.2 lbs',
+        memoryTricks: ['Each kilogram weighs 2.2 pounds'],
+        priority: 'critical',
+        difficulty: 'medium'
+      }
+    ]
   }
 ];
 

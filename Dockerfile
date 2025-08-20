@@ -69,7 +69,7 @@ RUN npx prisma generate
 
 # Create necessary directories with proper permissions
 RUN mkdir -p /app/logs && \
-    chown -R nodejs:nodejs /app
+    chown nodejs:nodejs /app/logs
 
 # Switch to non-root user
 USER nodejs
