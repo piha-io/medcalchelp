@@ -167,6 +167,27 @@ export async function submitAnswer(userId: string | null, data: unknown) {
     }
   }
 
+  // Verify user exists before creating attempt record
+  const userExists = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true }
+  })
+
+  if (!userExists) {
+    // User doesn't exist, treat as guest
+    return {
+      attempt: {
+        id: 'guest-attempt',
+        isCorrect,
+        correctAnswer,
+        pointsEarned,
+      },
+      explanation: template.explanation
+        .replace(/{(\w+)}/g, (match, key) => validatedData.generatedValues[key] || match)
+        .replace('{answer}', correctAnswer.toFixed(2)),
+    }
+  }
+
   // Create attempt record for authenticated users
   const attempt = await prisma.userAttempt.create({
     data: {
