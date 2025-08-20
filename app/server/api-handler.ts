@@ -268,7 +268,47 @@ export async function handleApiRequest(req: IncomingMessage, res: ServerResponse
       return
     }
 
-    // GET /api/guides/:slug
+    // GET /api/guides/categories (must come before dynamic slug route)
+    if (pathname === '/api/guides/categories' && req.method === 'GET') {
+      const categories = await getGuideCategories()
+      
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ categories }))
+      return
+    }
+
+    // GET /api/guides/concepts (must come before dynamic slug route)
+    if (pathname === '/api/guides/concepts' && req.method === 'GET') {
+      const concepts = await getGuideConcepts()
+      
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ concepts }))
+      return
+    }
+
+    // GET /api/guides/recent (must come before dynamic slug route)
+    if (pathname === '/api/guides/recent' && req.method === 'GET') {
+      const guides = await getRecentGuides()
+      
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ guides }))
+      return
+    }
+
+    // GET /api/guides/popular (must come before dynamic slug route)
+    if (pathname === '/api/guides/popular' && req.method === 'GET') {
+      const guides = await getPopularGuides()
+      
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ guides }))
+      return
+    }
+
+    // GET /api/guides/:slug (must come after specific routes)
     const guideMatch = pathname.match(/^\/api\/guides\/([^\/]+)$/)
     if (guideMatch && req.method === 'GET') {
       const slug = guideMatch[1]
@@ -284,46 +324,6 @@ export async function handleApiRequest(req: IncomingMessage, res: ServerResponse
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')
       res.end(JSON.stringify(result))
-      return
-    }
-
-    // GET /api/guides/categories
-    if (pathname === '/api/guides/categories' && req.method === 'GET') {
-      const categories = await getGuideCategories()
-      
-      res.statusCode = 200
-      res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify({ categories }))
-      return
-    }
-
-    // GET /api/guides/concepts
-    if (pathname === '/api/guides/concepts' && req.method === 'GET') {
-      const concepts = await getGuideConcepts()
-      
-      res.statusCode = 200
-      res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify({ concepts }))
-      return
-    }
-
-    // GET /api/guides/recent
-    if (pathname === '/api/guides/recent' && req.method === 'GET') {
-      const guides = await getRecentGuides()
-      
-      res.statusCode = 200
-      res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify({ guides }))
-      return
-    }
-
-    // GET /api/guides/popular
-    if (pathname === '/api/guides/popular' && req.method === 'GET') {
-      const guides = await getPopularGuides()
-      
-      res.statusCode = 200
-      res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify({ guides }))
       return
     }
 
